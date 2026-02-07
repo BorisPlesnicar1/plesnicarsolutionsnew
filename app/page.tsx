@@ -98,7 +98,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#212121] text-white relative">
+    <div className="min-h-screen bg-[#212121] text-white relative overflow-x-hidden max-w-[100vw]">
       {/* Subtle Background Gradient */}
       <div className="fixed inset-0 pointer-events-none z-0 blur-bg" aria-hidden="true">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#ff1900]/5 rounded-full blur-[150px]" />
@@ -107,14 +107,14 @@ export default function Home() {
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#212121]/98 border-b border-white/10 supports-[backdrop-filter]:backdrop-blur-xl">
-        <nav className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 -ml-2">
+        <nav className="container mx-auto px-4 sm:px-6 py-3 md:py-4 flex items-center justify-between max-w-[100vw]">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <Image
             src="/logos/LogoTEXTB.png"
             alt="Plesnicar Solutions Logo"
             width={200}
             height={60}
-            className="h-14 md:h-16 w-auto"
+            className="h-12 sm:h-14 md:h-16 w-auto max-w-[180px] sm:max-w-none"
             priority
             unoptimized
         />
@@ -187,8 +187,8 @@ export default function Home() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#212121]/98 border-t border-white/5 supports-[backdrop-filter]:backdrop-blur-xl">
-            <div className="container mx-auto px-6 py-4 flex flex-col gap-3">
+            <div className="md:hidden bg-[#212121]/98 border-t border-white/5 supports-[backdrop-filter]:backdrop-blur-xl overflow-hidden">
+            <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col gap-3 max-w-[100vw]">
               <button
                 onClick={() => scrollToSection("leistungen")}
                 className="text-left text-sm font-medium text-white/80 hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-white/5"
@@ -237,7 +237,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section id="hero" className="relative overflow-hidden pt-24 pb-12 md:pt-28 md:pb-14" data-animate>
+      <section id="hero" className="relative overflow-hidden pt-20 pb-8 px-4 sm:px-6 md:pt-28 md:pb-14 md:px-6" data-animate>
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-[#212121]/60 via-[#212121]/85 to-[#212121] z-10" />
@@ -269,9 +269,9 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        <div className="relative z-30 container mx-auto px-6 py-10 md:py-12">
+        <div className="relative z-30 container mx-auto px-0 sm:px-6 py-6 md:py-12 max-w-[100vw]">
           <div
-            className={`max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8 items-center transition-all duration-700 ease-out ${
+            className={`max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 md:gap-8 items-center transition-all duration-700 ease-out min-w-0 ${
               isVisible["hero"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
           >
@@ -344,8 +344,8 @@ export default function Home() {
       </section>
 
       {/* Leistungen Section */}
-      <section id="leistungen" className="py-32 px-6 relative border-t border-white/5" data-animate>
-        <div className="container mx-auto max-w-7xl relative z-10">
+      <section id="leistungen" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5" data-animate>
+        <div className="container mx-auto max-w-7xl relative z-10 overflow-hidden">
           <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['leistungen'] ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
               Unsere <span className="text-[#ff1900]">Leistungen</span>
@@ -429,8 +429,8 @@ export default function Home() {
       </section>
 
       {/* Über uns Section */}
-      <section id="ueber-uns" className="py-32 px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
-        <div className="container mx-auto max-w-5xl relative z-10">
+      <section id="ueber-uns" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
+        <div className="container mx-auto max-w-5xl relative z-10 overflow-hidden">
           <div className={`text-center transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-12 tracking-tight">
               Über <span className="text-[#ff1900]">uns</span>
@@ -454,8 +454,8 @@ export default function Home() {
       </section>
 
       {/* Team Section */}
-      <section id="team" className="py-32 px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
-        <div className="container mx-auto max-w-7xl">
+      <section id="team" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
+        <div className="container mx-auto max-w-7xl overflow-hidden">
           <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
               Unser <span className="text-[#ff1900]">Team</span>
@@ -596,8 +596,8 @@ export default function Home() {
       </section>
 
       {/* Unsere Vorteile Section */}
-      <section id="warum" className="py-32 px-6 relative" data-animate>
-        <div className="container mx-auto max-w-7xl">
+      <section id="warum" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative" data-animate>
+        <div className="container mx-auto max-w-7xl overflow-hidden">
           <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
               Unsere <span className="text-[#ff1900]">Vorteile</span>
@@ -638,8 +638,8 @@ export default function Home() {
       </section>
 
       {/* Servicequalität Section */}
-      <section id="features" className="py-32 px-6 bg-white/[0.02] relative" data-animate>
-        <div className="container mx-auto max-w-7xl">
+      <section id="features" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative" data-animate>
+        <div className="container mx-auto max-w-7xl overflow-hidden">
           <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
               Unsere <span className="text-[#ff1900]">Servicequalität</span>
@@ -702,8 +702,8 @@ export default function Home() {
       </section>
 
       {/* Arbeitsweise Section */}
-      <section id="prozess" className="py-32 px-6 relative" data-animate>
-        <div className="container mx-auto max-w-6xl">
+      <section id="prozess" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative" data-animate>
+        <div className="container mx-auto max-w-6xl overflow-hidden">
           <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
               Unsere <span className="text-[#ff1900]">Arbeitsweise</span>
@@ -742,8 +742,8 @@ export default function Home() {
       </section>
 
       {/* Kontakt Section */}
-      <section id="kontakt" className="py-32 px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
-        <div className="container mx-auto max-w-7xl">
+      <section id="kontakt" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
+        <div className="container mx-auto max-w-7xl overflow-hidden">
           <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['kontakt'] ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
               Lassen Sie uns <span className="text-[#ff1900]">sprechen</span>
@@ -927,7 +927,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 px-6 border-t border-white/5 bg-black/20">
+      <footer className="py-8 md:py-10 px-4 sm:px-6 border-t border-white/5 bg-black/20 overflow-hidden">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center">
