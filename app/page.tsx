@@ -44,84 +44,43 @@ export default function Home() {
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [animationsReady, setAnimationsReady] = useState(false);
+  const [mapsLoaded, setMapsLoaded] = useState(false);
 
   useEffect(() => {
-    // Robust iOS Safari detection
+    // Show all sections immediately – no scroll/IntersectionObserver (Safari and others can fail with it)
+    const allSections = {
+      'hero': true,
+      'leistungen': true,
+      'ueber-uns': true,
+      'team': true,
+      'warum': true,
+      'features': true,
+      'prozess': true,
+      'kontakt': true,
+    };
+    setIsVisible(allSections);
+    setAnimationsReady(true);
+    document.documentElement.classList.add('animations-ready');
+
+    // Safari/mobile: disable heavy blur for performance
     const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    // Show all sections immediately on iOS Safari or mobile
-    if (isIOS || (isSafari && isMobile) || isMobile) {
-      const allSections = {
-        'hero': true,
-        'leistungen': true,
-        'ueber-uns': true,
-        'team': true,
-        'warum': true,
-        'features': true,
-        'prozess': true,
-        'kontakt': true,
-      };
-      setIsVisible(allSections);
-      setAnimationsReady(true);
-      // Add class to document for CSS fallback
-      document.documentElement.classList.add('animations-ready');
-      
-      // Debug mode
-      if (typeof window !== 'undefined' && window.location.search.includes('debug=1')) {
-        console.log('[Debug] iOS Safari detected, animations disabled');
-        console.log('[Debug] All sections set to visible:', allSections);
-      }
-      return;
+    if (isIOS || isSafari || isMobile) {
+      document.documentElement.classList.add('no-heavy-blur', 'no-backdrop-blur');
     }
+  }, []);
 
-    // Desktop: Use IntersectionObserver
-    try {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setIsVisible((prev) => ({ ...prev, [entry.target.id]: true }));
-            }
-          });
-        },
-        { threshold: 0.1, rootMargin: '50px' }
-      );
-
-      const elements = document.querySelectorAll("[data-animate]");
-      elements.forEach((el) => {
-        observer.observe(el);
-      });
-
-      setAnimationsReady(true);
-      document.documentElement.classList.add('animations-ready');
-
-      // Debug mode
-      if (typeof window !== 'undefined' && window.location.search.includes('debug=1')) {
-        console.log('[Debug] IntersectionObserver initialized');
-        console.log('[Debug] Elements with data-animate:', elements.length);
-      }
-
-      return () => {
-        observer.disconnect();
-      };
-    } catch (error) {
-      // Fallback if IntersectionObserver fails
-      console.error('IntersectionObserver failed, showing all sections:', error);
-      setIsVisible({
-        'hero': true,
-        'leistungen': true,
-        'ueber-uns': true,
-        'team': true,
-        'warum': true,
-        'features': true,
-        'prozess': true,
-        'kontakt': true,
-      });
-      setAnimationsReady(true);
-      document.documentElement.classList.add('animations-ready');
-    }
+  // Defer Google Maps iframe until contact section is in view (reduces initial load)
+  useEffect(() => {
+    const el = document.getElementById('kontakt');
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e?.isIntersecting) setMapsLoaded(true); },
+      { rootMargin: '100px', threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   const scrollToSection = (id: string) => {
@@ -141,7 +100,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#212121] text-white relative">
       {/* Subtle Background Gradient */}
-      <div className="fixed inset-0 pointer-events-none z-0">
+      <div className="fixed inset-0 pointer-events-none z-0 blur-bg" aria-hidden="true">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#ff1900]/5 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#ff1900]/3 rounded-full blur-[150px]" />
       </div>
@@ -893,18 +852,22 @@ export default function Home() {
               {/* Google Maps */}
               <div className="p-10 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
                 <h3 className="text-2xl font-bold mb-6 text-white">Unser Standort</h3>
-                <div className="w-full h-64 rounded-lg overflow-hidden border border-white/10">
-                  <iframe
-                    src="https://www.google.com/maps?q=Hartriegelstraße+12,+3550+Langenlois,+Österreich&output=embed"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="w-full h-full"
-                    title="Plesnicar Solutions Standort"
-                  />
+                <div className="w-full h-64 rounded-lg overflow-hidden border border-white/10 bg-white/5">
+                  {mapsLoaded ? (
+                    <iframe
+                      src="https://www.google.com/maps?q=Hartriegelstraße+12,+3550+Langenlois,+Österreich&output=embed"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      className="w-full h-full"
+                      title="Plesnicar Solutions Standort"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">Karte wird geladen…</div>
+                  )}
                 </div>
                 <p className="text-white/70 font-light text-sm mt-4">
                   Hartriegelstraße 12, 3550 Langenlois, Österreich

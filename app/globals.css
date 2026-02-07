@@ -17,6 +17,11 @@
 * {
   scroll-behavior: smooth;
 }
+@media (hover: none) {
+  * {
+    scroll-behavior: auto;
+  }
+}
 
 body {
   background: var(--background);
@@ -50,4 +55,30 @@ html.animations-ready [data-animate] {
 
 html [data-animate][style*="opacity: 0"] {
   animation: forceVisible 0.1s ease-out 2s forwards;
+}
+
+/* Safari / mobile: hide expensive fixed blur layer */
+html.no-heavy-blur .blur-bg {
+  display: none !important;
+}
+
+/* Mobile: never paint heavy blur (faster first paint before JS) */
+@media (max-width: 768px) {
+  .blur-bg {
+    display: none !important;
+  }
+}
+
+/* Safari / mobile: disable backdrop-filter for performance */
+html.no-backdrop-blur * {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* WebKit prefix for Tailwind backdrop-blur (desktop Safari, etc.) */
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(8px);
+}
+.backdrop-blur-xl {
+  -webkit-backdrop-filter: blur(24px);
 }
