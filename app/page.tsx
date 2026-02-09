@@ -963,6 +963,26 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Mobile bottom contact bar */}
+      <div className="fixed inset-x-0 bottom-0 z-40 md:hidden pointer-events-none">
+        <div className="mx-4 mb-4 rounded-xl bg-[#111111]/95 border border-white/10 shadow-lg shadow-black/40 flex gap-3 p-3 pointer-events-auto">
+          <a
+            href="tel:+436644678382"
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white text-sm font-semibold py-2 transition-colors"
+          >
+            <Phone className="w-4 h-4" strokeWidth={2} />
+            <span className="truncate">IT & Grafik</span>
+          </a>
+          <a
+            href="tel:+436763206308"
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-semibold py-2 border border-white/15 transition-colors"
+          >
+            <Phone className="w-4 h-4" strokeWidth={2} />
+            <span className="truncate">Bau & Hausbetreuung</span>
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

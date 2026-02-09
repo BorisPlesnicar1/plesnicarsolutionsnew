@@ -12,15 +12,42 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: "Plesnicar Solutions - IT & Bau",
-  description: "Österreichisches Kleinunternehmen für IT-Beratung, digitale Lösungen, Grafikdesign, Bau/Hausbetreuung und Handel. Schnell, zuverlässig, modern.",
-  keywords: "IT Beratung, Grafikdesign, Hausbetreuung, digitale Lösungen, Österreich, Boris Plesnicar",
+  description:
+    "Österreichisches Kleinunternehmen für IT-Beratung, digitale Lösungen, Grafikdesign, Bau/Hausbetreuung und Handel. Schnell, zuverlässig, modern.",
+  keywords:
+    "IT Beratung, Grafikdesign, Hausbetreuung, digitale Lösungen, Österreich, Boris Plesnicar",
+  metadataBase: new URL("https://plesnicarsolutions.at"),
+  openGraph: {
+    type: "website",
+    locale: "de_AT",
+    url: "https://plesnicarsolutions.at",
+    siteName: "Plesnicar Solutions",
+    title: "Plesnicar Solutions - IT & Bau",
+    description:
+      "IT-Beratung, PC-Bau, Grafikdesign sowie Bau- und Hausbetreuung aus einer Hand in Österreich.",
+    images: [
+      {
+        url: "/logos/LogoTEXTB.png",
+        width: 1200,
+        height: 630,
+        alt: "Plesnicar Solutions - IT & Bau",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Plesnicar Solutions - IT & Bau",
+    description:
+      "IT-Beratung, PC-Bau, Grafikdesign sowie Bau- und Hausbetreuung aus einer Hand in Österreich.",
+    images: ["/logos/LogoTEXTB.png"],
+  },
   icons: {
     icon: [
-      { url: '/icon.png', sizes: '48x48', type: 'image/png' },
-      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+      { url: "/icon.png", sizes: "48x48", type: "image/png" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
     ],
-    shortcut: '/icon.png',
-    apple: '/icon.png',
+    shortcut: "/icon.png",
+    apple: "/icon.png",
   },
 };
 
