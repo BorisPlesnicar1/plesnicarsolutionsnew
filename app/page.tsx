@@ -27,7 +27,8 @@ import {
   Target,
   BarChart3,
   Phone,
-  Instagram
+  Instagram,
+  Monitor
 } from "lucide-react";
 
 export default function Home() {
@@ -237,107 +238,162 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section id="hero" className="relative overflow-hidden pt-20 pb-8 px-4 sm:px-6 md:pt-28 md:pb-14 md:px-6" data-animate>
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#212121]/60 via-[#212121]/85 to-[#212121] z-10" />
-          <Image
-            src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=50&w=1200&auto=format&fit=crop"
-            alt="Modern Technology Background"
-            fill
-            className="object-cover"
-            priority
-            quality={60}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1400px"
-            loading="eager"
-          />
-        </div>
+      <section id="hero" className="relative overflow-hidden pt-24 pb-12 px-4 sm:px-6 md:pt-32 md:pb-20 md:px-6 min-h-[90vh] md:min-h-[85vh] flex items-center" data-animate>
+        {/* Pure dark background */}
+        <div className="absolute inset-0 z-0 bg-[#0f0f0f]" />
 
-        {/* Animated Grid Overlay */}
-        <div className="hidden md:block absolute inset-0 z-20 opacity-[0.04]">
-          <div className="h-full w-full" style={{
-            backgroundImage: `linear-gradient(rgba(255, 25, 0, 0.3) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255, 25, 0, 0.3) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px'
-          }} />
-        </div>
+        {/* Main red glow – large, centered, intense */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] md:w-[1100px] md:h-[1100px] bg-[#ff1900]/[0.12] rounded-full blur-[160px] md:blur-[250px] z-0" />
+        {/* Upper right accent glow */}
+        <div className="absolute top-[5%] right-[0%] w-[400px] h-[400px] md:w-[650px] md:h-[650px] bg-[#ff1900]/[0.08] rounded-full blur-[130px] md:blur-[180px] z-0" />
+        {/* Lower left accent glow */}
+        <div className="absolute bottom-[0%] left-[5%] w-[350px] h-[350px] md:w-[500px] md:h-[500px] bg-[#ff1900]/[0.06] rounded-full blur-[120px] md:blur-[160px] z-0" />
+        {/* Tight center hot spot */}
+        <div className="absolute top-[40%] left-[45%] -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-[#ff1900]/[0.09] rounded-full blur-[100px] md:blur-[140px] z-0" />
 
-        {/* Floating Elements */}
-        <div className="hidden md:block absolute inset-0 z-20 pointer-events-none">
-          <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-[#ff1900]/10 rounded-full blur-2xl" />
-          <div className="absolute bottom-1/4 left-1/4 w-40 h-40 bg-[#ff1900]/5 rounded-full blur-2xl" />
-        </div>
+        {/* Subtle noise/grain texture */}
+        <div className="absolute inset-0 z-[1] opacity-[0.015]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+          backgroundSize: '24px 24px'
+        }} />
 
         {/* Content */}
-        <div className="relative z-30 container mx-auto px-0 sm:px-6 py-6 md:py-12 max-w-[100vw]">
+        <div className="relative z-10 container mx-auto px-0 sm:px-6 max-w-[100vw] w-full">
           <div
-            className={`max-w-6xl mx-auto grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 md:gap-8 items-center transition-all duration-700 ease-out min-w-0 ${
+            className={`max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 md:gap-16 items-center transition-all duration-700 ease-out min-w-0 ${
               isVisible["hero"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
           >
-            <div className="text-center lg:text-left space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full mb-1 supports-[backdrop-filter]:backdrop-blur-sm">
-                <Sparkles className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                <span className="text-xs md:text-sm font-medium text-white/80">Österreichisches Unternehmen</span>
+            {/* Left: Text content */}
+            <div className="text-center lg:text-left space-y-6 md:space-y-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.06] border border-white/[0.08] rounded-full">
+                <Sparkles className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2.5} />
+                <span className="text-xs font-medium text-white/70 tracking-wide">Österreichisches Unternehmen</span>
               </div>
 
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] font-black leading-[1.1] tracking-tight">
                 Moderne Lösungen.
                 <br />
                 <span className="text-[#ff1900]">Zuverlässige Umsetzung.</span>
               </h1>
               
-              <p className="text-base md:text-lg text-white/90 max-w-2xl lg:max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-                IT-Beratung, PC-Bau & digitale Lösungen sowie Bau/Hausbetreuung aus einer Hand. 
-                <span className="text-white font-medium"> Schnell, sauber, zuverlässig – für IT und Bau.</span>
+              <p className="text-base md:text-lg text-white/60 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                IT-Beratung, PC-Bau & digitale Lösungen sowie Bau/Hausbetreuung aus einer Hand.
+                <span className="text-white/90 font-medium"> Schnell, sauber, zuverlässig.</span>
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-1">
                 <button
                   onClick={() => scrollToSection("kontakt")}
-                  className="group px-8 py-3 bg-[#ff1900] hover:bg-[#e61700] text-white text-base md:text-lg font-semibold rounded-lg transition-all duration-200 shadow-lg shadow-[#ff1900]/30 hover:shadow-xl hover:shadow-[#ff1900]/50 flex items-center justify-center gap-2 hover:-translate-y-0.5"
+                  className="group px-8 py-3.5 bg-[#ff1900] hover:bg-[#e61700] text-white text-base font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/40 flex items-center justify-center gap-2 hover:-translate-y-0.5"
                 >
                   Angebot anfragen
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" strokeWidth={2} />
                 </button>
                 <button
                   onClick={() => scrollToSection("leistungen")}
-                  className="px-8 py-3 bg-white/10 border border-white/20 hover:bg-white/20 hover:border-white/30 text-white text-base md:text-lg font-semibold rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-white/10 supports-[backdrop-filter]:backdrop-blur-sm"
+                  className="px-8 py-3.5 bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.1] hover:border-white/[0.2] text-white text-base font-semibold rounded-xl transition-all duration-200 hover:-translate-y-0.5"
                 >
-                  Leistungen
+                  Leistungen ansehen
                 </button>
               </div>
             </div>
-            {/* Hero Facts */}
-              <div className="space-y-3 lg:space-y-4">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 supports-[backdrop-filter]:backdrop-blur-sm">
-                <p className="text-[11px] font-semibold text-white/60 uppercase tracking-[0.15em] mb-1.5">
-                  Schwerpunkte
-                </p>
-                <p className="text-xs md:text-sm text-white/85 leading-relaxed">
-                  Individuell konfigurierte PCs, Grafikdesign und praxisorientierte Bau- und Hausbetreuung inkl. Handel
-                  abgestimmt für Sie.
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { label: "Kernbereiche", value: "4", icon: Target },
-                  { label: "Ansprechpartner", value: "2", icon: User },
-                  { label: "Zuverlässigkeit", value: "100%", icon: Award },
-                  { label: "Standort", value: "AT", icon: MapPin }
-                ].map((stat, i) => {
-                  const IconComponent = stat.icon;
-                  return (
-                    <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 text-left hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 transition-all duration-300 supports-[backdrop-filter]:backdrop-blur-sm">
-                      <IconComponent className="w-5 h-5 text-[#ff1900] mb-2" strokeWidth={2} />
-                      <div className="text-2xl font-black text-white leading-none">{stat.value}</div>
-                      <div className="text-[11px] font-medium text-white/60 mt-1 uppercase tracking-[0.15em]">
-                        {stat.label}
-                      </div>
+
+            {/* Right: Dashboard mockup window */}
+            <div className="relative hidden lg:block">
+              {/* Glow behind the card */}
+              <div className="absolute -inset-4 bg-[#ff1900]/[0.06] rounded-3xl blur-2xl" />
+              
+              {/* Main window */}
+              <div className="relative bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl shadow-black/40">
+                {/* Window titlebar */}
+                <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.06] bg-white/[0.02]">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.15]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.15]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.15]" />
+                  </div>
+                  <div className="flex-1 flex justify-center">
+                    <div className="px-4 py-1 bg-white/[0.04] rounded-md text-[11px] text-white/30 font-medium tracking-wide">
+                      plesnicarsolutions.at
                     </div>
-                  );
-                })}
+                  </div>
+                </div>
+
+                {/* Window content */}
+                <div className="p-5 space-y-4">
+                  {/* Status row */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-[11px] text-white/40 font-medium">Alle Systeme aktiv</span>
+                    </div>
+                    <span className="text-[11px] text-white/25 font-mono">2025</span>
+                  </div>
+
+                  {/* Service rows */}
+                  <div className="space-y-2.5">
+                    {[
+                      { name: "IT-Dienstleistungen", icon: Monitor, pct: 92, color: "#ff1900" },
+                      { name: "Grafikdesign", icon: Palette, pct: 78, color: "#ff4d3a" },
+                      { name: "Bau & Hausbetreuung", icon: Wrench, pct: 95, color: "#ff1900" },
+                      { name: "Handel", icon: TrendingUp, pct: 64, color: "#ff6b5a" },
+                    ].map((service, i) => {
+                      const ServiceIcon = service.icon;
+                      return (
+                        <div key={i} className="bg-white/[0.03] border border-white/[0.05] rounded-xl p-3.5 group hover:bg-white/[0.05] transition-colors duration-300">
+                          <div className="flex items-center justify-between mb-2.5">
+                            <div className="flex items-center gap-2.5">
+                              <ServiceIcon className="w-4 h-4 text-white/40" strokeWidth={1.5} />
+                              <span className="text-xs text-white/70 font-medium">{service.name}</span>
+                            </div>
+                            <span className="text-xs font-bold text-white/50">{service.pct}%</span>
+                          </div>
+                          {/* Progress bar */}
+                          <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-700"
+                              style={{ width: `${service.pct}%`, backgroundColor: service.color }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Bottom stats row */}
+                  <div className="grid grid-cols-3 gap-3 pt-1">
+                    {[
+                      { label: "Bereiche", value: "4" },
+                      { label: "Kontakte", value: "2" },
+                      { label: "Standort", value: "AT" },
+                    ].map((stat, i) => (
+                      <div key={i} className="text-center py-3 bg-white/[0.02] border border-white/[0.05] rounded-lg">
+                        <div className="text-lg font-black text-white leading-none">{stat.value}</div>
+                        <div className="text-[10px] text-white/35 font-medium mt-1 uppercase tracking-wider">{stat.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* Mobile: compact stats row (visible only on mobile) */}
+            <div className="lg:hidden grid grid-cols-3 gap-3">
+              {[
+                { label: "Bereiche", value: "4", icon: Target },
+                { label: "Kontakte", value: "2", icon: User },
+                { label: "Standort", value: "AT", icon: MapPin },
+              ].map((stat, i) => {
+                const StatIcon = stat.icon;
+                return (
+                  <div key={i} className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-3 text-center">
+                    <StatIcon className="w-4 h-4 text-[#ff1900] mx-auto mb-1.5" strokeWidth={2} />
+                    <div className="text-xl font-black text-white leading-none">{stat.value}</div>
+                    <div className="text-[10px] text-white/40 font-medium mt-1 uppercase tracking-wider">{stat.label}</div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -744,32 +800,33 @@ export default function Home() {
       {/* Kontakt Section */}
       <section id="kontakt" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
         <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['kontakt'] ? 'opacity-100' : 'opacity-0'}`}>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Lassen Sie uns <span className="text-[#ff1900]">sprechen</span>
+          <div className={`text-center mb-12 md:mb-16 transition-opacity duration-1000 ${isVisible['kontakt'] ? 'opacity-100' : 'opacity-0'}`}>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6 tracking-tight">
+              Ihr direkter <span className="text-[#ff1900]">Kontakt</span>
             </h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
-              Bereit für Ihr nächstes Projekt?
+            <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
+              Ob IT, Grafikdesign oder Bau – wir sind für Sie da. Einfach anrufen oder schreiben.
             </p>
           </div>
 
-          <div className={`grid md:grid-cols-2 gap-12 transition-opacity duration-1000 ${isVisible['kontakt'] ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`grid md:grid-cols-2 gap-8 md:gap-12 transition-opacity duration-1000 ${isVisible['kontakt'] ? 'opacity-100' : 'opacity-0'}`}>
             {/* Direkter Kontakt */}
-            <div className="p-10 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
-              <h3 className="text-3xl md:text-4xl font-black text-white">
-                Direkter <span className="text-[#ff1900]">Kontakt</span>
-              </h3>
-              <p className="text-white/70 font-light mt-4 text-sm md:text-base leading-relaxed max-w-2xl">
-                Rufen Sie uns an oder schreiben Sie uns. Wir melden uns schnellstmöglich zurück.
-              </p>
+            <div className="space-y-6">
+              <div className="p-6 md:p-8 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
+                <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
+                  Direkter <span className="text-[#ff1900]">Kontakt</span>
+                </h3>
+                <p className="text-white/70 font-light text-sm md:text-base leading-relaxed">
+                  Rufen Sie an oder schreiben Sie – wir melden uns zeitnah bei Ihnen.
+                </p>
 
-              <div className="mt-8 grid gap-6 md:grid-cols-2">
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 {/* Boris */}
-                <div className="p-7 bg-white/5 border border-white/10 rounded-xl h-full">
-                  <p className="text-xl font-bold text-white">
-                    Boris Plesnicar <span className="text-white/60 font-medium">(IT)</span>
+                <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-xl h-full">
+                  <p className="text-lg font-bold text-white">
+                    Boris Plesnicar <span className="text-white/60 font-medium text-base">(IT & Grafikdesign)</span>
                   </p>
-                  <div className="mt-4 space-y-3">
+                  <div className="mt-3 space-y-2">
                     <a
                       href="tel:+436644678382"
                       className="w-full inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold transition-colors duration-200"
@@ -789,11 +846,11 @@ export default function Home() {
                 </div>
 
                 {/* Dietmar */}
-                <div className="p-7 bg-white/5 border border-white/10 rounded-xl h-full">
-                  <p className="text-xl font-bold text-white">
-                    Ing. Dietmar Plesnicar <span className="text-white/60 font-medium">(Bau)</span>
+                <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-xl h-full">
+                  <p className="text-lg font-bold text-white">
+                    Ing. Dietmar Plesnicar <span className="text-white/60 font-medium text-base">(Bau & Hausbetreuung)</span>
                   </p>
-                  <div className="mt-4 space-y-3">
+                  <div className="mt-3 space-y-2">
                     <a
                       href="tel:+436763206308"
                       className="w-full inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold transition-colors duration-200"
@@ -812,31 +869,31 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              
-              <div className="mt-6 p-6 bg-gradient-to-br from-[#ff1900]/10 to-transparent border border-[#ff1900]/20 rounded-xl">
-                <div className="flex items-start gap-4">
+              </div>
+
+              <div className="p-5 md:p-6 bg-gradient-to-br from-[#ff1900]/10 to-transparent border border-[#ff1900]/20 rounded-xl">
+                <div className="flex items-start gap-3">
                   <Clock className="w-5 h-5 text-[#ff1900] flex-shrink-0 mt-0.5" strokeWidth={2} />
                   <div>
-                    <h4 className="font-semibold text-white mb-2">Schnelle Antwort</h4>
+                    <h4 className="font-semibold text-white mb-1">Antwort innerhalb von 24 Stunden</h4>
                     <p className="text-white/80 font-light text-sm leading-relaxed">
-                      Wir melden uns innerhalb von <span className="text-white font-medium">24 Stunden</span> bei Ihnen zurück. 
-                      Für dringende Anliegen kontaktieren Sie uns gerne direkt per Telefon.
+                      Dringend? Einfach anrufen – wir sind persönlich für Sie erreichbar.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 p-6 bg-white/5 border border-white/10 rounded-xl supports-[backdrop-filter]:backdrop-blur-sm">
-                <h4 className="font-semibold text-white mb-3">Damit wir schnell helfen können</h4>
-                <p className="text-white/70 font-light text-sm leading-relaxed mb-4">
-                  Wenn Sie uns kurz diese Punkte nennen, sparen wir Zeit und können schneller ein passendes Angebot erstellen:
+              <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-xl supports-[backdrop-filter]:backdrop-blur-sm">
+                <h4 className="font-semibold text-white mb-3">So geht’s am schnellsten</h4>
+                <p className="text-white/70 font-light text-sm leading-relaxed mb-3">
+                  Nennen Sie uns kurz:
                 </p>
                 <ul className="space-y-2">
                   {[
-                    "Bereich: IT / Grafikdesign / Bau / Hausbetreuung / Handel",
-                    "Kurzbeschreibung (Ziel / Problem) + gewünschtes Ergebnis",
-                    "Ort (vor Ort oder Remote möglich) + gewünschter Zeitraum",
-                    "Fotos/Skizzen/Links (falls vorhanden)"
+                    "Bereich (IT, Grafikdesign, Bau, Hausbetreuung oder Handel)",
+                    "Was Sie brauchen – Ziel oder Anliegen",
+                    "Ort und Zeitraum (vor Ort oder Remote)",
+                    "Fotos oder Links, falls vorhanden"
                   ].map((item, idx) => (
                     <li key={idx} className="flex items-start gap-3 text-white/80">
                       <CheckCircle2 className="w-4 h-4 text-[#ff1900] mt-0.5 flex-shrink-0" strokeWidth={2} />
@@ -847,12 +904,17 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Contact Info */}
+            {/* Standort & Infos */}
             <div className="space-y-6">
-              {/* Google Maps */}
-              <div className="p-10 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-6 text-white">Unser Standort</h3>
-                <div className="w-full h-64 rounded-lg overflow-hidden border border-white/10 bg-white/5">
+              <div className="p-5 md:p-6 bg-gradient-to-br from-[#ff1900]/5 to-transparent border border-[#ff1900]/20 rounded-2xl">
+                <p className="text-white/90 font-light leading-relaxed text-center md:text-left">
+                  Wir freuen uns auf Ihre Nachricht und melden uns <span className="text-white font-medium">schnellstmöglich</span>. Bei Dringlichkeit einfach anrufen.
+                </p>
+              </div>
+
+              <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
+                <h3 className="text-xl font-bold mb-4 text-white">Unser Standort</h3>
+                <div className="w-full h-56 md:h-64 rounded-lg overflow-hidden border border-white/10 bg-white/5">
                   {mapsLoaded ? (
                     <iframe
                       src="https://www.google.com/maps?q=Hartriegelstraße+12,+3550+Langenlois,+Österreich&output=embed"
@@ -869,57 +931,46 @@ export default function Home() {
                     <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">Karte wird geladen…</div>
                   )}
                 </div>
-                <p className="text-white/70 font-light text-sm mt-4">
+                <p className="text-white/70 font-light text-sm mt-3">
                   Hartriegelstraße 12, 3550 Langenlois, Österreich
                 </p>
               </div>
 
-              <div className="p-10 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
-                <h3 className="text-2xl font-bold mb-8 text-white">Kontaktinformationen</h3>
-                <div className="space-y-6">
+              <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
+                <h3 className="text-xl font-bold mb-4 text-white">Über uns</h3>
+                <div className="space-y-4">
                   {[
-                    { icon: MapPin, label: "Standort", value: "Österreich" },
-                    { icon: Globe, label: "Remote-IT", value: "Bundesweit verfügbar" },
+                    { icon: MapPin, label: "Region", value: "Langenlois, Österreich" },
+                    { icon: Globe, label: "IT-Support", value: "Auch remote bundesweit" },
                     { icon: Building2, label: "Unternehmen", value: "Boris Plesnicar e.U." }
                   ].map((info, i) => {
                     const IconComponent = info.icon;
                     return (
-                      <div key={i} className="flex items-start gap-4">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#ff1900]/20 flex items-center justify-center">
-                          <IconComponent className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
+                      <div key={i} className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-[#ff1900]/20 flex items-center justify-center">
+                          <IconComponent className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
                         </div>
                         <div>
-                          <p className="font-semibold text-white mb-1">{info.label}</p>
-                          <p className="text-white/70 font-light">{info.value}</p>
+                          <p className="font-semibold text-white text-sm">{info.label}</p>
+                          <p className="text-white/70 font-light text-sm">{info.value}</p>
                         </div>
                       </div>
                     );
                   })}
-                  {/* Social Media */}
-                  <div className="pt-4 border-t border-white/10">
-                    <a 
-                      href="https://www.instagram.com/plesnicarsolutions/" 
-                      target="_blank" 
+                  <div className="pt-3 border-t border-white/10">
+                    <a
+                      href="https://www.instagram.com/plesnicarsolutions/"
+                      target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-4 group hover:opacity-80 transition-opacity duration-200"
+                      className="flex items-center gap-3 group hover:opacity-80 transition-opacity"
                     >
-                      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#ff1900]/20 flex items-center justify-center group-hover:bg-[#ff1900]/30 transition-colors duration-200">
-                        <Instagram className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
+                      <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-[#ff1900]/20 flex items-center justify-center group-hover:bg-[#ff1900]/30 transition-colors">
+                        <Instagram className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
                       </div>
-                      <div>
-                        <p className="font-semibold text-white mb-1">Instagram</p>
-                        <p className="text-white/70 font-light text-sm">@plesnicarsolutions</p>
-                      </div>
+                      <span className="font-semibold text-white text-sm">@plesnicarsolutions</span>
                     </a>
                   </div>
                 </div>
-              </div>
-
-              <div className="p-10 bg-gradient-to-br from-[#ff1900]/10 to-transparent border border-[#ff1900]/20 rounded-2xl">
-                <p className="text-white/90 leading-relaxed font-light">
-                  Wir freuen uns auf Ihre Anfrage und melden uns <span className="text-white font-medium">schnellstmöglich</span> bei Ihnen. 
-                  Für dringende Anliegen kontaktieren Sie uns gerne direkt.
-                </p>
               </div>
             </div>
           </div>
