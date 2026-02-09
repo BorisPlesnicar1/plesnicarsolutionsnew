@@ -401,7 +401,7 @@ export default function Home() {
 
       {/* Leistungen Section */}
       <section id="leistungen" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5" data-animate>
-        <div className="container mx-auto max-w-7xl relative z-10 overflow-hidden">
+        <div className="container mx-auto max-w-7xl relative z-10">
           <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['leistungen'] ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
               Unsere <span className="text-[#ff1900]">Leistungen</span>
@@ -456,7 +456,7 @@ export default function Home() {
               return (
                 <div 
                   key={i}
-                  className={`group relative p-10 bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 hover:bg-white/10 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#ff1900]/10 transition-all duration-300 supports-[backdrop-filter]:backdrop-blur-sm ${isVisible['leistungen'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                  className={`group relative p-6 sm:p-8 lg:p-10 bg-white/5 border border-white/10 rounded-2xl md:hover:border-white/20 md:hover:bg-white/10 md:hover:-translate-y-2 md:hover:shadow-2xl md:hover:shadow-[#ff1900]/10 transition-all duration-300 supports-[backdrop-filter]:backdrop-blur-sm ${isVisible['leistungen'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                   style={{ transitionDelay: `${i * 100}ms` }}
                 >
                   <div className="flex items-start gap-6">
@@ -605,6 +605,42 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
+                </div>
+                {/* Signaturen direkt bei den Team-Karten */}
+                <div className="mt-4 flex justify-end">
+                  {person.name === "Boris Plesnicar" ? (
+                    <div className="inline-flex flex-col items-end gap-1">
+                      <span className="block brightness-0 invert flex justify-end" aria-hidden="true">
+                        <Image
+                          src="/signatures/signatureboris.png"
+                          alt="Unterschrift von Boris Plesnicar"
+                          width={140}
+                          height={45}
+                          className="h-6 md:h-7 w-auto opacity-95"
+                          loading="lazy"
+                        />
+                      </span>
+                      <p className="text-[9px] md:text-[10px] text-white/60 text-right tracking-[0.16em] uppercase">
+                        Boris Plesnicar · Inhaber
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="inline-flex flex-col items-end gap-1 opacity-90">
+                      <span className="block brightness-0 invert flex justify-end" aria-hidden="true">
+                        <Image
+                          src="/signatures/signaturedietmar.png"
+                          alt="Unterschrift von Ing. Dietmar Plesnicar"
+                          width={130}
+                          height={40}
+                          className="h-5 md:h-6 w-auto opacity-95"
+                          loading="lazy"
+                        />
+                      </span>
+                      <p className="text-[8.5px] md:text-[9.5px] text-white/60 text-right tracking-[0.18em] uppercase">
+                        Ing. Dietmar Plesnicar · Unterstützung
+                      </p>
+                    </div>
+                  )}
                 </div>
                 {/* Contact Details */}
                 <div className={`mt-6 pt-6 border-t space-y-3 ${person.isOwner ? 'border-white/10' : 'border-white/5'}`}>
