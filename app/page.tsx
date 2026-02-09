@@ -334,10 +334,10 @@ export default function Home() {
                   {/* Service rows */}
                   <div className="space-y-2.5">
                     {[
-                      { name: "IT-Dienstleistungen", icon: Monitor, pct: 92, color: "#ff1900" },
-                      { name: "Grafikdesign", icon: Palette, pct: 78, color: "#ff4d3a" },
-                      { name: "Bau & Hausbetreuung", icon: Wrench, pct: 95, color: "#ff1900" },
-                      { name: "Handel", icon: TrendingUp, pct: 64, color: "#ff6b5a" },
+                      { name: "IT-Dienstleistungen", icon: Monitor, pct: 91, color: "#ff1900" },
+                      { name: "Grafikdesign", icon: Palette, pct: 91, color: "#ff4d3a" },
+                      { name: "Bau & Hausbetreuung", icon: Wrench, pct: 92, color: "#ff1900" },
+                      { name: "Handel", icon: TrendingUp, pct: 90, color: "#ff6b5a" },
                     ].map((service, i) => {
                       const ServiceIcon = service.icon;
                       return (
