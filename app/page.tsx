@@ -24,64 +24,60 @@ import {
   Clock,
   Award,
   Users,
-  Target,
   BarChart3,
   Phone,
   Instagram,
   Monitor
 } from "lucide-react";
 
+type CookieConsent = {
+  necessary: true;
+  comfort: boolean;
+  timestamp: string;
+};
+
 export default function Home() {
-  // Initialize with all sections visible as fallback (iOS Safari safety)
-  const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({
-    'hero': true,
-    'leistungen': true,
-    'ueber-uns': true,
-    'team': true,
-    'warum': true,
-    'features': true,
-    'prozess': true,
-    'kontakt': true,
-  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [animationsReady, setAnimationsReady] = useState(false);
-  const [mapsLoaded, setMapsLoaded] = useState(false);
+  const [cookieConsent, setCookieConsent] = useState<CookieConsent | null>(null);
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
+
+  const updateConsent = (comfort: boolean) => {
+    const value: CookieConsent = {
+      necessary: true,
+      comfort,
+      timestamp: new Date().toISOString(),
+    };
+    setCookieConsent(value);
+    setShowCookieBanner(false);
+    try {
+      window.localStorage.setItem("ps_cookie_consent", JSON.stringify(value));
+    } catch {
+      // ignore storage errors (e.g. private mode)
+    }
+  };
 
   useEffect(() => {
-    // Show all sections immediately – no scroll/IntersectionObserver (Safari and others can fail with it)
-    const allSections = {
-      'hero': true,
-      'leistungen': true,
-      'ueber-uns': true,
-      'team': true,
-      'warum': true,
-      'features': true,
-      'prozess': true,
-      'kontakt': true,
-    };
-    setIsVisible(allSections);
-    setAnimationsReady(true);
-    document.documentElement.classList.add('animations-ready');
-
     // Safari/mobile: disable heavy blur for performance
     const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     if (isIOS || isSafari || isMobile) {
-      document.documentElement.classList.add('no-heavy-blur', 'no-backdrop-blur');
+      document.documentElement.classList.add("no-heavy-blur", "no-backdrop-blur");
     }
-  }, []);
 
-  // Defer Google Maps iframe until contact section is in view (reduces initial load)
-  useEffect(() => {
-    const el = document.getElementById('kontakt');
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e?.isIntersecting) setMapsLoaded(true); },
-      { rootMargin: '100px', threshold: 0.1 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    // Load existing cookie consent, or show banner if none stored
+    try {
+      const stored = window.localStorage.getItem("ps_cookie_consent");
+      if (stored) {
+        const parsed = JSON.parse(stored) as CookieConsent;
+        setCookieConsent(parsed);
+        setShowCookieBanner(false);
+      } else {
+        setShowCookieBanner(true);
+      }
+    } catch {
+      setShowCookieBanner(true);
+    }
   }, []);
 
   const scrollToSection = (id: string) => {
@@ -107,7 +103,7 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#212121]/98 border-b border-white/10 supports-[backdrop-filter]:backdrop-blur-xl">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 border-b border-white/[0.08] supports-[backdrop-filter]:backdrop-blur-xl backdrop-saturate-150">
         <nav className="container mx-auto px-4 sm:px-6 py-3 md:py-4 flex items-center justify-between max-w-[100vw]">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <Image
@@ -159,7 +155,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => scrollToSection("kontakt")}
-              className="ml-2 px-6 py-2.5 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-lg transition-all duration-200 text-sm shadow-lg shadow-[#ff1900]/20"
+              className="ml-2 px-6 py-2.5 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-xl transition-all duration-300 text-sm shadow-lg shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/35 hover:-translate-y-0.5"
             >
               Kontakt
             </button>
@@ -173,7 +169,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => scrollToSection("kontakt")}
-              className="ml-2 px-6 py-2.5 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-lg transition-all duration-200 text-sm shadow-lg shadow-[#ff1900]/20"
+              className="ml-2 px-6 py-2.5 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-xl transition-all duration-300 text-sm shadow-lg shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/35 hover:-translate-y-0.5"
             >
               Kontakt
             </button>
@@ -238,61 +234,71 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section id="hero" className="relative overflow-hidden pt-24 pb-12 px-4 sm:px-6 md:pt-32 md:pb-20 md:px-6 min-h-[90vh] md:min-h-[85vh] flex items-center" data-animate>
-        {/* Pure dark background */}
-        <div className="absolute inset-0 z-0 bg-[#0f0f0f]" />
+      <section id="hero" className="relative overflow-hidden pt-24 pb-12 px-4 sm:px-6 md:pt-32 md:pb-20 md:px-6 min-h-[90vh] md:min-h-[85vh] flex items-center">
+        {/* Deep dark base */}
+        <div className="absolute inset-0 z-0 bg-[#070709]" />
 
-        {/* Main red glow – large, centered, intense */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] md:w-[1100px] md:h-[1100px] bg-[#ff1900]/[0.12] rounded-full blur-[160px] md:blur-[250px] z-0" />
-        {/* Upper right accent glow */}
-        <div className="absolute top-[5%] right-[0%] w-[400px] h-[400px] md:w-[650px] md:h-[650px] bg-[#ff1900]/[0.08] rounded-full blur-[130px] md:blur-[180px] z-0" />
-        {/* Lower left accent glow */}
-        <div className="absolute bottom-[0%] left-[5%] w-[350px] h-[350px] md:w-[500px] md:h-[500px] bg-[#ff1900]/[0.06] rounded-full blur-[120px] md:blur-[160px] z-0" />
-        {/* Tight center hot spot */}
-        <div className="absolute top-[40%] left-[45%] -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-[#ff1900]/[0.09] rounded-full blur-[100px] md:blur-[140px] z-0" />
+        {/* Gradient mesh – primary red glow (upper-center) */}
+        <div className="hero-orb-1 absolute top-[10%] left-[20%] w-[500px] h-[500px] md:w-[900px] md:h-[900px] bg-[#ff1900]/[0.08] rounded-full blur-[140px] md:blur-[220px] z-0" />
+        {/* Secondary warm-orange glow (lower-right, animated) */}
+        <div className="hero-orb-2 absolute bottom-[0%] right-[5%] w-[400px] h-[400px] md:w-[700px] md:h-[700px] bg-[#ff3d00]/[0.06] rounded-full blur-[120px] md:blur-[200px] z-0" />
+        {/* Cool depth accent – subtle deep indigo (upper-right) */}
+        <div className="hero-orb-drift absolute top-[0%] right-[10%] w-[350px] h-[350px] md:w-[550px] md:h-[550px] bg-[#1a0a3e]/25 rounded-full blur-[100px] md:blur-[160px] z-0" />
+        {/* Subtle dark navy center for depth contrast */}
+        <div className="absolute top-[45%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#0d1b2a]/20 rounded-full blur-[80px] md:blur-[120px] z-0" />
+        {/* Small red accent (lower-left) */}
+        <div className="absolute bottom-[15%] left-[5%] w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-[#ff1900]/[0.04] rounded-full blur-[80px] md:blur-[130px] z-0" />
+
+        {/* Grid pattern overlay */}
+        <div className="hero-grid absolute inset-0 z-[1]" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)`,
+          backgroundSize: '72px 72px'
+        }} />
+
+        {/* Radial vignette – darkens edges, focuses center */}
+        <div className="absolute inset-0 z-[1]" style={{
+          background: 'radial-gradient(ellipse 70% 55% at 50% 45%, transparent 0%, #070709 100%)',
+          opacity: 0.55
+        }} />
 
         {/* Subtle noise/grain texture */}
-        <div className="absolute inset-0 z-[1] opacity-[0.015]" style={{
+        <div className="absolute inset-0 z-[2] opacity-[0.015]" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
-          backgroundSize: '24px 24px'
+          backgroundSize: '20px 20px'
         }} />
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-0 sm:px-6 max-w-[100vw] w-full">
-          <div
-            className={`max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 md:gap-16 items-center transition-all duration-700 ease-out min-w-0 ${
-              isVisible["hero"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-            }`}
-          >
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 md:gap-16 items-center min-w-0">
             {/* Left: Text content */}
             <div className="text-center lg:text-left space-y-6 md:space-y-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.06] border border-white/[0.08] rounded-full">
-                <Sparkles className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2.5} />
-                <span className="text-xs font-medium text-white/70 tracking-wide">Österreichisches Unternehmen</span>
+              <div className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/[0.04] border border-white/[0.06] rounded-full backdrop-blur-sm">
+                <Sparkles className="w-4 h-4 text-[#ff1900]" strokeWidth={2.5} />
+                <span className="text-xs font-semibold text-white/75 tracking-wider uppercase">Österreichisches Unternehmen</span>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] font-black leading-[1.1] tracking-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] font-black leading-[1.08] tracking-tight">
                 Moderne Lösungen.
                 <br />
-                <span className="text-[#ff1900]">Zuverlässige Umsetzung.</span>
+                <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Zuverlässige Umsetzung.</span>
               </h1>
               
-              <p className="text-base md:text-lg text-white/60 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-lg md:text-xl text-white/65 max-w-lg mx-auto lg:mx-0 leading-relaxed font-light">
                 IT-Beratung, PC-Bau & digitale Lösungen sowie Bau/Hausbetreuung aus einer Hand.
-                <span className="text-white/90 font-medium"> Schnell, sauber, zuverlässig.</span>
+                <span className="text-white/95 font-medium"> Schnell, sauber, zuverlässig.</span>
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-1">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
                 <button
                   onClick={() => scrollToSection("kontakt")}
-                  className="group px-8 py-3.5 bg-[#ff1900] hover:bg-[#e61700] text-white text-base font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/40 flex items-center justify-center gap-2 hover:-translate-y-0.5"
+                  className="group px-10 py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] hover:from-[#e61700] hover:to-[#ff1900] text-white text-base font-bold rounded-2xl transition-all duration-300 shadow-2xl shadow-[#ff1900]/30 hover:shadow-[#ff1900]/50 flex items-center justify-center gap-2.5 hover:-translate-y-1 hover:scale-[1.02]"
                 >
                   Angebot anfragen
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" strokeWidth={2} />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" strokeWidth={2.5} />
                 </button>
                 <button
                   onClick={() => scrollToSection("leistungen")}
-                  className="px-8 py-3.5 bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.1] hover:border-white/[0.2] text-white text-base font-semibold rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+                  className="px-10 py-4 bg-white/[0.03] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.2] text-white text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] backdrop-blur-sm"
                 >
                   Leistungen ansehen
                 </button>
@@ -305,7 +311,7 @@ export default function Home() {
               <div className="absolute -inset-4 bg-[#ff1900]/[0.06] rounded-3xl blur-2xl" />
               
               {/* Main window */}
-              <div className="relative bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl shadow-black/40">
+              <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl shadow-black/50 backdrop-blur-xl">
                 {/* Window titlebar */}
                 <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.06] bg-white/[0.02]">
                   <div className="flex gap-1.5">
@@ -378,35 +384,94 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Mobile: compact stats row (visible only on mobile) */}
-            <div className="lg:hidden grid grid-cols-3 gap-3">
-              {[
-                { label: "Bereiche", value: "4", icon: Target },
-                { label: "Kontakte", value: "2", icon: User },
-                { label: "Standort", value: "AT", icon: MapPin },
-              ].map((stat, i) => {
-                const StatIcon = stat.icon;
-                return (
-                  <div key={i} className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-3 text-center">
-                    <StatIcon className="w-4 h-4 text-[#ff1900] mx-auto mb-1.5" strokeWidth={2} />
-                    <div className="text-xl font-black text-white leading-none">{stat.value}</div>
-                    <div className="text-[10px] text-white/40 font-medium mt-1 uppercase tracking-wider">{stat.label}</div>
+            {/* Mobile: compact dashboard card (visible only on mobile/tablet) */}
+            <div className="lg:hidden relative">
+              {/* Glow behind card */}
+              <div className="absolute -inset-4 bg-[#ff1900]/[0.06] rounded-3xl blur-2xl" />
+
+              <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl shadow-black/50 backdrop-blur-xl">
+                {/* Mini browser bar */}
+                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-white/[0.15]" />
+                    <div className="w-2 h-2 rounded-full bg-white/[0.15]" />
+                    <div className="w-2 h-2 rounded-full bg-white/[0.15]" />
                   </div>
-                );
-              })}
+                  <div className="flex-1 flex justify-center">
+                    <div className="px-3 py-0.5 bg-white/[0.04] rounded text-[10px] text-white/30 font-medium tracking-wide">
+                      plesnicarsolutions.at
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card content */}
+                <div className="p-4 space-y-3">
+                  {/* Status row */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-[10px] text-white/40 font-medium">Alle Systeme aktiv</span>
+                    </div>
+                    <span className="text-[10px] text-white/25 font-mono">2025</span>
+                  </div>
+
+                  {/* Service rows – compact */}
+                  <div className="space-y-2">
+                    {[
+                      { name: "IT-Dienstleistungen", icon: Monitor, pct: 91, color: "#ff1900" },
+                      { name: "Grafikdesign", icon: Palette, pct: 91, color: "#ff4d3a" },
+                      { name: "Bau & Hausbetreuung", icon: Wrench, pct: 92, color: "#ff1900" },
+                      { name: "Handel", icon: TrendingUp, pct: 90, color: "#ff6b5a" },
+                    ].map((service, i) => {
+                      const ServiceIcon = service.icon;
+                      return (
+                        <div key={i} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-3.5">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2.5">
+                              <ServiceIcon className="w-4 h-4 text-white/50" strokeWidth={2} />
+                              <span className="text-xs text-white/75 font-semibold">{service.name}</span>
+                            </div>
+                            <span className="text-xs font-black text-white/60">{service.pct}%</span>
+                          </div>
+                          <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full hero-progress-bar"
+                              style={{ width: `${service.pct}%`, backgroundColor: service.color, animationDelay: `${i * 0.15}s` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Bottom stats */}
+                  <div className="grid grid-cols-3 gap-2 pt-1">
+                    {[
+                      { label: "Bereiche", value: "4" },
+                      { label: "Kontakte", value: "2" },
+                      { label: "Standort", value: "AT" },
+                    ].map((stat, i) => (
+                      <div key={i} className="text-center py-3 bg-white/[0.015] border border-white/[0.04] rounded-xl">
+                        <div className="text-lg font-black text-white leading-none">{stat.value}</div>
+                        <div className="text-[10px] text-white/40 font-semibold mt-1 uppercase tracking-wider">{stat.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Leistungen Section */}
-      <section id="leistungen" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5" data-animate>
+      <section id="leistungen" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
         <div className="container mx-auto max-w-7xl relative z-10">
-          <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['leistungen'] ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="text-center mb-24">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unsere <span className="text-[#ff1900]">Leistungen</span>
+              Unsere <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Leistungen</span>
             </h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
+            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
               Vier Kernbereiche für Ihre individuellen Anforderungen
             </p>
           </div>
@@ -456,22 +521,21 @@ export default function Home() {
               return (
                 <div 
                   key={i}
-                  className={`group relative p-6 sm:p-8 lg:p-10 bg-white/5 border border-white/10 rounded-2xl md:hover:border-white/20 md:hover:bg-white/10 md:hover:-translate-y-2 md:hover:shadow-2xl md:hover:shadow-[#ff1900]/10 transition-all duration-300 supports-[backdrop-filter]:backdrop-blur-sm ${isVisible['leistungen'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                  style={{ transitionDelay: `${i * 100}ms` }}
+                  className="group relative p-8 sm:p-10 lg:p-12 bg-white/[0.02] border border-white/[0.06] rounded-3xl md:hover:border-white/[0.15] md:hover:bg-white/[0.04] md:hover:-translate-y-2 md:hover:shadow-2xl md:hover:shadow-[#ff1900]/15 transition-all duration-500 supports-[backdrop-filter]:backdrop-blur-xl"
                 >
-                  <div className="flex items-start gap-6">
-                    <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-[#ff1900]/20 flex items-center justify-center group-hover:bg-[#ff1900]/30 transition-colors duration-300">
-                      <IconComponent className="w-7 h-7 text-[#ff1900]" strokeWidth={2} />
+                  <div className="flex items-start gap-8">
+                    <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-[#ff1900]/30 group-hover:to-[#ff1900]/20 group-hover:border-[#ff1900]/30 transition-all duration-500 group-hover:scale-110">
+                      <IconComponent className="w-8 h-8 text-[#ff1900]" strokeWidth={2.5} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl font-bold mb-6 text-white group-hover:text-[#ff1900] transition-colors duration-300">
+                      <h3 className="text-2xl md:text-3xl font-bold mb-8 text-white group-hover:text-[#ff1900] transition-colors duration-500">
                         {service.title}
                       </h3>
-                      <ul className="space-y-4">
+                      <ul className="space-y-5">
                         {service.items.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-white/80 group-hover:text-white/90 transition-colors duration-300">
-                            <span className="text-[#ff1900] mt-1.5 font-bold">•</span>
-                            <span className="font-light leading-relaxed">{item}</span>
+                        <li key={idx} className="flex items-start gap-4 text-white/75 group-hover:text-white/95 transition-colors duration-500">
+                            <span className="text-[#ff1900] mt-2 font-bold text-lg">•</span>
+                            <span className="font-light leading-relaxed text-base">{item}</span>
                           </li>
                         ))}
                       </ul>
@@ -485,24 +549,24 @@ export default function Home() {
       </section>
 
       {/* Über uns Section */}
-      <section id="ueber-uns" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
+      <section id="ueber-uns" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5">
         <div className="container mx-auto max-w-5xl relative z-10 overflow-hidden">
-          <div className={`text-center transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-12 tracking-tight">
-              Über <span className="text-[#ff1900]">uns</span>
+          <div className="text-center">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-16 tracking-tight">
+              Über <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">uns</span>
             </h2>
             
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-12 md:p-16 space-y-8 text-left transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#ff1900]/5 supports-[backdrop-filter]:backdrop-blur-sm">
-              <p className="text-2xl md:text-3xl text-white font-light leading-relaxed">
+              <div className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-12 md:p-20 space-y-10 text-left transition-all duration-500 hover:bg-white/[0.04] hover:border-white/[0.12] hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#ff1900]/10 supports-[backdrop-filter]:backdrop-blur-xl">
+              <p className="text-2xl md:text-3xl lg:text-4xl text-white font-light leading-relaxed">
                 <span className="text-[#ff1900] font-bold">Plesnicar Solutions</span> ist ein österreichisches Unternehmen 
                 mit Fokus auf zuverlässige Umsetzung, schnelle Kommunikation und saubere Ergebnisse.
               </p>
-              <div className="h-px w-24 bg-gradient-to-r from-[#ff1900] to-transparent" />
-              <p className="text-lg md:text-xl text-white/80 leading-relaxed font-light">
-                Als <span className="text-white font-medium">Kleinunternehmer</span> bieten wir direkten, persönlichen Service ohne Umwege. 
+              <div className="h-0.5 w-32 bg-gradient-to-r from-[#ff1900] via-[#ff3d00] to-transparent rounded-full" />
+              <p className="text-lg md:text-xl text-white/70 leading-relaxed font-light">
+                Als <span className="text-white font-semibold">Kleinunternehmer</span> bieten wir direkten, persönlichen Service ohne Umwege. 
                 Unser Team besteht aus zwei Experten: einem IT-Spezialisten für PC-Bau, digitale Lösungen und Grafikdesign sowie einem 
                 Bauingenieur mit 40+ Jahren Bau-Erfahrung. Unser Angebot umfasst IT-Beratung, PC-Bau, digitale Lösungen, 
-                Grafikdesign, Bau/Hausbetreuung sowie Handel – alles aus einer Hand, <span className="text-[#ff1900] font-medium">regional in Österreich</span> und mit Remote-IT-Möglichkeiten.
+                Grafikdesign, Bau/Hausbetreuung sowie Handel – alles aus einer Hand, <span className="text-[#ff1900] font-semibold">regional in Österreich</span> und mit Remote-IT-Möglichkeiten.
               </p>
             </div>
           </div>
@@ -510,13 +574,13 @@ export default function Home() {
       </section>
 
       {/* Team Section */}
-      <section id="team" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
+      <section id="team" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5">
         <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="text-center mb-24">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unser <span className="text-[#ff1900]">Team</span>
+              Unser <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Team</span>
             </h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
+            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
               Zwei Experten für IT und Bau – Ihre kompetenten Ansprechpartner
             </p>
           </div>
@@ -554,16 +618,15 @@ export default function Home() {
             ].map((person, i) => (
               <div
                 key={i}
-                className={`backdrop-blur-sm border rounded-2xl transition-all duration-300 ${isVisible['ueber-uns'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} ${
+                className={`backdrop-blur-xl border rounded-3xl transition-all duration-500 ${
                   person.isOwner 
-                    ? 'p-10 bg-white/5 border-[#ff1900]/40 bg-gradient-to-br from-white/5 to-[#ff1900]/10 hover:border-[#ff1900]/60 hover:bg-gradient-to-br hover:from-white/10 hover:to-[#ff1900]/15 hover:-translate-y-2 hover:shadow-xl hover:shadow-[#ff1900]/20' 
-                    : 'p-8 bg-white/3 border-white/5 opacity-90 hover:border-white/10 hover:bg-white/5 hover:-translate-y-1 hover:shadow-lg'
+                    ? 'p-10 md:p-12 bg-white/[0.02] border-[#ff1900]/30 bg-gradient-to-br from-white/[0.02] to-[#ff1900]/[0.05] hover:border-[#ff1900]/50 hover:bg-gradient-to-br hover:from-white/[0.04] hover:to-[#ff1900]/[0.08] hover:-translate-y-3 hover:shadow-2xl hover:shadow-[#ff1900]/25' 
+                    : 'p-10 md:p-12 bg-white/[0.015] border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.025] hover:-translate-y-2 hover:shadow-xl hover:shadow-black/30'
                 }`}
-                style={{ transitionDelay: `${i * 150}ms` }}
               >
                 {/* Profilbild */}
                 <div className="mb-6 flex items-start gap-6">
-                  <div className="relative w-24 h-24 md:w-28 md:h-28 flex-shrink-0 rounded-xl overflow-hidden border-2 border-white/10 bg-white/5">
+                  <div className="relative w-28 h-28 md:w-32 md:h-32 flex-shrink-0 rounded-2xl overflow-hidden border-2 border-white/[0.08] bg-white/[0.03] shadow-lg">
                     {person.image ? (
                       <Image
                         src={person.image}
@@ -688,13 +751,13 @@ export default function Home() {
       </section>
 
       {/* Unsere Vorteile Section */}
-      <section id="warum" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative" data-animate>
+      <section id="warum" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative">
         <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="text-center mb-24">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unsere <span className="text-[#ff1900]">Vorteile</span>
+              Unsere <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Vorteile</span>
             </h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
+            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
               Was Sie von unserer Zusammenarbeit erwarten können
             </p>
           </div>
@@ -710,16 +773,15 @@ export default function Home() {
               return (
                 <div 
                   key={i}
-                  className={`text-center p-8 bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 hover:bg-white/10 hover:-translate-y-2 hover:shadow-xl hover:shadow-black/40 transition-all duration-300 supports-[backdrop-filter]:backdrop-blur-sm ${isVisible['ueber-uns'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                  style={{ transitionDelay: `${i * 100}ms` }}
+                  className="text-center p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl hover:border-white/[0.15] hover:bg-white/[0.04] hover:-translate-y-3 hover:shadow-2xl hover:shadow-[#ff1900]/15 transition-all duration-500 supports-[backdrop-filter]:backdrop-blur-xl"
                 >
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-[#ff1900]/20 mb-6 group-hover:bg-[#ff1900]/30 transition-colors duration-300">
-                    <IconComponent className="w-8 h-8 text-[#ff1900]" strokeWidth={2} />
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 mb-8 group-hover:bg-gradient-to-br group-hover:from-[#ff1900]/30 group-hover:to-[#ff1900]/20 group-hover:border-[#ff1900]/30 group-hover:scale-110 transition-all duration-500">
+                    <IconComponent className="w-10 h-10 text-[#ff1900]" strokeWidth={2.5} />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 text-white">
+                  <h3 className="text-2xl md:text-3xl font-bold mb-5 text-white">
                     {benefit.title}
                   </h3>
-                  <p className="text-white/70 font-light leading-relaxed">
+                  <p className="text-white/70 font-light leading-relaxed text-base">
                     {benefit.desc}
                   </p>
                 </div>
@@ -730,13 +792,13 @@ export default function Home() {
       </section>
 
       {/* Servicequalität Section */}
-      <section id="features" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative" data-animate>
+      <section id="features" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative">
         <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="text-center mb-24">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unsere <span className="text-[#ff1900]">Servicequalität</span>
+              Unsere <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Servicequalität</span>
             </h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
+            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
               Professionelle Standards für IT-Projekte und Bau/Hausbetreuung
             </p>
           </div>
@@ -778,14 +840,13 @@ export default function Home() {
               return (
                 <div
                   key={i}
-                  className={`p-8 bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 hover:bg-white/10 transition-all duration-300 supports-[backdrop-filter]:backdrop-blur-sm ${isVisible['ueber-uns'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                  style={{ transitionDelay: `${i * 100}ms` }}
+                  className="p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl hover:border-white/[0.15] hover:bg-white/[0.04] hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#ff1900]/10 transition-all duration-500 supports-[backdrop-filter]:backdrop-blur-xl"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[#ff1900]/20 flex items-center justify-center mb-6">
-                    <IconComponent className="w-6 h-6 text-[#ff1900]" strokeWidth={2} />
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center mb-6 group-hover:bg-gradient-to-br group-hover:from-[#ff1900]/30 group-hover:to-[#ff1900]/20 group-hover:scale-110 transition-all duration-500">
+                    <IconComponent className="w-7 h-7 text-[#ff1900]" strokeWidth={2.5} />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                  <p className="text-white/70 font-light leading-relaxed">{feature.desc}</p>
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-4">{feature.title}</h3>
+                  <p className="text-white/70 font-light leading-relaxed text-base">{feature.desc}</p>
                 </div>
               );
             })}
@@ -794,13 +855,13 @@ export default function Home() {
       </section>
 
       {/* Arbeitsweise Section */}
-      <section id="prozess" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative" data-animate>
+      <section id="prozess" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative">
         <div className="container mx-auto max-w-6xl overflow-hidden">
-          <div className={`text-center mb-20 transition-opacity duration-1000 ${isVisible['ueber-uns'] ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="text-center mb-24">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unsere <span className="text-[#ff1900]">Arbeitsweise</span>
+              Unsere <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Arbeitsweise</span>
             </h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto font-light">
+            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
               Strukturierter Ablauf für IT-Projekte und Bau/Hausbetreuung
             </p>
           </div>
@@ -814,13 +875,12 @@ export default function Home() {
             ].map((process, i) => (
               <div
                 key={i}
-                className={`relative ${isVisible['ueber-uns'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                style={{ transitionDelay: `${i * 150}ms` }}
+                className="relative"
               >
-                <div className="p-8 bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 hover:bg-white/10 transition-all duration-300 h-full supports-[backdrop-filter]:backdrop-blur-sm">
-                  <div className="text-5xl font-black text-[#ff1900]/30 mb-4">{process.step}</div>
-                  <h3 className="text-xl font-bold text-white mb-3">{process.title}</h3>
-                  <p className="text-white/70 font-light leading-relaxed">{process.desc}</p>
+                <div className="p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl hover:border-white/[0.15] hover:bg-white/[0.04] hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#ff1900]/10 transition-all duration-500 h-full supports-[backdrop-filter]:backdrop-blur-xl">
+                  <div className="text-6xl font-black text-[#ff1900]/20 mb-6">{process.step}</div>
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-4">{process.title}</h3>
+                  <p className="text-white/70 font-light leading-relaxed text-base">{process.desc}</p>
                 </div>
                 {i < 3 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-white/20">
@@ -834,55 +894,55 @@ export default function Home() {
       </section>
 
       {/* Kontakt Section */}
-      <section id="kontakt" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5" data-animate>
+      <section id="kontakt" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5">
         <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className={`text-center mb-12 md:mb-16 transition-opacity duration-1000 ${isVisible['kontakt'] ? 'opacity-100' : 'opacity-0'}`}>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6 tracking-tight">
-              Ihr direkter <span className="text-[#ff1900]">Kontakt</span>
+          <div className="text-center mb-16 md:mb-24">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
+              Ihr direkter <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Kontakt</span>
             </h2>
-            <p className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
+            <p className="text-lg md:text-xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
               Ob IT, Grafikdesign oder Bau – wir sind für Sie da. Einfach anrufen oder schreiben.
             </p>
           </div>
 
-          <div className={`grid md:grid-cols-2 gap-8 md:gap-12 transition-opacity duration-1000 ${isVisible['kontakt'] ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
             {/* Direkter Kontakt */}
             <div className="space-y-6">
-              <div className="p-6 md:p-8 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
-                <h3 className="text-2xl md:text-3xl font-black text-white mb-2">
-                  Direkter <span className="text-[#ff1900]">Kontakt</span>
+              <div className="p-8 md:p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl supports-[backdrop-filter]:backdrop-blur-xl">
+                <h3 className="text-2xl md:text-3xl font-black text-white mb-3">
+                  Direkter <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Kontakt</span>
                 </h3>
-                <p className="text-white/70 font-light text-sm md:text-base leading-relaxed">
+                <p className="text-white/70 font-light text-base md:text-lg leading-relaxed mb-8">
                   Rufen Sie an oder schreiben Sie – wir melden uns zeitnah bei Ihnen.
                 </p>
 
-                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-5 sm:grid-cols-2">
                 {/* Boris */}
-                <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-xl h-full">
+                <div className="p-6 md:p-7 bg-white/[0.02] border border-white/[0.06] rounded-2xl h-full hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300">
                   <p className="text-lg font-bold text-white">
                     Boris Plesnicar <span className="text-white/60 font-medium text-base">(IT & Grafikdesign)</span>
                   </p>
                   <div className="mt-3 space-y-2">
                     <a
                       href="tel:+436644678382"
-                      className="w-full inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold transition-colors duration-200"
+                      className="w-full inline-flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#ff1900] to-[#ff2d00] hover:from-[#e61700] hover:to-[#ff1900] text-white font-bold transition-all duration-300 shadow-lg shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/40 hover:-translate-y-0.5"
                     >
-                      <Phone className="w-5 h-5" strokeWidth={2} />
+                      <Phone className="w-5 h-5" strokeWidth={2.5} />
                       +43 664 4678382
                     </a>
                     <a
                       href="mailto:plesnicaroffice@gmail.com"
                       title="plesnicaroffice@gmail.com"
-                      className="w-full min-w-0 inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold transition-colors duration-200"
+                      className="w-full min-w-0 inline-flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] hover:border-white/[0.15] text-white font-semibold transition-all duration-300 hover:-translate-y-0.5 backdrop-blur-sm"
                     >
-                      <Mail className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
+                      <Mail className="w-5 h-5 text-[#ff1900]" strokeWidth={2.5} />
                       <span className="truncate text-sm md:text-base">plesnicaroffice@gmail.com</span>
                     </a>
                   </div>
                 </div>
 
                 {/* Dietmar */}
-                <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-xl h-full">
+                <div className="p-6 md:p-7 bg-white/[0.02] border border-white/[0.06] rounded-2xl h-full hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300">
                   <p className="text-lg font-bold text-white">
                     Ing. Dietmar Plesnicar <span className="text-white/60 font-medium text-base">(Bau & Hausbetreuung)</span>
                   </p>
@@ -907,19 +967,19 @@ export default function Home() {
               </div>
               </div>
 
-              <div className="p-5 md:p-6 bg-gradient-to-br from-[#ff1900]/10 to-transparent border border-[#ff1900]/20 rounded-xl">
-                <div className="flex items-start gap-3">
-                  <Clock className="w-5 h-5 text-[#ff1900] flex-shrink-0 mt-0.5" strokeWidth={2} />
+              <div className="p-6 md:p-8 bg-gradient-to-br from-[#ff1900]/[0.08] to-[#ff1900]/[0.02] border border-[#ff1900]/[0.15] rounded-2xl backdrop-blur-sm">
+                <div className="flex items-start gap-4">
+                  <Clock className="w-6 h-6 text-[#ff1900] flex-shrink-0 mt-0.5" strokeWidth={2.5} />
                   <div>
-                    <h4 className="font-semibold text-white mb-1">Antwort innerhalb von 24 Stunden</h4>
-                    <p className="text-white/80 font-light text-sm leading-relaxed">
+                    <h4 className="font-bold text-white mb-2 text-lg">Antwort innerhalb von 24 Stunden</h4>
+                    <p className="text-white/80 font-light text-base leading-relaxed">
                       Dringend? Einfach anrufen – wir sind persönlich für Sie erreichbar.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-xl supports-[backdrop-filter]:backdrop-blur-sm">
+              <div className="p-6 md:p-8 bg-white/[0.02] border border-white/[0.06] rounded-2xl supports-[backdrop-filter]:backdrop-blur-xl">
                 <h4 className="font-semibold text-white mb-3">So geht’s am schnellsten</h4>
                 <p className="text-white/70 font-light text-sm leading-relaxed mb-3">
                   Nennen Sie uns kurz:
@@ -942,16 +1002,16 @@ export default function Home() {
 
             {/* Standort & Infos */}
             <div className="space-y-6">
-              <div className="p-5 md:p-6 bg-gradient-to-br from-[#ff1900]/5 to-transparent border border-[#ff1900]/20 rounded-2xl">
-                <p className="text-white/90 font-light leading-relaxed text-center md:text-left">
-                  Wir freuen uns auf Ihre Nachricht und melden uns <span className="text-white font-medium">schnellstmöglich</span>. Bei Dringlichkeit einfach anrufen.
+              <div className="p-6 md:p-8 bg-gradient-to-br from-[#ff1900]/[0.08] to-[#ff1900]/[0.02] border border-[#ff1900]/[0.15] rounded-2xl backdrop-blur-sm">
+                <p className="text-white/90 font-light leading-relaxed text-center md:text-left text-base">
+                  Wir freuen uns auf Ihre Nachricht und melden uns <span className="text-white font-semibold">schnellstmöglich</span>. Bei Dringlichkeit einfach anrufen.
                 </p>
               </div>
 
-              <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
-                <h3 className="text-xl font-bold mb-4 text-white">Unser Standort</h3>
-                <div className="w-full h-56 md:h-64 rounded-lg overflow-hidden border border-white/10 bg-white/5">
-                  {mapsLoaded ? (
+              <div className="p-6 md:p-8 bg-white/[0.02] border border-white/[0.06] rounded-2xl supports-[backdrop-filter]:backdrop-blur-xl">
+                <h3 className="text-xl md:text-2xl font-bold mb-5 text-white">Unser Standort</h3>
+                <div className="w-full h-56 md:h-64 rounded-xl overflow-hidden border border-white/[0.08] bg-white/[0.02] shadow-lg">
+                  {cookieConsent?.comfort ? (
                     <iframe
                       src="https://www.google.com/maps?q=Hartriegelstraße+12,+3550+Langenlois,+Österreich&output=embed"
                       width="100%"
@@ -964,17 +1024,32 @@ export default function Home() {
                       title="Plesnicar Solutions Standort"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">Karte wird geladen…</div>
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-3 px-4 text-center">
+                      <p className="text-white/75 text-sm md:text-base font-light">
+                        Zum Schutz Ihrer Privatsphäre laden wir die Google&nbsp;Maps Karte erst, wenn Sie{" "}
+                        <span className="font-semibold">Komfort- &amp; externe Medien-Cookies</span> akzeptieren.
+                        Dabei können personenbezogene Daten an Google übermittelt und in Drittländern verarbeitet werden.
+                        Details finden Sie in unserer Datenschutzerklärung.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => updateConsent(true)}
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#ff1900] to-[#ff2d00] hover:from-[#e61700] hover:to-[#ff1900] text-white text-sm font-semibold transition-all duration-300 shadow-md shadow-[#ff1900]/30 hover:shadow-lg hover:shadow-[#ff1900]/40 hover:-translate-y-0.5"
+                      >
+                        Komfort-Cookies akzeptieren
+                        <ArrowRight className="w-4 h-4" strokeWidth={2} />
+                      </button>
+                    </div>
                   )}
                 </div>
-                <p className="text-white/70 font-light text-sm mt-3">
+                <p className="text-white/70 font-light text-base mt-4">
                   Hartriegelstraße 12, 3550 Langenlois, Österreich
                 </p>
               </div>
 
-              <div className="p-5 md:p-6 bg-white/5 border border-white/10 rounded-2xl supports-[backdrop-filter]:backdrop-blur-sm">
-                <h3 className="text-xl font-bold mb-4 text-white">Über uns</h3>
-                <div className="space-y-4">
+              <div className="p-6 md:p-8 bg-white/[0.02] border border-white/[0.06] rounded-2xl supports-[backdrop-filter]:backdrop-blur-xl">
+                <h3 className="text-xl md:text-2xl font-bold mb-6 text-white">Über uns</h3>
+                <div className="space-y-5">
                   {[
                     { icon: MapPin, label: "Region", value: "Langenlois, Österreich" },
                     { icon: Globe, label: "IT-Support", value: "Auch remote bundesweit" },
@@ -982,28 +1057,28 @@ export default function Home() {
                   ].map((info, i) => {
                     const IconComponent = info.icon;
                     return (
-                      <div key={i} className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-[#ff1900]/20 flex items-center justify-center">
-                          <IconComponent className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
+                      <div key={i} className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center">
+                          <IconComponent className="w-5 h-5 text-[#ff1900]" strokeWidth={2.5} />
                         </div>
                         <div>
-                          <p className="font-semibold text-white text-sm">{info.label}</p>
-                          <p className="text-white/70 font-light text-sm">{info.value}</p>
+                          <p className="font-bold text-white text-base">{info.label}</p>
+                          <p className="text-white/70 font-light text-base">{info.value}</p>
                         </div>
                       </div>
                     );
                   })}
-                  <div className="pt-3 border-t border-white/10">
+                  <div className="pt-4 border-t border-white/[0.08]">
                     <a
                       href="https://www.instagram.com/plesnicarsolutions/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 group hover:opacity-80 transition-opacity"
+                      className="flex items-center gap-4 group hover:opacity-90 transition-all duration-300"
                     >
-                      <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-[#ff1900]/20 flex items-center justify-center group-hover:bg-[#ff1900]/30 transition-colors">
-                        <Instagram className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
+                      <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-[#ff1900]/30 group-hover:to-[#ff1900]/20 group-hover:scale-110 transition-all duration-300">
+                        <Instagram className="w-5 h-5 text-[#ff1900]" strokeWidth={2.5} />
                       </div>
-                      <span className="font-semibold text-white text-sm">@plesnicarsolutions</span>
+                      <span className="font-bold text-white text-base">@plesnicarsolutions</span>
                     </a>
                   </div>
                 </div>
@@ -1014,7 +1089,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 md:py-10 px-4 sm:px-6 border-t border-white/5 bg-black/20 overflow-hidden">
+      <footer className="py-10 md:py-12 px-4 sm:px-6 border-t border-white/[0.08] bg-[#0a0a0a]/50 backdrop-blur-sm overflow-hidden">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center">
@@ -1068,6 +1143,68 @@ export default function Home() {
             <Phone className="w-4 h-4" strokeWidth={2} />
             <span className="truncate">Bau & Hausbetreuung</span>
           </a>
+        </div>
+      </div>
+
+      {/* Cookie Banner (desktop & mobile) */}
+      {showCookieBanner && (
+        <CookieBanner
+          onAllowEssential={() => updateConsent(false)}
+          onAllowAll={() => updateConsent(true)}
+        />
+      )}
+    </div>
+  );
+}
+
+type CookieBannerProps = {
+  onAllowEssential: () => void;
+  onAllowAll: () => void;
+};
+
+function CookieBanner({ onAllowEssential, onAllowAll }: CookieBannerProps) {
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-50">
+      <div className="mx-4 mb-4 md:mx-auto md:mb-6 md:max-w-4xl rounded-2xl bg-[#050506]/95 border border-white/[0.12] shadow-2xl shadow-black/60 backdrop-blur-xl">
+        <div className="px-4 py-4 md:px-6 md:py-5 flex flex-col gap-3 md:gap-4">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-[#ff1900]/20 border border-[#ff1900]/40">
+              <Sparkles className="h-4 w-4 text-[#ff1900]" strokeWidth={2.2} />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-sm md:text-base font-semibold text-white mb-1">
+                Datenschutzeinstellungen
+              </h2>
+              <p className="text-xs md:text-sm text-white/70 leading-relaxed">
+                Wir verwenden Cookies und ähnliche Technologien. Einige sind technisch erforderlich, um diese Website
+                sicher und zuverlässig zu betreiben (z.&nbsp;B. für grundlegende Funktionen und Sicherheit). Zusätzlich
+                können Sie optionale Komfort-Cookies für eingebettete Inhalte wie Google Maps aktivieren. Dabei können
+                personenbezogene Daten (z.&nbsp;B. Ihre IP-Adresse) an Drittanbieter innerhalb der EU und ggf. in
+                Drittländer übermittelt werden. Sie können nur notwendige Cookies zulassen oder alle Cookies
+                akzeptieren. Ausführliche Informationen finden Sie in unserer{" "}
+                <Link href="/datenschutz" className="underline underline-offset-2 decoration-white/40 hover:text-white">
+                  Datenschutzerklärung
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={onAllowEssential}
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/[0.02] px-3.5 py-2 text-xs md:text-sm font-semibold text-white/90 hover:bg-white/[0.08] hover:border-white/40 transition-all duration-200"
+            >
+              Nur notwendige Cookies
+            </button>
+            <button
+              type="button"
+              onClick={onAllowAll}
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#ff1900] to-[#ff2d00] px-4 py-2 text-xs md:text-sm font-semibold text-white shadow-lg shadow-[#ff1900]/30 hover:from-[#e61700] hover:to-[#ff1900] hover:shadow-xl hover:shadow-[#ff1900]/40 transition-all duration-200"
+            >
+              Alle akzeptieren
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -28,7 +28,7 @@ export default function Datenschutz() {
       </header>
 
       {/* Content */}
-      <main className="container mx-auto max-w-4xl px-6 py-32 relative z-10">
+      <main className="container mx-auto max-w-3xl lg:max-w-4xl px-4 sm:px-6 py-28 sm:py-32 relative z-10">
         <Link 
           href="/"
           className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-200 mb-12 font-medium"
@@ -37,7 +37,7 @@ export default function Datenschutz() {
           Zurück zur Startseite
         </Link>
 
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-10 md:p-16 space-y-8">
+        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 sm:p-10 md:p-16 space-y-8 break-words">
           <h1 className="text-4xl md:text-5xl font-black mb-4">
             <span className="text-[#ff1900]">Datenschutzerklärung</span>
           </h1>
