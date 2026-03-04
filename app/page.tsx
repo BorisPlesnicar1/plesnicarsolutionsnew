@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import anime from "animejs";
 import { 
   Code2, 
   Palette, 
@@ -36,10 +37,19 @@ type CookieConsent = {
   timestamp: string;
 };
 
+function heroChars(text: string) {
+  return text.split("").map((c, i) => (
+    <span key={i} className="hero-char inline-block">
+      {c === " " ? "\u00A0" : c}
+    </span>
+  ));
+}
+
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cookieConsent, setCookieConsent] = useState<CookieConsent | null>(null);
   const [showCookieBanner, setShowCookieBanner] = useState(false);
+  const heroTextRef = useRef<HTMLDivElement>(null);
 
   const updateConsent = (comfort: boolean) => {
     const value: CookieConsent = {
@@ -78,6 +88,117 @@ export default function Home() {
     } catch {
       setShowCookieBanner(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const runHeroAnimation = () => {
+      const el = heroTextRef.current;
+      if (!el) return;
+
+      const lines = el.querySelectorAll(".hero-line");
+      const paragraph = el.querySelector(".hero-animate");
+      const cta = el.querySelectorAll(".hero-animate")[1];
+      if (!lines.length || !paragraph || !cta) return;
+
+      const allChars: Element[] = [];
+      lines.forEach((line) => {
+        line.querySelectorAll(".hero-char").forEach((c) => allChars.push(c));
+      });
+      const allAnimate = Array.from(el.querySelectorAll(".hero-animate"));
+
+      const tl = anime.timeline({
+        easing: "easeOutExpo",
+        duration: 500,
+        complete: () => {
+          // Fallback: alles sichtbar, falls Anime.js einzelne Ziele verpasst (z. B. Safari)
+          allChars.forEach((node) => {
+            (node as HTMLElement).style.opacity = "1";
+            (node as HTMLElement).style.transform = "none";
+          });
+          allAnimate.forEach((node) => {
+            (node as HTMLElement).style.opacity = "1";
+            (node as HTMLElement).style.transform = "none";
+          });
+        },
+      });
+
+      // Headline: Buchstaben nacheinander „springen“ (pro Zeile)
+      for (let i = 0; i < lines.length; i++) {
+        const chars = Array.from(lines[i].querySelectorAll(".hero-char"));
+        if (!chars.length) continue;
+        tl.add(
+          {
+            targets: chars,
+            translateY: [24, 0],
+            opacity: [0, 1],
+            scale: [0.3, 1],
+            duration: 520,
+            easing: "easeOutElastic(1, 0.45)",
+            delay: anime.stagger(38, { start: 0 }),
+          },
+          i === 0 ? 0 : "-=320"
+        );
+      }
+
+      // Absatz: weicher Fade + Slide
+      tl.add(
+        {
+          targets: paragraph,
+          translateY: [20, 0],
+          opacity: [0, 1],
+          duration: 560,
+          easing: "easeOutExpo",
+        },
+        "-=280"
+      );
+
+      // CTA-Buttons
+      tl.add(
+        {
+          targets: cta,
+          translateY: [16, 0],
+          opacity: [0, 1],
+          duration: 500,
+          easing: "easeOutExpo",
+        },
+        "-=260"
+      );
+    };
+
+    const win = window as unknown as { __ps_loading_closed?: boolean };
+    const start = () => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(runHeroAnimation);
+      });
+    };
+    if (win.__ps_loading_closed) {
+      start();
+      return;
+    }
+    const onLoadingClosed = () => start();
+    window.addEventListener("ps-loading-closed", onLoadingClosed);
+    return () => window.removeEventListener("ps-loading-closed", onLoadingClosed);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    if (!isDesktop) return;
+    const targets = document.querySelectorAll(".scroll-in-left, .scroll-in-right");
+    if (!targets.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in-view");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+    );
+    targets.forEach((t) => io.observe(t));
+    return () => io.disconnect();
   }, []);
 
   const scrollToSection = (id: string) => {
@@ -266,21 +387,24 @@ export default function Home() {
         <div className="relative z-10 container mx-auto px-0 sm:px-6 pr-4 sm:pr-6 lg:pr-10 xl:pr-16 max-w-[100vw] w-full overflow-visible">
           <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_auto] gap-10 md:gap-12 lg:gap-0 items-center">
 
-            {/* Left / Top: Text – mehr Höhe/Abstand, Container nicht zu eng */}
-            <div className="text-center lg:text-left space-y-5 md:space-y-7 lg:pr-10 xl:pr-14 pb-8 md:pb-10 max-w-2xl overflow-visible [font-family:var(--font-syne)]">
+            {/* Left / Top: Text – Anime.js Animation */}
+            <div
+              ref={heroTextRef}
+              className="text-center lg:text-left space-y-5 md:space-y-7 lg:pr-10 xl:pr-14 pb-8 md:pb-10 max-w-2xl overflow-visible [font-family:var(--font-syne)]"
+            >
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold leading-[1.28] tracking-tight break-words pb-1">
-                <span className="hero-text-slide-in hero-text-slide-in-delay-1 block">Moderne</span>
-                <span className="hero-text-slide-in hero-text-slide-in-delay-1 block mt-1">Lösungen.</span>
-                <span className="hero-text-slide-in hero-text-slide-in-delay-2 block mt-2 bg-gradient-to-r from-[#ff1900] via-[#ff2d00] to-[#ff4d3a] bg-clip-text text-transparent">Zuverlässige</span>
-                <span className="hero-text-slide-in hero-text-slide-in-delay-2 block mt-1 bg-gradient-to-r from-[#ff1900] via-[#ff2d00] to-[#ff4d3a] bg-clip-text text-transparent">Umsetzung.</span>
+                <span className="hero-line block">{heroChars("Moderne")}</span>
+                <span className="hero-line block mt-1">{heroChars("Lösungen.")}</span>
+                <span className="hero-line hero-line-gradient block mt-2">{heroChars("Zuverlässige")}</span>
+                <span className="hero-line hero-line-gradient block mt-1">{heroChars("Umsetzung.")}</span>
               </h1>
 
-              <p className="hero-text-slide-in hero-text-slide-in-delay-3 text-base md:text-lg text-white/60 max-w-md mx-auto lg:mx-0 leading-relaxed font-light">
+              <p className="hero-animate text-base md:text-lg text-white/60 max-w-md mx-auto lg:mx-0 leading-relaxed font-light">
                 IT-Beratung, PC-Bau & digitale Lösungen sowie Bau/Hausbetreuung aus einer Hand.
                 <span className="text-white font-medium"> Schnell, sauber, zuverlässig.</span>
               </p>
 
-              <div className="hero-text-slide-in hero-text-slide-in-delay-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-1">
+              <div className="hero-animate flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-1">
                 <button
                   onClick={() => scrollToSection("kontakt")}
                   className="group px-10 py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] hover:from-[#e61700] hover:to-[#ff1900] text-white text-base font-bold rounded-2xl transition-all duration-300 shadow-2xl shadow-[#ff1900]/30 hover:shadow-[#ff1900]/50 flex items-center justify-center gap-2.5 hover:-translate-y-1 hover:scale-[1.02]"
@@ -349,18 +473,21 @@ export default function Home() {
       </section>
 
       {/* Leistungen Section */}
-      <section id="leistungen" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
+      <section id="leistungen" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden">
+        {/* Dezente geometrische Deko */}
+        <div className="hidden md:block absolute top-24 left-[-80px] w-[260px] h-[260px] rounded-full border border-white/[0.04] pointer-events-none" />
+        <div className="hidden md:block absolute bottom-16 right-[-60px] w-[180px] h-[180px] rounded-full border border-[#ff1900]/[0.08] pointer-events-none" />
+
         <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unsere <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Leistungen</span>
+          <div className="text-center mb-16 md:mb-20">
+            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Was wir bieten</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+              Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Leistungen</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
-              Vier Kernbereiche für Ihre individuellen Anforderungen
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          {/* Bento-Layout: IT groß, Rest kleiner */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {[
               {
                 title: "IT / Automatische Datenverarbeitung",
@@ -370,7 +497,8 @@ export default function Home() {
                   "Beratung, Einrichtung und Betreuung von Systemen",
                   "Digitale Lösungen und Automatisierungen",
                   "Laufender Support und Wartung"
-                ]
+                ],
+                wide: true
               },
               {
                 title: "Grafikdesign / Werbeagentur",
@@ -380,7 +508,8 @@ export default function Home() {
                   "Social Media Content und Werbemittel",
                   "Professionelle Design-Lösungen",
                   "Logo-Design und Visuelle Identität"
-                ]
+                ],
+                wide: false
               },
               {
                 title: "Bau / Hausbetreuung",
@@ -389,7 +518,8 @@ export default function Home() {
                   "Einfache Reinigungstätigkeiten",
                   "Objektbezogene einfache Tätigkeiten",
                   "Zuverlässige Hausbetreuung"
-                ]
+                ],
+                wide: false
               },
               {
                 title: "Handel",
@@ -398,28 +528,36 @@ export default function Home() {
                   "Verkauf passender Produkte und Zubehör",
                   "Individuelle Lösungen für Ihre Bedürfnisse",
                   "Kompetente Beratung beim Kauf"
-                ]
+                ],
+                wide: false
               }
             ].map((service, i) => {
               const IconComponent = service.icon;
               return (
                 <div 
                   key={i}
-                  className="group relative p-8 sm:p-10 lg:p-12 bg-white/[0.02] border border-white/[0.06] rounded-3xl md:hover:border-white/[0.15] md:hover:bg-white/[0.04] md:hover:-translate-y-2 md:hover:shadow-2xl md:hover:shadow-[#ff1900]/15 transition-all duration-500 supports-[backdrop-filter]:backdrop-blur-xl"
+                  className={`group relative rounded-2xl border transition-all duration-500 supports-[backdrop-filter]:backdrop-blur-xl ${
+                    service.wide
+                      ? 'lg:col-span-2 p-8 md:p-10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] border-[#ff1900]/20 md:hover:border-[#ff1900]/40'
+                      : 'p-7 md:p-8 bg-white/[0.02] border-white/[0.06] md:hover:border-white/[0.15]'
+                  } md:hover:bg-white/[0.05] md:hover:-translate-y-1 md:hover:shadow-xl md:hover:shadow-[#ff1900]/10 ${i % 2 === 0 ? 'scroll-in-left' : 'scroll-in-right'}`}
                 >
-                  <div className="flex items-start gap-8">
-                    <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-[#ff1900]/30 group-hover:to-[#ff1900]/20 group-hover:border-[#ff1900]/30 transition-all duration-500 group-hover:scale-110">
-                      <IconComponent className="w-8 h-8 text-[#ff1900]" strokeWidth={2.5} />
+                  {service.wide && (
+                    <div className="absolute top-0 left-8 w-16 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />
+                  )}
+                  <div className={`flex ${service.wide ? 'items-start gap-6 md:gap-8' : 'flex-col gap-5'}`}>
+                    <div className={`flex-shrink-0 rounded-xl bg-gradient-to-br from-[#ff1900]/15 to-[#ff1900]/5 border border-[#ff1900]/15 flex items-center justify-center transition-all duration-500 group-hover:scale-105 ${service.wide ? 'w-14 h-14' : 'w-12 h-12'}`}>
+                      <IconComponent className={`text-[#ff1900] ${service.wide ? 'w-7 h-7' : 'w-6 h-6'}`} strokeWidth={2} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl md:text-3xl font-bold mb-8 text-white group-hover:text-[#ff1900] transition-colors duration-500">
+                      <h3 className={`font-bold text-white mb-4 group-hover:text-[#ff1900] transition-colors duration-400 ${service.wide ? 'text-xl md:text-2xl' : 'text-lg md:text-xl'}`}>
                         {service.title}
                       </h3>
-                      <ul className="space-y-5">
+                      <ul className={`space-y-3 ${service.wide ? 'md:columns-2 md:gap-x-10' : ''}`}>
                         {service.items.map((item, idx) => (
-                        <li key={idx} className="flex items-start gap-4 text-white/75 group-hover:text-white/95 transition-colors duration-500">
-                            <span className="text-[#ff1900] mt-2 font-bold text-lg">•</span>
-                            <span className="font-light leading-relaxed text-base">{item}</span>
+                          <li key={idx} className="flex items-start gap-3 text-white/70 group-hover:text-white/90 transition-colors duration-400">
+                            <span className="w-1 h-1 rounded-full bg-[#ff1900] mt-2.5 flex-shrink-0" />
+                            <span className="font-light text-sm leading-relaxed">{item}</span>
                           </li>
                         ))}
                       </ul>
@@ -433,24 +571,24 @@ export default function Home() {
       </section>
 
       {/* Über uns Section */}
-      <section id="ueber-uns" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5">
-        <div className="container mx-auto max-w-5xl relative z-10 overflow-hidden">
-          <div className="text-center">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-16 tracking-tight">
-              Über <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">uns</span>
-            </h2>
-            
-              <div className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-12 md:p-20 space-y-10 text-left transition-all duration-500 hover:bg-white/[0.04] hover:border-white/[0.12] hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#ff1900]/10 supports-[backdrop-filter]:backdrop-blur-xl">
-              <p className="text-2xl md:text-3xl lg:text-4xl text-white font-light leading-relaxed">
+      <section id="ueber-uns" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
+        <div className="container mx-auto max-w-5xl relative z-10">
+          <div className="md:flex md:gap-12 lg:gap-16 items-start">
+            {/* Akzentlinie links (nur Desktop) */}
+            <div className="hidden md:block flex-shrink-0 w-px self-stretch bg-gradient-to-b from-[#ff1900] via-[#ff1900]/40 to-transparent" />
+
+            <div className="space-y-10">
+              <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold">Über uns</p>
+              <p className="text-2xl md:text-3xl lg:text-[2.5rem] text-white font-light leading-[1.35]">
                 <span className="text-[#ff1900] font-bold">Plesnicar Solutions</span> ist ein österreichisches Unternehmen 
                 mit Fokus auf zuverlässige Umsetzung, schnelle Kommunikation und saubere Ergebnisse.
               </p>
-              <div className="h-0.5 w-32 bg-gradient-to-r from-[#ff1900] via-[#ff3d00] to-transparent rounded-full" />
-              <p className="text-lg md:text-xl text-white/70 leading-relaxed font-light">
-                Als <span className="text-white font-semibold">Kleinunternehmer</span> bieten wir direkten, persönlichen Service ohne Umwege. 
+              <div className="h-px w-20 bg-white/10" />
+              <p className="text-base md:text-lg text-white/60 leading-relaxed font-light max-w-3xl">
+                Als <span className="text-white font-medium">Kleinunternehmer</span> bieten wir direkten, persönlichen Service ohne Umwege. 
                 Unser Team besteht aus zwei Experten: einem IT-Spezialisten für PC-Bau, digitale Lösungen und Grafikdesign sowie einem 
                 Bauingenieur mit 40+ Jahren Bau-Erfahrung. Unser Angebot umfasst IT-Beratung, PC-Bau, digitale Lösungen, 
-                Grafikdesign, Bau/Hausbetreuung sowie Handel – alles aus einer Hand, <span className="text-[#ff1900] font-semibold">regional in Österreich</span> und mit Remote-IT-Möglichkeiten.
+                Grafikdesign, Bau/Hausbetreuung sowie Handel – alles aus einer Hand, <span className="text-[#ff1900] font-medium">regional in Österreich</span> und mit Remote-IT-Möglichkeiten.
               </p>
             </div>
           </div>
@@ -458,175 +596,104 @@ export default function Home() {
       </section>
 
       {/* Team Section */}
-      <section id="team" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5">
-        <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unser <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Team</span>
+      <section id="team" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-14 md:mb-18">
+            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Das Team</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+              Ihre <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Ansprechpartner</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
-              Zwei Experten für IT und Bau – Ihre kompetenten Ansprechpartner
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
             {[
               {
                 name: "Boris Plesnicar",
-                role: "IT-Spezialist & Bau-Beratung",
+                role: "IT-Spezialist & Grafikdesign",
                 education: "HTL Krems IT, Freelancer",
                 image: "/portraits/boris.jpg",
                 isOwner: true,
-                expertise: [
-                  "PC-Bau und Hardware-Konfiguration",
-                  "Grafikdesign und Corporate Design",
-                  "Website Design & Entwicklung",
-                  "IT-Systemberatung und Support",
-                  "Handwerkliche Kompetenzen"
-                ]
+                expertise: ["PC-Bau", "Grafikdesign", "Webdesign", "IT-Support", "Handwerk"],
+                phone: "+43 664 467 8382",
+                phoneHref: "tel:+436644678382",
+                sigImg: "/signatures/signatureboris.png",
+                sigAlt: "Unterschrift von Boris Plesnicar",
+                sigLabel: "Boris Plesnicar · Inhaber"
               },
               {
                 name: "Ing. Dietmar Plesnicar",
-                role: "Unterstützung Bau-Beratung & Handel",
-                education: "Ingenieur",
+                role: "Bau-Beratung & Handel",
+                education: "Ingenieur · 40+ Jahre Erfahrung",
                 image: "/portraits/dietmar.png",
                 isOwner: false,
-                expertise: [
-                  "40+ Jahre Erfahrung im Bauwesen",
-                  "Bauberatung und Projektplanung",
-                  "Hausbetreuung und Wartung",
-                  "Handel und Produktberatung",
-                  "punktegenaue Expertise"
-                ]
+                expertise: ["Bauwesen", "Projektplanung", "Hausbetreuung", "Handel", "Beratung"],
+                phone: "+43 676 320 6308",
+                phoneHref: "tel:+436763206308",
+                sigImg: "/signatures/signaturedietmar.png",
+                sigAlt: "Unterschrift von Ing. Dietmar Plesnicar",
+                sigLabel: "Ing. Dietmar Plesnicar · Unterstützung"
               }
             ].map((person, i) => (
               <div
                 key={i}
-                className={`backdrop-blur-xl border rounded-3xl transition-all duration-500 ${
+                className={`relative rounded-2xl border transition-all duration-500 ${
                   person.isOwner 
-                    ? 'p-10 md:p-12 bg-white/[0.02] border-[#ff1900]/30 bg-gradient-to-br from-white/[0.02] to-[#ff1900]/[0.05] hover:border-[#ff1900]/50 hover:bg-gradient-to-br hover:from-white/[0.04] hover:to-[#ff1900]/[0.08] hover:-translate-y-3 hover:shadow-2xl hover:shadow-[#ff1900]/25' 
-                    : 'p-10 md:p-12 bg-white/[0.015] border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.025] hover:-translate-y-2 hover:shadow-xl hover:shadow-black/30'
-                }`}
+                    ? 'p-7 md:p-9 bg-gradient-to-br from-white/[0.03] to-[#ff1900]/[0.04] border-[#ff1900]/25 md:hover:border-[#ff1900]/45 md:-translate-y-1' 
+                    : 'p-7 md:p-9 bg-white/[0.02] border-white/[0.06] md:hover:border-white/[0.12] md:translate-y-4'
+                } md:hover:shadow-xl md:hover:shadow-[#ff1900]/10`}
               >
-                {/* Profilbild */}
-                <div className="mb-6 flex items-start gap-6">
-                  <div className="relative w-28 h-28 md:w-32 md:h-32 flex-shrink-0 rounded-2xl overflow-hidden border-2 border-white/[0.08] bg-white/[0.03] shadow-lg">
-                    {person.image ? (
-                      <Image
-                        src={person.image}
-                        alt={person.name}
-                        fill
-                        className={`object-cover ${person.name === "Boris Plesnicar" ? "object-center object-[center_30%]" : "object-center"}`}
-                        sizes="(max-width: 768px) 96px, 112px"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10">
-                        <User className="w-12 h-12 text-[#ff1900]/50" strokeWidth={1.5} />
-                      </div>
-                    )}
+                {person.isOwner && <div className="absolute top-0 left-7 w-12 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />}
+                <div className="flex items-start gap-5 mb-5">
+                  <div className="relative w-20 h-20 md:w-24 md:h-24 flex-shrink-0 rounded-xl overflow-hidden border border-white/[0.08] bg-white/[0.02]">
+                    <Image
+                      src={person.image}
+                      alt={person.name}
+                      fill
+                      className={`object-cover ${person.isOwner ? "object-[center_30%]" : "object-center"}`}
+                      sizes="(max-width: 768px) 80px, 96px"
+                    />
                   </div>
-                  <div className="flex-1 pt-1">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <h3 className={`font-bold text-white ${person.isOwner ? 'text-2xl' : 'text-xl'}`}>{person.name}</h3>
-                      {person.isOwner ? (
-                        <span className="px-2.5 py-1 bg-[#ff1900] text-white text-xs font-bold rounded uppercase tracking-wide shadow-lg shadow-[#ff1900]/30">
-                          Inhaber
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-1 bg-white/10 border border-white/20 text-white/70 text-xs font-medium rounded uppercase tracking-wide">
-                          Unterstützung
-                        </span>
+                  <div className="flex-1 pt-0.5">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <h3 className="font-bold text-white text-lg">{person.name}</h3>
+                      {person.isOwner && (
+                        <span className="px-2 py-0.5 bg-[#ff1900] text-white text-[10px] font-bold rounded uppercase tracking-wider">Inhaber</span>
                       )}
                     </div>
-                    <p className={`font-semibold mb-3 ${person.isOwner ? 'text-lg text-[#ff1900]' : 'text-base text-white/60'}`}>{person.role}</p>
-                    <p className="text-sm text-white/70 font-light">{person.education}</p>
+                    <p className={`text-sm mb-1 ${person.isOwner ? 'text-[#ff1900] font-semibold' : 'text-white/55 font-medium'}`}>{person.role}</p>
+                    <p className="text-xs text-white/45 font-light">{person.education}</p>
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <h4 className={`text-sm font-semibold uppercase tracking-wide ${person.isOwner ? 'text-white/90' : 'text-white/60'}`}>Kompetenzen</h4>
-                  <ul className="space-y-2">
-                    {person.expertise.map((item, idx) => (
-                      <li key={idx} className={`flex items-start gap-3 ${person.isOwner ? 'text-white/80' : 'text-white/60'}`}>
-                        <span className={`mt-1.5 font-bold ${person.isOwner ? 'text-[#ff1900]' : 'text-white/40'}`}>•</span>
-                        <span className="font-light leading-relaxed text-sm">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+                {/* Tags statt Liste */}
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {person.expertise.map((tag, idx) => (
+                    <span key={idx} className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      person.isOwner 
+                        ? 'bg-[#ff1900]/10 text-[#ff1900] border border-[#ff1900]/20' 
+                        : 'bg-white/[0.04] text-white/60 border border-white/[0.08]'
+                    }`}>{tag}</span>
+                  ))}
                 </div>
-                {/* Signaturen direkt bei den Team-Karten */}
-                <div className="mt-4 flex justify-end">
-                  {person.name === "Boris Plesnicar" ? (
-                    <div className="inline-flex flex-col items-end gap-1">
-                      <span className="block brightness-0 invert flex justify-end" aria-hidden="true">
-                        <Image
-                          src="/signatures/signatureboris.png"
-                          alt="Unterschrift von Boris Plesnicar"
-                          width={140}
-                          height={45}
-                          className="h-6 md:h-7 w-auto opacity-95"
-                          loading="lazy"
-                        />
-                      </span>
-                      <p className="text-[9px] md:text-[10px] text-white/60 text-right tracking-[0.16em] uppercase">
-                        Boris Plesnicar · Inhaber
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="inline-flex flex-col items-end gap-1 opacity-90">
-                      <span className="block brightness-0 invert flex justify-end" aria-hidden="true">
-                        <Image
-                          src="/signatures/signaturedietmar.png"
-                          alt="Unterschrift von Ing. Dietmar Plesnicar"
-                          width={130}
-                          height={40}
-                          className="h-5 md:h-6 w-auto opacity-95"
-                          loading="lazy"
-                        />
-                      </span>
-                      <p className="text-[8.5px] md:text-[9.5px] text-white/60 text-right tracking-[0.18em] uppercase">
-                        Ing. Dietmar Plesnicar · Unterstützung
-                      </p>
-                    </div>
-                  )}
-                </div>
-                {/* Contact Details */}
-                <div className={`mt-6 pt-6 border-t space-y-3 ${person.isOwner ? 'border-white/10' : 'border-white/5'}`}>
-                  <h4 className={`text-sm font-semibold uppercase tracking-wide mb-3 ${person.isOwner ? 'text-white/90' : 'text-white/60'}`}>Kontakt</h4>
-                  {person.name === "Boris Plesnicar" ? (
-                    <>
-                      <a 
-                        href="tel:+436644678382" 
-                        className="flex items-center gap-3 text-white/80 hover:text-[#ff1900] transition-colors duration-200 group"
-                      >
-                        <Phone className="w-4 h-4 text-[#ff1900] group-hover:scale-110 transition-transform" strokeWidth={2} />
-                        <span className="font-light text-sm">+43 664 467 8382</span>
-                      </a>
-                      <a 
-                        href="mailto:plesnicaroffice@gmail.com" 
-                        className="flex items-center gap-3 text-white/80 hover:text-[#ff1900] transition-colors duration-200 group"
-                      >
-                        <Mail className="w-4 h-4 text-[#ff1900] group-hover:scale-110 transition-transform" strokeWidth={2} />
-                        <span className="font-light text-sm">plesnicaroffice@gmail.com</span>
-                      </a>
-                    </>
-                  ) : (
-                    <>
-                      <a 
-                        href="tel:+436763206308" 
-                        className="flex items-center gap-3 text-white/80 hover:text-[#ff1900] transition-colors duration-200 group"
-                      >
-                        <Phone className="w-4 h-4 text-[#ff1900] group-hover:scale-110 transition-transform" strokeWidth={2} />
-                        <span className="font-light text-sm">+43 676 320 6308</span>
-                      </a>
-                      <a 
-                        href="mailto:plesnicaroffice@gmail.com" 
-                        className="flex items-center gap-3 text-white/80 hover:text-[#ff1900] transition-colors duration-200 group"
-                      >
-                        <Mail className="w-4 h-4 text-[#ff1900] group-hover:scale-110 transition-transform" strokeWidth={2} />
-                        <span className="font-light text-sm">plesnicaroffice@gmail.com</span>
-                      </a>
-                    </>
-                  )}
+
+                {/* Signatur + Kontakt */}
+                <div className="flex items-end justify-between pt-4 border-t border-white/[0.06]">
+                  <div className="space-y-2">
+                    <a href={person.phoneHref} className="flex items-center gap-2.5 text-white/70 hover:text-[#ff1900] transition-colors text-sm">
+                      <Phone className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2} />
+                      <span className="font-light">{person.phone}</span>
+                    </a>
+                    <a href="mailto:plesnicaroffice@gmail.com" className="flex items-center gap-2.5 text-white/70 hover:text-[#ff1900] transition-colors text-sm">
+                      <Mail className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2} />
+                      <span className="font-light">E-Mail</span>
+                    </a>
+                  </div>
+                  <div className="flex flex-col items-end gap-0.5">
+                    <span className="block brightness-0 invert" aria-hidden="true">
+                      <Image src={person.sigImg} alt={person.sigAlt} width={120} height={40} className="h-5 w-auto opacity-80" loading="lazy" />
+                    </span>
+                    <p className="text-[8px] text-white/40 tracking-[0.15em] uppercase">{person.sigLabel}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -634,40 +701,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Unsere Vorteile Section */}
+      {/* Unsere Vorteile Section – Bento */}
       <section id="warum" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative">
-        <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unsere <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Vorteile</span>
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-14 md:mb-18">
+            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Warum wir</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+              Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Vorteile</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
-              Was Sie von unserer Zusammenarbeit erwarten können
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Bento: 2 breite + 2 schmale */}
+          <div className="grid md:grid-cols-2 gap-5 md:gap-6">
             {[
-              { icon: Zap, title: "Schnell", desc: "Rasche Reaktionszeiten und zügige Umsetzung – ob IT-Systeme oder Bau-Aufgaben" },
-              { icon: Sparkles, title: "Sauber", desc: "Präzise Arbeit und hochwertige Ergebnisse in IT, Design und Hausbetreuung" },
-              { icon: Rocket, title: "Modern", desc: "Aktuelle Technologien für IT und zeitgemäße Lösungen für Bau" },
-              { icon: User, title: "Direkt", desc: "Ein Ansprechpartner für IT und Bau – kurze Wege, persönlicher Service" }
+              { icon: Zap, title: "Schnell", desc: "Rasche Reaktionszeiten und zügige Umsetzung – ob IT-Systeme oder Bau-Aufgaben.", wide: true },
+              { icon: Sparkles, title: "Sauber", desc: "Präzise Arbeit und hochwertige Ergebnisse in IT, Design und Hausbetreuung.", wide: false },
+              { icon: User, title: "Direkt", desc: "Ein Ansprechpartner für IT und Bau – kurze Wege, persönlicher Service.", wide: false },
+              { icon: Rocket, title: "Modern", desc: "Aktuelle Technologien für IT und zeitgemäße Lösungen für Bau.", wide: true }
             ].map((benefit, i) => {
               const IconComponent = benefit.icon;
               return (
                 <div 
                   key={i}
-                  className="text-center p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl hover:border-white/[0.15] hover:bg-white/[0.04] hover:-translate-y-3 hover:shadow-2xl hover:shadow-[#ff1900]/15 transition-all duration-500 supports-[backdrop-filter]:backdrop-blur-xl"
+                  className={`group flex items-start gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] transition-all duration-500 md:hover:border-white/[0.14] md:hover:bg-white/[0.04] md:hover:-translate-y-1 md:hover:shadow-lg md:hover:shadow-[#ff1900]/10 ${benefit.wide ? 'md:col-span-2 p-7 md:p-8' : 'p-6 md:p-7'} ${i % 2 === 0 ? 'scroll-in-left' : 'scroll-in-right'}`}
                 >
-                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 mb-8 group-hover:bg-gradient-to-br group-hover:from-[#ff1900]/30 group-hover:to-[#ff1900]/20 group-hover:border-[#ff1900]/30 group-hover:scale-110 transition-all duration-500">
-                    <IconComponent className="w-10 h-10 text-[#ff1900]" strokeWidth={2.5} />
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#ff1900]/10 border border-[#ff1900]/15 flex items-center justify-center group-hover:scale-105 transition-transform duration-400">
+                    <IconComponent className="w-6 h-6 text-[#ff1900]" strokeWidth={2} />
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-bold mb-5 text-white">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-white/70 font-light leading-relaxed text-base">
-                    {benefit.desc}
-                  </p>
+                  <div>
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-1.5">{benefit.title}</h3>
+                    <p className="text-white/60 font-light leading-relaxed text-sm">{benefit.desc}</p>
+                  </div>
                 </div>
               );
             })}
@@ -676,61 +740,44 @@ export default function Home() {
       </section>
 
       {/* Servicequalität Section */}
-      <section id="features" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative">
-        <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unsere <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Servicequalität</span>
+      <section id="features" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-14 md:mb-18">
+            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Qualität</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+              Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Servicequalität</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
-              Professionelle Standards für IT-Projekte und Bau/Hausbetreuung
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {[
-              {
-                icon: Clock,
-                title: "Schnelle Reaktionszeiten",
-                desc: "Kontaktaufnahme innerhalb von 24 Stunden. Zügige Projektumsetzung für IT-Systeme und Bau/Hausbetreuung."
-              },
-              {
-                icon: CheckCircle2,
-                title: "Qualitätssicherung",
-                desc: "Hochwertige Ergebnisse nach etablierten Standards in IT, Design und Hausbetreuung."
-              },
-              {
-                icon: TrendingUp,
-                title: "Moderne Lösungsansätze",
-                desc: "Aktuelle Technologien für IT-Projekte und bewährte Methoden für Bau/Hausbetreuung."
-              },
-              {
-                icon: Users,
-                title: "Persönliche Betreuung",
-                desc: "Direkter Ansprechpartner für alle Bereiche – IT und Bau aus einer Hand."
-              },
-              {
-                icon: BarChart3,
-                title: "Transparente Kommunikation",
-                desc: "Klare Absprachen, regelmäßige Statusupdates und fundierte Beratung für alle Projekte."
-              },
-              {
-                icon: Award,
-                title: "Erfahrung & Kompetenz",
-                desc: "Langjährige Expertise in IT-Beratung und Bau/Hausbetreuung für zuverlässige Ergebnisse."
-              }
+              { icon: Clock, title: "Schnelle Reaktionszeiten", desc: "Kontaktaufnahme innerhalb von 24 Stunden. Zügige Projektumsetzung.", highlight: true },
+              { icon: CheckCircle2, title: "Qualitätssicherung", desc: "Hochwertige Ergebnisse nach etablierten Standards.", highlight: false },
+              { icon: TrendingUp, title: "Moderne Lösungsansätze", desc: "Aktuelle Technologien und bewährte Methoden.", highlight: false },
+              { icon: Users, title: "Persönliche Betreuung", desc: "Direkter Ansprechpartner – IT und Bau aus einer Hand.", highlight: false },
+              { icon: BarChart3, title: "Transparente Kommunikation", desc: "Klare Absprachen und regelmäßige Statusupdates.", highlight: false },
+              { icon: Award, title: "Erfahrung & Kompetenz", desc: "Langjährige Expertise für zuverlässige Ergebnisse.", highlight: true }
             ].map((feature, i) => {
               const IconComponent = feature.icon;
               return (
                 <div
                   key={i}
-                  className="p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl hover:border-white/[0.15] hover:bg-white/[0.04] hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#ff1900]/10 transition-all duration-500 supports-[backdrop-filter]:backdrop-blur-xl"
+                  className={`group relative p-6 md:p-7 rounded-2xl border transition-all duration-500 md:hover:-translate-y-1 md:hover:shadow-lg md:hover:shadow-[#ff1900]/8 ${
+                    feature.highlight
+                      ? 'bg-gradient-to-br from-white/[0.04] to-[#ff1900]/[0.03] border-[#ff1900]/20 md:hover:border-[#ff1900]/35'
+                      : 'bg-white/[0.02] border-white/[0.06] md:hover:border-white/[0.12]'
+                  }`}
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center mb-6 group-hover:bg-gradient-to-br group-hover:from-[#ff1900]/30 group-hover:to-[#ff1900]/20 group-hover:scale-110 transition-all duration-500">
-                    <IconComponent className="w-7 h-7 text-[#ff1900]" strokeWidth={2.5} />
+                  {feature.highlight && <div className="absolute top-0 left-6 w-10 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />}
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#ff1900]/10 border border-[#ff1900]/15 flex items-center justify-center group-hover:scale-105 transition-transform duration-400">
+                      <IconComponent className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <h3 className="text-base md:text-lg font-bold text-white mb-1">{feature.title}</h3>
+                      <p className="text-white/55 font-light leading-relaxed text-sm">{feature.desc}</p>
+                    </div>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-4">{feature.title}</h3>
-                  <p className="text-white/70 font-light leading-relaxed text-base">{feature.desc}</p>
                 </div>
               );
             })}
@@ -738,54 +785,61 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Arbeitsweise Section */}
-      <section id="prozess" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative">
-        <div className="container mx-auto max-w-6xl overflow-hidden">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Unsere <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Arbeitsweise</span>
+      {/* Arbeitsweise Section – Timeline */}
+      <section id="prozess" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-14 md:mb-18">
+            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">So arbeiten wir</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+              Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Arbeitsweise</span>
             </h2>
-            <p className="text-xl md:text-2xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
-              Strukturierter Ablauf für IT-Projekte und Bau/Hausbetreuung
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              { step: "01", title: "Kontakt", desc: "Sie nehmen Kontakt auf und beschreiben Ihr Anliegen – ob IT oder Bau" },
-              { step: "02", title: "Beratung", desc: "Wir analysieren Ihre Anforderungen und erstellen ein individuelles Angebot" },
-              { step: "03", title: "Umsetzung", desc: "Professionelle Ausführung: IT-Lösungen mit Updates oder Bau/Hausbetreuung mit Terminabsprache" },
-              { step: "04", title: "Betreuung", desc: "Laufende Betreuung: IT-Support oder regelmäßige Bau/Hausbetreuung nach Bedarf" }
-            ].map((process, i) => (
-              <div
-                key={i}
-                className="relative"
-              >
-                <div className="p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl hover:border-white/[0.15] hover:bg-white/[0.04] hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#ff1900]/10 transition-all duration-500 h-full supports-[backdrop-filter]:backdrop-blur-xl">
-                  <div className="text-6xl font-black text-[#ff1900]/20 mb-6">{process.step}</div>
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-4">{process.title}</h3>
-                  <p className="text-white/70 font-light leading-relaxed text-base">{process.desc}</p>
-                </div>
-                {i < 3 && (
-                  <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-white/20">
-                    <ArrowRight className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" strokeWidth={2} />
+          {/* Timeline */}
+          <div className="relative">
+            {/* Vertikale Linie (nur md+) */}
+            <div className="hidden md:block absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[#ff1900]/40 via-white/10 to-transparent" />
+
+            <div className="space-y-6 md:space-y-0">
+              {[
+                { step: "01", title: "Kontakt", desc: "Sie nehmen Kontakt auf und beschreiben Ihr Anliegen – ob IT oder Bau." },
+                { step: "02", title: "Beratung", desc: "Wir analysieren Ihre Anforderungen und erstellen ein individuelles Angebot." },
+                { step: "03", title: "Umsetzung", desc: "Professionelle Ausführung: IT-Lösungen mit Updates oder Bau/Hausbetreuung mit Terminabsprache." },
+                { step: "04", title: "Betreuung", desc: "Laufende Betreuung: IT-Support oder regelmäßige Bau/Hausbetreuung nach Bedarf." }
+              ].map((process, i) => (
+                <div
+                  key={i}
+                  className="scroll-in-right relative md:flex items-start gap-8 md:py-8"
+                  style={{ transitionDelay: `${i * 80}ms` }}
+                >
+                  {/* Nummer-Dot */}
+                  <div className="hidden md:flex flex-shrink-0 w-12 h-12 rounded-full bg-[#090a11] border-2 border-[#ff1900]/40 items-center justify-center z-10">
+                    <span className="text-xs font-black text-[#ff1900]">{process.step}</span>
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className="flex-1 p-6 md:p-7 rounded-2xl bg-white/[0.02] border border-white/[0.06] transition-all duration-500 md:hover:border-white/[0.12] md:hover:bg-white/[0.04] md:hover:-translate-y-1 md:hover:shadow-lg md:hover:shadow-[#ff1900]/8">
+                    <div className="flex items-center gap-3 mb-2 md:hidden">
+                      <span className="text-xs font-black text-[#ff1900] px-2 py-0.5 rounded-full border border-[#ff1900]/30 bg-[#ff1900]/10">{process.step}</span>
+                    </div>
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">{process.title}</h3>
+                    <p className="text-white/55 font-light leading-relaxed text-sm">{process.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Kontakt Section */}
-      <section id="kontakt" className="py-16 sm:py-20 md:py-28 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5">
+      <section id="kontakt" className="py-16 sm:py-20 md:py-28 px-4 sm:px-6 relative border-t border-white/5">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-12 md:mb-16">
+            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Kontakt</p>
             <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-3">
-              Kontakt
+              Sprechen wir <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">darüber</span>
             </h2>
-            <p className="text-white/60 font-light text-base md:text-lg max-w-xl mx-auto">
-              Einfach anrufen oder schreiben – Antwort innerhalb von 24 Stunden. Dringend? Wir sind persönlich erreichbar.
+            <p className="text-white/50 font-light text-sm md:text-base max-w-lg mx-auto">
+              Antwort innerhalb von 24 Stunden. Dringend? Einfach anrufen.
             </p>
           </div>
 
@@ -838,7 +892,7 @@ export default function Home() {
 
             {/* Standort + Adresse + Instagram kompakt */}
             <div className="space-y-4">
-              <div className="p-5 md:p-6 bg-white/[0.03] border border-white/[0.08] rounded-2xl">
+              <div className="p-5 md:p-6 bg-gradient-to-br from-white/[0.03] to-[#ff1900]/[0.02] border border-[#ff1900]/15 rounded-2xl">
                 <h3 className="text-white font-bold text-base mb-3">Standort</h3>
                 <div className="w-full h-48 md:h-52 rounded-xl overflow-hidden border border-white/[0.08] bg-white/[0.02]">
                   {cookieConsent?.comfort ? (
