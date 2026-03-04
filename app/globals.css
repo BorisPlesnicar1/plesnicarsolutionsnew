@@ -12,6 +12,8 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --font-sans: var(--font-montserrat);
+  --font-hero-display: var(--font-whitedream);
+  --font-hero-sans: var(--font-syne);
 }
 
 html,
@@ -65,6 +67,25 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.12);
 }
+
+/* Hero text slide-in animation (reinglitchen) */
+@keyframes heroSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.hero-text-slide-in {
+  animation: heroSlideIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.hero-text-slide-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
+.hero-text-slide-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
+.hero-text-slide-in-delay-3 { animation-delay: 0.35s; opacity: 0; }
+.hero-text-slide-in-delay-4 { animation-delay: 0.5s; opacity: 0; }
 
 /* All sections visible immediately - no scroll animations */
 section[id] {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Syne } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -8,6 +9,19 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
   display: "swap",
   preload: true,
+});
+
+const whiteDream = localFont({
+  src: "../public/WhiteDreamPERSONALUSEONLY-Regular.otf",
+  variable: "--font-whitedream",
+  display: "swap",
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-syne",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -59,7 +73,7 @@ export default function RootLayout({
   return (
     <html lang="de" className="dark">
       <body
-        className={`${montserrat.variable} font-sans antialiased`}
+        className={`${montserrat.variable} ${whiteDream.variable} ${syne.variable} font-sans antialiased`}
       >
         {children}
       </body>

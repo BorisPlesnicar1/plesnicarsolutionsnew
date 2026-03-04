@@ -233,62 +233,54 @@ export default function Home() {
         )}
       </header>
 
-      {/* Hero Section */}
-      <section id="hero" className="relative overflow-hidden pt-24 pb-12 px-4 sm:px-6 md:pt-32 md:pb-20 md:px-6 min-h-[90vh] md:min-h-[85vh] flex items-center">
+      {/* Hero Section – Mobile: kompakter Stack; Desktop: wie bisher */}
+      <section id="hero" className="relative overflow-visible pt-20 pb-10 md:pt-28 md:pb-16 px-4 sm:px-6 min-h-0 md:min-h-[100vh] flex items-center">
         {/* Deep dark base */}
         <div className="absolute inset-0 z-0 bg-[#070709]" />
 
-        {/* Gradient mesh – primary red glow (upper-center) */}
-        <div className="hero-orb-1 absolute top-[10%] left-[20%] w-[500px] h-[500px] md:w-[900px] md:h-[900px] bg-[#ff1900]/[0.08] rounded-full blur-[140px] md:blur-[220px] z-0" />
-        {/* Secondary warm-orange glow (lower-right, animated) */}
-        <div className="hero-orb-2 absolute bottom-[0%] right-[5%] w-[400px] h-[400px] md:w-[700px] md:h-[700px] bg-[#ff3d00]/[0.06] rounded-full blur-[120px] md:blur-[200px] z-0" />
-        {/* Cool depth accent – subtle deep indigo (upper-right) */}
-        <div className="hero-orb-drift absolute top-[0%] right-[10%] w-[350px] h-[350px] md:w-[550px] md:h-[550px] bg-[#1a0a3e]/25 rounded-full blur-[100px] md:blur-[160px] z-0" />
-        {/* Subtle dark navy center for depth contrast */}
-        <div className="absolute top-[45%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#0d1b2a]/20 rounded-full blur-[80px] md:blur-[120px] z-0" />
-        {/* Small red accent (lower-left) */}
-        <div className="absolute bottom-[15%] left-[5%] w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-[#ff1900]/[0.04] rounded-full blur-[80px] md:blur-[130px] z-0" />
+        {/* Gradient mesh */}
+        <div className="hero-orb-1 absolute top-[5%] left-[15%] w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-[#ff1900]/[0.07] rounded-full blur-[140px] md:blur-[220px] z-0" />
+        <div className="hero-orb-2 absolute bottom-[-10%] right-[0%] w-[500px] h-[500px] md:w-[700px] md:h-[700px] bg-[#ff3d00]/[0.06] rounded-full blur-[120px] md:blur-[200px] z-0" />
+        <div className="hero-orb-drift absolute top-[-5%] right-[15%] w-[350px] h-[350px] md:w-[500px] md:h-[500px] bg-[#1a0a3e]/20 rounded-full blur-[100px] md:blur-[160px] z-0" />
+        <div className="absolute bottom-[10%] left-[40%] w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-[#ff1900]/[0.04] rounded-full blur-[80px] md:blur-[140px] z-0" />
 
         {/* Grid pattern overlay */}
         <div className="hero-grid absolute inset-0 z-[1]" style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)`,
-          backgroundSize: '72px 72px'
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
+          backgroundSize: '80px 80px'
         }} />
 
-        {/* Radial vignette – darkens edges, focuses center */}
+        {/* Radial vignette */}
         <div className="absolute inset-0 z-[1]" style={{
-          background: 'radial-gradient(ellipse 70% 55% at 50% 45%, transparent 0%, #070709 100%)',
-          opacity: 0.55
+          background: 'radial-gradient(ellipse 60% 50% at 40% 50%, transparent 0%, #070709 100%)',
+          opacity: 0.5
         }} />
 
-        {/* Subtle noise/grain texture */}
-        <div className="absolute inset-0 z-[2] opacity-[0.015]" style={{
+        {/* Subtle noise texture */}
+        <div className="absolute inset-0 z-[2] opacity-[0.012]" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
           backgroundSize: '20px 20px'
         }} />
 
-        {/* Content */}
-        <div className="relative z-10 container mx-auto px-0 sm:px-6 max-w-[100vw] w-full">
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 md:gap-16 items-center min-w-0">
-            {/* Left: Text content */}
-            <div className="text-center lg:text-left space-y-6 md:space-y-8">
-              <div className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/[0.04] border border-white/[0.06] rounded-full backdrop-blur-sm">
-                <Sparkles className="w-4 h-4 text-[#ff1900]" strokeWidth={2.5} />
-                <span className="text-xs font-semibold text-white/75 tracking-wider uppercase">Österreichisches Unternehmen</span>
-              </div>
+        {/* Content – Mobile: mehr Abstand zwischen Text und Bild */}
+        <div className="relative z-10 container mx-auto px-0 sm:px-6 pr-4 sm:pr-6 lg:pr-10 xl:pr-16 max-w-[100vw] w-full overflow-visible">
+          <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_auto] gap-10 md:gap-12 lg:gap-0 items-center">
 
-              <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] font-black leading-[1.08] tracking-tight">
-                Moderne Lösungen.
-                <br />
-                <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Zuverlässige Umsetzung.</span>
+            {/* Left / Top: Text – mehr Höhe/Abstand, Container nicht zu eng */}
+            <div className="text-center lg:text-left space-y-5 md:space-y-7 lg:pr-10 xl:pr-14 pb-8 md:pb-10 max-w-2xl overflow-visible [font-family:var(--font-syne)]">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold leading-[1.28] tracking-tight break-words pb-1">
+                <span className="hero-text-slide-in hero-text-slide-in-delay-1 block">Moderne</span>
+                <span className="hero-text-slide-in hero-text-slide-in-delay-1 block mt-1">Lösungen.</span>
+                <span className="hero-text-slide-in hero-text-slide-in-delay-2 block mt-2 bg-gradient-to-r from-[#ff1900] via-[#ff2d00] to-[#ff4d3a] bg-clip-text text-transparent">Zuverlässige</span>
+                <span className="hero-text-slide-in hero-text-slide-in-delay-2 block mt-1 bg-gradient-to-r from-[#ff1900] via-[#ff2d00] to-[#ff4d3a] bg-clip-text text-transparent">Umsetzung.</span>
               </h1>
-              
-              <p className="text-lg md:text-xl text-white/65 max-w-lg mx-auto lg:mx-0 leading-relaxed font-light">
+
+              <p className="hero-text-slide-in hero-text-slide-in-delay-3 text-base md:text-lg text-white/60 max-w-md mx-auto lg:mx-0 leading-relaxed font-light">
                 IT-Beratung, PC-Bau & digitale Lösungen sowie Bau/Hausbetreuung aus einer Hand.
-                <span className="text-white/95 font-medium"> Schnell, sauber, zuverlässig.</span>
+                <span className="text-white font-medium"> Schnell, sauber, zuverlässig.</span>
               </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+
+              <div className="hero-text-slide-in hero-text-slide-in-delay-4 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-1">
                 <button
                   onClick={() => scrollToSection("kontakt")}
                   className="group px-10 py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] hover:from-[#e61700] hover:to-[#ff1900] text-white text-base font-bold rounded-2xl transition-all duration-300 shadow-2xl shadow-[#ff1900]/30 hover:shadow-[#ff1900]/50 flex items-center justify-center gap-2.5 hover:-translate-y-1 hover:scale-[1.02]"
@@ -305,159 +297,51 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right: Dashboard mockup window */}
-            <div className="relative hidden lg:block">
-              {/* Glow behind the card */}
-              <div className="absolute -inset-4 bg-[#ff1900]/[0.06] rounded-3xl blur-2xl" />
-              
-              {/* Main window */}
-              <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl shadow-black/50 backdrop-blur-xl">
-                {/* Window titlebar */}
-                <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.06] bg-white/[0.02]">
-                  <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.15]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.15]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.15]" />
-                  </div>
-                  <div className="flex-1 flex justify-center">
-                    <div className="px-4 py-1 bg-white/[0.04] rounded-md text-[11px] text-white/30 font-medium tracking-wide">
-                      plesnicarsolutions.at
-                    </div>
-                  </div>
-                </div>
+            {/* Right / Bottom: Person image – auf Mobile schlanker, dekorative Elemente nur ab md */}
+            <div className="relative flex justify-center lg:justify-end items-center w-full">
+              {/* Decorative elements – nur ab Tablet, auf Handy nicht stören */}
+              <div className="hidden md:block absolute bottom-[15%] right-[10%] w-[280px] h-[280px] md:w-[420px] md:h-[420px] lg:w-[480px] lg:h-[480px] rounded-full border-2 border-[#ff1900]/20 z-0" />
+              <div className="hidden md:block absolute bottom-[18%] right-[13%] w-[220px] h-[220px] md:w-[340px] md:h-[340px] lg:w-[380px] lg:h-[380px] rounded-full border border-[#ff1900]/10 z-0" />
+              <div className="hidden md:block absolute bottom-[5%] right-[15%] w-[250px] h-[300px] md:w-[380px] md:h-[450px] lg:w-[420px] lg:h-[500px] bg-[#ff1900]/[0.08] rounded-full blur-[80px] md:blur-[120px] z-0" />
+              <div className="hidden md:block absolute top-[20%] right-[5%] w-4 h-4 md:w-5 md:h-5 bg-[#ff1900] rounded-full z-10 opacity-60" />
+              <div className="hidden md:block absolute top-[35%] right-[-2%] w-2.5 h-2.5 md:w-3 md:h-3 bg-[#ff1900]/40 rounded-full z-10" />
+              <div className="hidden md:block absolute bottom-[30%] right-[0%] w-3 h-3 bg-white/20 rounded-full z-10" />
 
-                {/* Window content */}
-                <div className="p-5 space-y-4">
-                  {/* Status row */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-[11px] text-white/40 font-medium">Alle Systeme aktiv</span>
-                    </div>
-                    <span className="text-[11px] text-white/25 font-mono">2025</span>
-                  </div>
-
-                  {/* Service rows */}
-                  <div className="space-y-2.5">
-                    {[
-                      { name: "IT-Dienstleistungen", icon: Monitor, pct: 91, color: "#ff1900" },
-                      { name: "Grafikdesign", icon: Palette, pct: 91, color: "#ff4d3a" },
-                      { name: "Bau & Hausbetreuung", icon: Wrench, pct: 92, color: "#ff1900" },
-                      { name: "Handel", icon: TrendingUp, pct: 90, color: "#ff6b5a" },
-                    ].map((service, i) => {
-                      const ServiceIcon = service.icon;
-                      return (
-                        <div key={i} className="bg-white/[0.03] border border-white/[0.05] rounded-xl p-3.5 group hover:bg-white/[0.05] transition-colors duration-300">
-                          <div className="flex items-center justify-between mb-2.5">
-                            <div className="flex items-center gap-2.5">
-                              <ServiceIcon className="w-4 h-4 text-white/40" strokeWidth={1.5} />
-                              <span className="text-xs text-white/70 font-medium">{service.name}</span>
-                            </div>
-                            <span className="text-xs font-bold text-white/50">{service.pct}%</span>
-                          </div>
-                          {/* Progress bar */}
-                          <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-700"
-                              style={{ width: `${service.pct}%`, backgroundColor: service.color }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Bottom stats row */}
-                  <div className="grid grid-cols-3 gap-3 pt-1">
-                    {[
-                      { label: "Bereiche", value: "4" },
-                      { label: "Kontakte", value: "2" },
-                      { label: "Standort", value: "AT" },
-                    ].map((stat, i) => (
-                      <div key={i} className="text-center py-3 bg-white/[0.02] border border-white/[0.05] rounded-lg">
-                        <div className="text-lg font-black text-white leading-none">{stat.value}</div>
-                        <div className="text-[10px] text-white/35 font-medium mt-1 uppercase tracking-wider">{stat.label}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {/* Floating badge */}
+              <div className="absolute top-[15%] md:top-[12%] right-[0%] md:right-[-5%] z-20 hidden sm:flex items-center gap-2.5 px-4 py-2.5 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[11px] text-white/80 font-semibold whitespace-nowrap">Verfügbar für Projekte</span>
               </div>
-            </div>
 
-            {/* Mobile: compact dashboard card (visible only on mobile/tablet) */}
-            <div className="lg:hidden relative">
-              {/* Glow behind card */}
-              <div className="absolute -inset-4 bg-[#ff1900]/[0.06] rounded-3xl blur-2xl" />
-
-              <div className="relative bg-white/[0.02] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl shadow-black/50 backdrop-blur-xl">
-                {/* Mini browser bar */}
-                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
-                  <div className="flex gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-white/[0.15]" />
-                    <div className="w-2 h-2 rounded-full bg-white/[0.15]" />
-                    <div className="w-2 h-2 rounded-full bg-white/[0.15]" />
-                  </div>
-                  <div className="flex-1 flex justify-center">
-                    <div className="px-3 py-0.5 bg-white/[0.04] rounded text-[10px] text-white/30 font-medium tracking-wide">
-                      plesnicarsolutions.at
-                    </div>
-                  </div>
+              {/* Bottom-left floating card – IT & Grafikdesign */}
+              <div className="absolute bottom-[20%] md:bottom-[18%] left-[-5%] md:left-[-15%] z-20 hidden sm:flex flex-col px-4 py-3 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl">
+                <div className="flex items-center gap-2 mb-1">
+                  <Code2 className="w-4 h-4 text-[#ff1900]" strokeWidth={2.5} />
+                  <span className="text-[11px] text-white/80 font-bold">IT & Grafikdesign</span>
                 </div>
+                <span className="text-[10px] text-white/50 font-medium">PC-Bau · Webdesign · Branding</span>
+              </div>
 
-                {/* Card content */}
-                <div className="p-4 space-y-3">
-                  {/* Status row */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-[10px] text-white/40 font-medium">Alle Systeme aktiv</span>
-                    </div>
-                    <span className="text-[10px] text-white/25 font-mono">2025</span>
-                  </div>
-
-                  {/* Service rows – compact */}
-                  <div className="space-y-2">
-                    {[
-                      { name: "IT-Dienstleistungen", icon: Monitor, pct: 91, color: "#ff1900" },
-                      { name: "Grafikdesign", icon: Palette, pct: 91, color: "#ff4d3a" },
-                      { name: "Bau & Hausbetreuung", icon: Wrench, pct: 92, color: "#ff1900" },
-                      { name: "Handel", icon: TrendingUp, pct: 90, color: "#ff6b5a" },
-                    ].map((service, i) => {
-                      const ServiceIcon = service.icon;
-                      return (
-                        <div key={i} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-3.5">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2.5">
-                              <ServiceIcon className="w-4 h-4 text-white/50" strokeWidth={2} />
-                              <span className="text-xs text-white/75 font-semibold">{service.name}</span>
-                            </div>
-                            <span className="text-xs font-black text-white/60">{service.pct}%</span>
-                          </div>
-                          <div className="h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full hero-progress-bar"
-                              style={{ width: `${service.pct}%`, backgroundColor: service.color, animationDelay: `${i * 0.15}s` }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Bottom stats */}
-                  <div className="grid grid-cols-3 gap-2 pt-1">
-                    {[
-                      { label: "Bereiche", value: "4" },
-                      { label: "Kontakte", value: "2" },
-                      { label: "Standort", value: "AT" },
-                    ].map((stat, i) => (
-                      <div key={i} className="text-center py-3 bg-white/[0.015] border border-white/[0.04] rounded-xl">
-                        <div className="text-lg font-black text-white leading-none">{stat.value}</div>
-                        <div className="text-[10px] text-white/40 font-semibold mt-1 uppercase tracking-wider">{stat.label}</div>
-                      </div>
-                    ))}
-                  </div>
+              {/* Pill: Bau & Handel – hinter dem Portrait (z < Bild), höher damit Text frei bleibt */}
+              <div className="absolute bottom-[57%] md:bottom-[49%] left-[-5%] md:left-[-15%] z-0 hidden sm:flex flex-col px-4 py-3 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl max-w-[200px] md:max-w-[220px]">
+                <div className="flex items-center gap-2 mb-1">
+                  <Wrench className="w-4 h-4 shrink-0 text-[#ff1900]" strokeWidth={2.5} />
+                  <span className="text-[11px] text-white/80 font-bold">Bau & Handel</span>
                 </div>
+                <span className="text-[10px] text-white/50 font-medium leading-snug">Einfache Reinigung · Objektbezogene Tätigkeiten · Hausbetreuung</span>
+                <span className="text-[10px] text-white/50 font-medium leading-snug mt-0.5">Handel mit Baustoffen · Verkauf & Zubehör · Individuelle Lösungen · Beratung</span>
+              </div>
+
+              {/* Bild: Mobile kompakter, kein min-height; ab md wie bisher */}
+              <div className="relative z-10 w-[min(100%,300px)] sm:w-[340px] md:w-[450px] lg:w-[500px] xl:w-[560px] min-h-0 md:min-h-[70vh] flex items-center justify-center lg:justify-end">
+                <Image
+                  src="/portraits/plesnicart.png?v=2"
+                  alt="Boris Plesnicar – Inhaber von Plesnicar Solutions"
+                  width={1000}
+                  height={1200}
+                  className="w-full h-auto max-h-[55vh] md:max-h-[85vh] object-contain object-bottom drop-shadow-[0_0_80px_rgba(255,25,0,0.12)]"
+                  priority
+                />
               </div>
             </div>
           </div>
@@ -894,123 +778,69 @@ export default function Home() {
       </section>
 
       {/* Kontakt Section */}
-      <section id="kontakt" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5">
-        <div className="container mx-auto max-w-7xl overflow-hidden">
-          <div className="text-center mb-16 md:mb-24">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Ihr direkter <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Kontakt</span>
+      <section id="kontakt" className="py-16 sm:py-20 md:py-28 px-4 sm:px-6 bg-white/[0.02] relative border-t border-white/5">
+        <div className="container mx-auto max-w-5xl">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-3">
+              Kontakt
             </h2>
-            <p className="text-lg md:text-xl text-white/65 max-w-2xl mx-auto font-light leading-relaxed">
-              Ob IT, Grafikdesign oder Bau – wir sind für Sie da. Einfach anrufen oder schreiben.
+            <p className="text-white/60 font-light text-base md:text-lg max-w-xl mx-auto">
+              Einfach anrufen oder schreiben – Antwort innerhalb von 24 Stunden. Dringend? Wir sind persönlich erreichbar.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-            {/* Direkter Kontakt */}
-            <div className="space-y-6">
-              <div className="p-8 md:p-10 bg-white/[0.02] border border-white/[0.06] rounded-3xl supports-[backdrop-filter]:backdrop-blur-xl">
-                <h3 className="text-2xl md:text-3xl font-black text-white mb-3">
-                  Direkter <span className="text-[#ff1900] bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Kontakt</span>
-                </h3>
-                <p className="text-white/70 font-light text-base md:text-lg leading-relaxed mb-8">
-                  Rufen Sie an oder schreiben Sie – wir melden uns zeitnah bei Ihnen.
-                </p>
-
-                <div className="grid gap-5 sm:grid-cols-2">
-                {/* Boris */}
-                <div className="p-6 md:p-7 bg-white/[0.02] border border-white/[0.06] rounded-2xl h-full hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300">
-                  <p className="text-lg font-bold text-white">
-                    Boris Plesnicar <span className="text-white/60 font-medium text-base">(IT & Grafikdesign)</span>
-                  </p>
-                  <div className="mt-3 space-y-2">
-                    <a
-                      href="tel:+436644678382"
-                      className="w-full inline-flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#ff1900] to-[#ff2d00] hover:from-[#e61700] hover:to-[#ff1900] text-white font-bold transition-all duration-300 shadow-lg shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/40 hover:-translate-y-0.5"
-                    >
-                      <Phone className="w-5 h-5" strokeWidth={2.5} />
-                      +43 664 4678382
-                    </a>
-                    <a
-                      href="mailto:plesnicaroffice@gmail.com"
-                      title="plesnicaroffice@gmail.com"
-                      className="w-full min-w-0 inline-flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] hover:border-white/[0.15] text-white font-semibold transition-all duration-300 hover:-translate-y-0.5 backdrop-blur-sm"
-                    >
-                      <Mail className="w-5 h-5 text-[#ff1900]" strokeWidth={2.5} />
-                      <span className="truncate text-sm md:text-base">plesnicaroffice@gmail.com</span>
-                    </a>
-                  </div>
-                </div>
-
-                {/* Dietmar */}
-                <div className="p-6 md:p-7 bg-white/[0.02] border border-white/[0.06] rounded-2xl h-full hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300">
-                  <p className="text-lg font-bold text-white">
-                    Ing. Dietmar Plesnicar <span className="text-white/60 font-medium text-base">(Bau & Hausbetreuung)</span>
-                  </p>
-                  <div className="mt-3 space-y-2">
-                    <a
-                      href="tel:+436763206308"
-                      className="w-full inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold transition-colors duration-200"
-                    >
-                      <Phone className="w-5 h-5" strokeWidth={2} />
-                      +43 676 3206308
-                    </a>
-                    <a
-                      href="mailto:plesnicaroffice@gmail.com"
-                      title="plesnicaroffice@gmail.com"
-                      className="w-full min-w-0 inline-flex items-center justify-center gap-3 px-5 py-3 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 text-white font-semibold transition-colors duration-200"
-                    >
-                      <Mail className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
-                      <span className="truncate text-sm md:text-base">plesnicaroffice@gmail.com</span>
-                    </a>
-                  </div>
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+            {/* Ansprechpartner – einheitliches Karten-Design */}
+            <div className="space-y-4">
+              <div className="p-5 md:p-6 bg-white/[0.03] border border-white/[0.08] rounded-2xl hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
+                <p className="text-white font-bold text-base mb-1">Boris Plesnicar</p>
+                <p className="text-white/55 text-sm mb-4">IT & Grafikdesign</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="tel:+436644678382"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors"
+                  >
+                    <Phone className="w-4 h-4" strokeWidth={2.5} />
+                    +43 664 4678382
+                  </a>
+                  <a
+                    href="mailto:plesnicaroffice@gmail.com"
+                    title="plesnicaroffice@gmail.com"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-white font-medium text-sm transition-colors"
+                  >
+                    <Mail className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
+                    E-Mail
+                  </a>
                 </div>
               </div>
-              </div>
-
-              <div className="p-6 md:p-8 bg-gradient-to-br from-[#ff1900]/[0.08] to-[#ff1900]/[0.02] border border-[#ff1900]/[0.15] rounded-2xl backdrop-blur-sm">
-                <div className="flex items-start gap-4">
-                  <Clock className="w-6 h-6 text-[#ff1900] flex-shrink-0 mt-0.5" strokeWidth={2.5} />
-                  <div>
-                    <h4 className="font-bold text-white mb-2 text-lg">Antwort innerhalb von 24 Stunden</h4>
-                    <p className="text-white/80 font-light text-base leading-relaxed">
-                      Dringend? Einfach anrufen – wir sind persönlich für Sie erreichbar.
-                    </p>
-                  </div>
+              <div className="p-5 md:p-6 bg-white/[0.03] border border-white/[0.08] rounded-2xl hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
+                <p className="text-white font-bold text-base mb-1">Ing. Dietmar Plesnicar</p>
+                <p className="text-white/55 text-sm mb-4">Bau & Hausbetreuung</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href="tel:+436763206308"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors"
+                  >
+                    <Phone className="w-4 h-4" strokeWidth={2.5} />
+                    +43 676 3206308
+                  </a>
+                  <a
+                    href="mailto:plesnicaroffice@gmail.com"
+                    title="plesnicaroffice@gmail.com"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-white font-medium text-sm transition-colors"
+                  >
+                    <Mail className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
+                    E-Mail
+                  </a>
                 </div>
-              </div>
-
-              <div className="p-6 md:p-8 bg-white/[0.02] border border-white/[0.06] rounded-2xl supports-[backdrop-filter]:backdrop-blur-xl">
-                <h4 className="font-semibold text-white mb-3">So geht’s am schnellsten</h4>
-                <p className="text-white/70 font-light text-sm leading-relaxed mb-3">
-                  Nennen Sie uns kurz:
-                </p>
-                <ul className="space-y-2">
-                  {[
-                    "Bereich (IT, Grafikdesign, Bau, Hausbetreuung oder Handel)",
-                    "Was Sie brauchen – Ziel oder Anliegen",
-                    "Ort und Zeitraum (vor Ort oder Remote)",
-                    "Fotos oder Links, falls vorhanden"
-                  ].map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-white/80">
-                      <CheckCircle2 className="w-4 h-4 text-[#ff1900] mt-0.5 flex-shrink-0" strokeWidth={2} />
-                      <span className="font-light text-sm leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             </div>
 
-            {/* Standort & Infos */}
-            <div className="space-y-6">
-              <div className="p-6 md:p-8 bg-gradient-to-br from-[#ff1900]/[0.08] to-[#ff1900]/[0.02] border border-[#ff1900]/[0.15] rounded-2xl backdrop-blur-sm">
-                <p className="text-white/90 font-light leading-relaxed text-center md:text-left text-base">
-                  Wir freuen uns auf Ihre Nachricht und melden uns <span className="text-white font-semibold">schnellstmöglich</span>. Bei Dringlichkeit einfach anrufen.
-                </p>
-              </div>
-
-              <div className="p-6 md:p-8 bg-white/[0.02] border border-white/[0.06] rounded-2xl supports-[backdrop-filter]:backdrop-blur-xl">
-                <h3 className="text-xl md:text-2xl font-bold mb-5 text-white">Unser Standort</h3>
-                <div className="w-full h-56 md:h-64 rounded-xl overflow-hidden border border-white/[0.08] bg-white/[0.02] shadow-lg">
+            {/* Standort + Adresse + Instagram kompakt */}
+            <div className="space-y-4">
+              <div className="p-5 md:p-6 bg-white/[0.03] border border-white/[0.08] rounded-2xl">
+                <h3 className="text-white font-bold text-base mb-3">Standort</h3>
+                <div className="w-full h-48 md:h-52 rounded-xl overflow-hidden border border-white/[0.08] bg-white/[0.02]">
                   {cookieConsent?.comfort ? (
                     <iframe
                       src="https://www.google.com/maps?q=Hartriegelstraße+12,+3550+Langenlois,+Österreich&output=embed"
@@ -1025,64 +855,34 @@ export default function Home() {
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-3 px-4 text-center">
-                      <p className="text-white/75 text-sm md:text-base font-light">
-                        Zum Schutz Ihrer Privatsphäre laden wir die Google&nbsp;Maps Karte erst, wenn Sie{" "}
-                        <span className="font-semibold">Komfort- &amp; externe Medien-Cookies</span> akzeptieren.
-                        Dabei können personenbezogene Daten an Google übermittelt und in Drittländern verarbeitet werden.
-                        Details finden Sie in unserer Datenschutzerklärung.
+                      <p className="text-white/65 text-xs md:text-sm font-light">
+                        Karte laden wir erst nach Ihrer Cookie-Einwilligung. Details in der Datenschutzerklärung.
                       </p>
                       <button
                         type="button"
                         onClick={() => updateConsent(true)}
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-[#ff1900] to-[#ff2d00] hover:from-[#e61700] hover:to-[#ff1900] text-white text-sm font-semibold transition-all duration-300 shadow-md shadow-[#ff1900]/30 hover:shadow-lg hover:shadow-[#ff1900]/40 hover:-translate-y-0.5"
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white text-sm font-semibold transition-colors"
                       >
-                        Komfort-Cookies akzeptieren
-                        <ArrowRight className="w-4 h-4" strokeWidth={2} />
+                        Cookies akzeptieren
+                        <ArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
                       </button>
                     </div>
                   )}
                 </div>
-                <p className="text-white/70 font-light text-base mt-4">
-                  Hartriegelstraße 12, 3550 Langenlois, Österreich
-                </p>
+                <p className="text-white/65 font-light text-sm mt-3">Hartriegelstraße 12, 3550 Langenlois</p>
+                <p className="text-white/50 text-xs mt-0.5">Boris Plesnicar e.U. · IT auch remote</p>
               </div>
-
-              <div className="p-6 md:p-8 bg-white/[0.02] border border-white/[0.06] rounded-2xl supports-[backdrop-filter]:backdrop-blur-xl">
-                <h3 className="text-xl md:text-2xl font-bold mb-6 text-white">Über uns</h3>
-                <div className="space-y-5">
-                  {[
-                    { icon: MapPin, label: "Region", value: "Langenlois, Österreich" },
-                    { icon: Globe, label: "IT-Support", value: "Auch remote bundesweit" },
-                    { icon: Building2, label: "Unternehmen", value: "Boris Plesnicar e.U." }
-                  ].map((info, i) => {
-                    const IconComponent = info.icon;
-                    return (
-                      <div key={i} className="flex items-start gap-4">
-                        <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center">
-                          <IconComponent className="w-5 h-5 text-[#ff1900]" strokeWidth={2.5} />
-                        </div>
-                        <div>
-                          <p className="font-bold text-white text-base">{info.label}</p>
-                          <p className="text-white/70 font-light text-base">{info.value}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  <div className="pt-4 border-t border-white/[0.08]">
-                    <a
-                      href="https://www.instagram.com/plesnicarsolutions/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 group hover:opacity-90 transition-all duration-300"
-                    >
-                      <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-[#ff1900]/20 to-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-[#ff1900]/30 group-hover:to-[#ff1900]/20 group-hover:scale-110 transition-all duration-300">
-                        <Instagram className="w-5 h-5 text-[#ff1900]" strokeWidth={2.5} />
-                      </div>
-                      <span className="font-bold text-white text-base">@plesnicarsolutions</span>
-                    </a>
-                  </div>
+              <a
+                href="https://www.instagram.com/plesnicarsolutions/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-xl bg-[#ff1900]/20 border border-[#ff1900]/30 flex items-center justify-center">
+                  <Instagram className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
                 </div>
-              </div>
+                <span className="font-semibold text-white text-sm">@plesnicarsolutions</span>
+              </a>
             </div>
           </div>
         </div>
