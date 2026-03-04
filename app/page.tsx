@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import anime from "animejs";
+import anime from "animejs/lib/anime.es.js";
 import { 
   Code2, 
   Palette, 
