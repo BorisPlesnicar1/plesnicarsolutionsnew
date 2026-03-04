@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Syne } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { LoadingScreen } from "./LoadingScreen";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -67,7 +68,7 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${whiteDream.variable} ${syne.variable} font-sans antialiased`}
       >
-        {children}
+        <LoadingScreen>{children}</LoadingScreen>
       </body>
     </html>
   );
