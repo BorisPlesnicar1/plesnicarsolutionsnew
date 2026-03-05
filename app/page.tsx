@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import anime from "animejs/lib/anime.es.js";
+import { motion } from "framer-motion";
 import { 
   Code2, 
   Palette, 
@@ -21,6 +22,7 @@ import {
   X,
   CheckCircle2,
   ArrowRight,
+  ArrowUp,
   TrendingUp,
   Clock,
   Award,
@@ -45,12 +47,52 @@ function heroChars(text: string) {
   ));
 }
 
+/* Framer Motion: scroll-triggered and hover effects */
+const motionViewport = { once: true, amount: 0.15 };
+const fadeUp = {
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+};
+const staggerParent = {
+  animate: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+};
+const staggerItem = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
+const cardReveal = {
+  initial: { opacity: 0, y: 32 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+};
+
+/** Hero-style atmosphere for content sections: base, grid, orbs. Reused in Leistungen, Über uns, Team, Warum, Features, Prozess, Kontakt. */
+function SectionBackground() {
+  return (
+    <>
+      <div className="absolute inset-0 z-0 bg-[#070709]" aria-hidden />
+      <div
+        className="absolute inset-0 z-[1] opacity-50"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
+          backgroundSize: "80px 80px",
+        }}
+        aria-hidden
+      />
+      <div className="absolute top-[10%] right-[5%] w-[280px] h-[280px] md:w-[400px] md:h-[400px] bg-[#ff1900]/[0.05] rounded-full blur-[100px] md:blur-[140px] z-0 pointer-events-none" aria-hidden />
+      <div className="absolute bottom-[15%] left-[-5%] w-[240px] h-[240px] md:w-[320px] md:h-[320px] bg-[#ff3d00]/[0.04] rounded-full blur-[80px] md:blur-[120px] z-0 pointer-events-none" aria-hidden />
+    </>
+  );
+}
+
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cookieConsent, setCookieConsent] = useState<CookieConsent | null>(null);
   const [showCookieBanner, setShowCookieBanner] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("hero");
   const heroTextRef = useRef<HTMLDivElement>(null);
   const heroImageRef = useRef<HTMLDivElement>(null);
+
+  const SECTION_IDS = ["hero", "leistungen", "ueber-uns", "team", "warum", "features", "prozess", "kontakt"] as const;
 
   const updateConsent = (comfort: boolean) => {
     const value: CookieConsent = {
@@ -92,10 +134,41 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const onScroll = () => setShowBackToTop(window.scrollY > 500);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const setHeroVisible = () => {
+      const el = heroTextRef.current;
+      const imgWrap = heroImageRef.current;
+      if (!el) return;
+      el.querySelectorAll(".hero-char").forEach((node) => {
+        (node as HTMLElement).style.opacity = "1";
+        (node as HTMLElement).style.transform = "none";
+      });
+      el.querySelectorAll(".hero-animate").forEach((node) => {
+        (node as HTMLElement).style.opacity = "1";
+        (node as HTMLElement).style.transform = "none";
+      });
+      if (imgWrap) {
+        imgWrap.style.opacity = "1";
+        imgWrap.style.transform = "none";
+      }
+    };
+
     const runHeroAnimation = () => {
       const el = heroTextRef.current;
       const imgWrap = heroImageRef.current;
       if (!el) return;
+
+      const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+      if (isMobile) {
+        setHeroVisible();
+        return;
+      }
 
       const lines = el.querySelectorAll(".hero-line");
       const paragraph = el.querySelector(".hero-animate");
@@ -111,23 +184,9 @@ export default function Home() {
       const tl = anime.timeline({
         easing: "easeOutExpo",
         duration: 500,
-        complete: () => {
-          allChars.forEach((node) => {
-            (node as HTMLElement).style.opacity = "1";
-            (node as HTMLElement).style.transform = "none";
-          });
-          allAnimate.forEach((node) => {
-            (node as HTMLElement).style.opacity = "1";
-            (node as HTMLElement).style.transform = "none";
-          });
-          if (imgWrap) {
-            imgWrap.style.opacity = "1";
-            imgWrap.style.transform = "none";
-          }
-        },
+        complete: setHeroVisible,
       });
 
-      // Hero-Bild: von rechts reingeleitet + Fade (parallel zum Text)
       if (imgWrap) {
         tl.add(
           {
@@ -143,7 +202,6 @@ export default function Home() {
         );
       }
 
-      // Headline: Buchstaben nacheinander „springen“ (pro Zeile)
       for (let i = 0; i < lines.length; i++) {
         const chars = Array.from(lines[i].querySelectorAll(".hero-char"));
         if (!chars.length) continue;
@@ -161,7 +219,6 @@ export default function Home() {
         );
       }
 
-      // Absatz: weicher Fade + Slide
       tl.add(
         {
           targets: paragraph,
@@ -173,7 +230,6 @@ export default function Home() {
         "-=280"
       );
 
-      // CTA-Buttons
       tl.add(
         {
           targets: cta,
@@ -270,12 +326,72 @@ export default function Home() {
         top: offsetPosition,
         behavior: "smooth"
       });
+      if (typeof window !== "undefined") {
+        window.history.replaceState(null, "", `#${id}`);
+      }
+      setActiveSection(id);
       setMobileMenuOpen(false);
     }
   };
 
+  // Scroll-Spy: aktive Sektion + URL-Hash beim Scrollen
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    const rootMargin = "-20% 0px -60% 0px";
+
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            setActiveSection(id);
+            if (typeof window !== "undefined") {
+              window.history.replaceState(null, "", `#${id}`);
+            }
+          });
+        },
+        { rootMargin, threshold: 0 }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  // Initial: bei geladenem Hash zu Sektion scrollen
+  useEffect(() => {
+    const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+    if (hash && SECTION_IDS.includes(hash as typeof SECTION_IDS[number])) {
+      const el = document.getElementById(hash);
+      if (el) {
+        const headerOffset = 80;
+        const top = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+        window.scrollTo({ top, behavior: "auto" });
+        setActiveSection(hash);
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#212121] text-white relative overflow-x-hidden max-w-[100vw]">
+      {/* Skip-Link: nur bei Fokus sichtbar */}
+      <a
+        href="#hero"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#ff1900] focus:text-white focus:rounded-lg focus:font-semibold focus:outline-none focus:ring-2 focus:ring-white"
+      >
+        Zum Inhalt springen
+      </a>
+      {/* (splatter effect removed) – objectBoundingBox 0–1 */}
+      <svg aria-hidden className="absolute w-0 h-0 overflow-hidden pointer-events-none" style={{ position: "absolute" }}>
+        <defs>
+          <clipPath id="liquid-splatter" clipPathUnits="objectBoundingBox">
+            <path d="M0.02,0.48 C0,0.14,0.14,0.02,0.36,0.06 C0.52,0.08,0.68,0.03,0.86,0.12 C0.98,0.24,1,0.42,0.98,0.58 C0.96,0.78,0.82,0.96,0.58,0.99 C0.4,1,0.22,0.92,0.1,0.74 C0.04,0.64,0.02,0.54,0.02,0.48 C0.02,0.38,0.06,0.32,0.08,0.28 C0.06,0.18,0.08,0.1,0.1,0.08 C0.12,0.06,0.1,0.1,0.08,0.14 C0.06,0.22,0.04,0.32,0.02,0.42 C0.02,0.46,0.02,0.48,0.02,0.48 Z" />
+          </clipPath>
+        </defs>
+      </svg>
       {/* Subtle Background Gradient */}
       <div className="fixed inset-0 pointer-events-none z-0 blur-bg" aria-hidden="true">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#ff1900]/5 rounded-full blur-[150px]" />
@@ -286,125 +402,119 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 border-b border-white/[0.08] supports-[backdrop-filter]:backdrop-blur-xl backdrop-saturate-150">
         <nav className="container mx-auto px-4 sm:px-6 py-3 md:py-4 flex items-center justify-between max-w-[100vw]">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-        <Image
-            src="/logos/LogoTEXTB.png"
-            alt="Plesnicar Solutions Logo"
-            width={200}
-            height={60}
-            className="h-12 sm:h-14 md:h-16 w-auto max-w-[180px] sm:max-w-none"
-            priority
-            unoptimized
-        />
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              aria-label="Nach oben scrollen"
+              className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] rounded-lg"
+            >
+              <Image
+                src="/logos/LogoTEXTB.png"
+                alt="Plesnicar Solutions Logo"
+                width={200}
+                height={60}
+                className="h-12 sm:h-14 md:h-16 w-auto max-w-[180px] sm:max-w-none"
+                priority
+                unoptimized
+              />
+            </button>
           </div>
           <div className="hidden lg:flex items-center gap-1">
             <button
               onClick={() => scrollToSection("leistungen")}
-              className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "leistungen" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
             >
               Leistungen
             </button>
             <button
               onClick={() => scrollToSection("ueber-uns")}
-              className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "ueber-uns" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
             >
               Über uns
             </button>
             <button
               onClick={() => scrollToSection("team")}
-              className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "team" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
             >
               Team
             </button>
             <button
               onClick={() => scrollToSection("warum")}
-              className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "warum" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
             >
               Vorteile
             </button>
             <button
               onClick={() => scrollToSection("features")}
-              className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "features" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
             >
               Servicequalität
             </button>
             <button
               onClick={() => scrollToSection("prozess")}
-              className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "prozess" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
             >
               Arbeitsweise
             </button>
             <button
               onClick={() => scrollToSection("kontakt")}
-              className="ml-2 px-6 py-2.5 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-xl transition-all duration-300 text-sm shadow-lg shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/35 hover:-translate-y-0.5"
-            >
-              Kontakt
-            </button>
-          </div>
-          <div className="hidden md:flex lg:hidden items-center gap-1">
-            <button
-              onClick={() => scrollToSection("leistungen")}
-              className="px-3 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
-            >
-              Leistungen
-            </button>
-            <button
-              onClick={() => scrollToSection("kontakt")}
-              className="ml-2 px-6 py-2.5 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-xl transition-all duration-300 text-sm shadow-lg shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/35 hover:-translate-y-0.5"
+              className={`ml-2 min-h-[44px] px-6 py-2.5 font-semibold rounded-xl transition-all duration-300 text-sm flex items-center shadow-lg ${activeSection === "kontakt" ? "bg-[#ff1900] text-white ring-2 ring-white/40 ring-offset-2 ring-offset-[#0a0a0a] shadow-[#ff1900]/30" : "bg-[#ff1900] hover:bg-[#e61700] text-white shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/35 hover:-translate-y-0.5"}`}
             >
               Kontakt
             </button>
           </div>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-white/80 hover:text-white transition-colors p-2"
+            className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center text-white/80 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5"
+            aria-label={mobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </nav>
 
-        {/* Mobile Menu */}
+        {/* Mobile / Tablet Menu (lg:hidden) */}
         {mobileMenuOpen && (
-            <div className="md:hidden bg-[#212121]/98 border-t border-white/5 supports-[backdrop-filter]:backdrop-blur-xl overflow-hidden">
-            <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col gap-3 max-w-[100vw]">
+            <div className="lg:hidden bg-[#212121]/98 border-t border-white/5 supports-[backdrop-filter]:backdrop-blur-xl overflow-hidden">
+            <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col gap-1 max-w-[100vw]">
               <button
                 onClick={() => scrollToSection("leistungen")}
-                className="text-left text-sm font-medium text-white/80 hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-white/5"
+                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "leistungen" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
               >
                 Leistungen
               </button>
               <button
                 onClick={() => scrollToSection("ueber-uns")}
-                className="text-left text-sm font-medium text-white/80 hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-white/5"
+                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "ueber-uns" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
               >
                 Über uns
               </button>
               <button
                 onClick={() => scrollToSection("team")}
-                className="text-left text-sm font-medium text-white/80 hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-white/5"
+                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "team" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
               >
                 Team
               </button>
               <button
                 onClick={() => scrollToSection("warum")}
-                className="text-left text-sm font-medium text-white/80 hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-white/5"
+                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "warum" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
               >
                 Vorteile
               </button>
               <button
                 onClick={() => scrollToSection("features")}
-                className="text-left text-sm font-medium text-white/80 hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-white/5"
+                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "features" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
               >
                 Servicequalität
               </button>
               <button
                 onClick={() => scrollToSection("prozess")}
-                className="text-left text-sm font-medium text-white/80 hover:text-white transition-colors py-2 px-2 rounded-lg hover:bg-white/5"
+                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "prozess" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
               >
                 Arbeitsweise
               </button>
               <button
                 onClick={() => scrollToSection("kontakt")}
-                className="text-left px-6 py-2.5 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-lg transition-colors text-sm w-fit mt-2"
+                className="text-left min-h-[44px] px-6 py-3 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-lg transition-colors text-sm w-fit mt-2"
               >
                 Kontakt
               </button>
@@ -464,20 +574,35 @@ export default function Home() {
               </p>
 
               <div className="hero-animate flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-1">
-                <button
+                <motion.button
+                  type="button"
                   onClick={() => scrollToSection("kontakt")}
-                  className="group px-10 py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] hover:from-[#e61700] hover:to-[#ff1900] text-white text-base font-bold rounded-2xl transition-all duration-300 shadow-2xl shadow-[#ff1900]/30 hover:shadow-[#ff1900]/50 flex items-center justify-center gap-2.5 hover:-translate-y-1 hover:scale-[1.02]"
+                  className="group px-10 py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] text-white text-base font-bold shadow-2xl shadow-[#ff1900]/30 flex items-center justify-center gap-2.5 rounded-2xl"
+                  initial={{ borderRadius: "1rem" }}
+                  whileHover={{
+                    scale: 1.03,
+                    boxShadow: "0 0 32px rgba(255,25,0,0.45), 0 0 60px rgba(255,25,0,0.2)",
+                    transition: { duration: 0.25 },
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 320, damping: 22 }}
                 >
                   Angebot anfragen
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" strokeWidth={2.5} />
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   onClick={() => scrollToSection("leistungen")}
-                  className="px-10 py-4 bg-white/[0.03] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.2] text-white text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] backdrop-blur-sm"
+                  className="px-10 py-4 bg-white/[0.03] border border-white/[0.1] text-white text-base font-semibold rounded-2xl backdrop-blur-sm"
+                  whileHover={{ scale: 1.02, y: -4, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.08)" }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
                   Leistungen ansehen
-                </button>
+                </motion.button>
               </div>
+              <p className="hero-animate text-white/50 text-sm mt-2 text-center lg:text-left">
+                Wir antworten in der Regel innerhalb von 24 Stunden.
+              </p>
             </div>
 
             {/* Right / Bottom: Person image – auf Mobile schlanker, dekorative Elemente nur ab md */}
@@ -489,12 +614,6 @@ export default function Home() {
               <div className="hidden md:block absolute top-[20%] right-[5%] w-4 h-4 md:w-5 md:h-5 bg-[#ff1900] rounded-full z-10 opacity-60" />
               <div className="hidden md:block absolute top-[35%] right-[-2%] w-2.5 h-2.5 md:w-3 md:h-3 bg-[#ff1900]/40 rounded-full z-10" />
               <div className="hidden md:block absolute bottom-[30%] right-[0%] w-3 h-3 bg-white/20 rounded-full z-10" />
-
-              {/* Floating badge */}
-              <div className="absolute top-[15%] md:top-[12%] right-[0%] md:right-[-5%] z-20 hidden sm:flex items-center gap-2.5 px-4 py-2.5 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[11px] text-white/80 font-semibold whitespace-nowrap">Verfügbar für Projekte</span>
-              </div>
 
               {/* Bottom-left floating card – IT & Grafikdesign */}
               <div className="absolute bottom-[20%] md:bottom-[18%] left-[-5%] md:left-[-15%] z-20 hidden sm:flex flex-col px-4 py-3 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl">
@@ -537,21 +656,31 @@ export default function Home() {
       {/* Was wir anders machen + 3D-Hover-Card */}
       <section className="py-16 md:py-24 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-10 md:mb-12">
-            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Unser Ansatz</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white mb-4">
+          <motion.div
+            className="text-center mb-10 md:mb-12"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Unser Ansatz</motion.p>
+            <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white mb-4">
               Was wir <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">anders</span> machen
-            </h2>
-            <p className="text-base md:text-lg text-white/50 font-light max-w-2xl mx-auto">
+            </motion.h2>
+            <motion.p variants={staggerItem} className="text-base md:text-lg text-white/50 font-light max-w-2xl mx-auto">
               IT, Bau & Handel Lösungen, die nicht von der Stange kommen – maßgeschneidert und zuverlässig.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           {/* Terminal-Card mit 3D-Hover */}
-          <div
+          <motion.div
             className="flex justify-center mb-10 md:mb-12 [perspective:1000px]"
             onMouseMove={handleCardMouseMove}
             onMouseLeave={handleCardMouseLeave}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={motionViewport}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             <div
               ref={card3dRef}
@@ -583,10 +712,16 @@ export default function Home() {
                 <Monitor className="w-4 h-4 text-white/60" strokeWidth={2} />
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Werte */}
-          <div className="grid grid-cols-3 gap-6 md:gap-10 max-w-3xl mx-auto">
+          <motion.div
+            className="grid grid-cols-3 gap-6 md:gap-10 max-w-3xl mx-auto"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
             {[
               { icon: Zap, label: "Schnell", sub: "24h Reaktionszeit" },
               { icon: Sparkles, label: "Sauber", sub: "Höchste Qualität" },
@@ -594,32 +729,38 @@ export default function Home() {
             ].map((item, idx) => {
               const Ico = item.icon;
               return (
-                <div key={idx} className="text-center space-y-3">
-                  <div className="mx-auto w-12 h-12 md:w-14 md:h-14 rounded-xl bg-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center">
+                <motion.div key={idx} variants={staggerItem} className="text-center space-y-3">
+                  <motion.div
+                    className="mx-auto w-12 h-12 md:w-14 md:h-14 rounded-xl bg-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center"
+                    whileHover={{ scale: 1.08, transition: { duration: 0.2 } }}
+                  >
                     <Ico className="w-6 h-6 md:w-7 md:h-7 text-[#ff1900]" strokeWidth={1.5} />
-                  </div>
+                  </motion.div>
                   <p className="text-lg md:text-xl font-bold text-white">{item.label}</p>
                   <p className="text-white/45 font-light text-xs md:text-sm">{item.sub}</p>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Leistungen Section */}
-      <section id="leistungen" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden">
-        {/* Dezente geometrische Deko */}
-        <div className="hidden md:block absolute top-24 left-[-80px] w-[260px] h-[260px] rounded-full border border-white/[0.04] pointer-events-none" />
-        <div className="hidden md:block absolute bottom-16 right-[-60px] w-[180px] h-[180px] rounded-full border border-[#ff1900]/[0.08] pointer-events-none" />
-
+      <section id="leistungen" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <SectionBackground />
         <div className="container mx-auto max-w-7xl relative z-10">
-          <div className="text-center mb-16 md:mb-20">
-            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Was wir bieten</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+          <motion.div
+            className="text-center mb-16 md:mb-20"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Was wir bieten</motion.p>
+            <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
               Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Leistungen</span>
-            </h2>
-          </div>
+            </motion.h2>
+          </motion.div>
 
           {/* Bento-Layout: IT groß, Rest kleiner */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
@@ -669,13 +810,18 @@ export default function Home() {
             ].map((service, i) => {
               const IconComponent = service.icon;
               return (
-                <div 
+                <motion.div
                   key={i}
-                  className={`group relative rounded-2xl border transition-all duration-500 supports-[backdrop-filter]:backdrop-blur-xl ${
+                  initial={{ opacity: 0, y: 36 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={motionViewport}
+                  transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                  className={`group relative rounded-2xl border transition-all duration-500 bg-[#0a0a0a]/90 border-white/[0.1] supports-[backdrop-filter]:backdrop-blur-xl shadow-xl ${
                     service.wide
-                      ? 'lg:col-span-2 p-8 md:p-10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] border-[#ff1900]/20 md:hover:border-[#ff1900]/40'
-                      : 'p-7 md:p-8 bg-white/[0.02] border-white/[0.06] md:hover:border-white/[0.15]'
-                  } md:hover:bg-white/[0.05] md:hover:-translate-y-1 md:hover:shadow-xl md:hover:shadow-[#ff1900]/10 ${i % 2 === 0 ? 'scroll-in-left' : 'scroll-in-right'}`}
+                      ? 'lg:col-span-2 p-8 md:p-10 md:hover:border-[#ff1900]/40'
+                      : 'p-7 md:p-8 md:hover:border-white/[0.2]'
+                  } ${service.wide ? 'border-[#ff1900]/20' : ''} md:hover:-translate-y-1 md:hover:shadow-xl md:hover:shadow-[#ff1900]/10 ${i % 2 === 0 ? 'scroll-in-left' : 'scroll-in-right'}`}
                 >
                   {service.wide && (
                     <div className="absolute top-0 left-8 w-16 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />
@@ -698,7 +844,7 @@ export default function Home() {
                       </ul>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -706,13 +852,20 @@ export default function Home() {
       </section>
 
       {/* Über uns Section */}
-      <section id="ueber-uns" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
+      <section id="ueber-uns" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <SectionBackground />
         <div className="container mx-auto max-w-5xl relative z-10">
           <div className="md:flex md:gap-12 lg:gap-16 items-start">
             {/* Akzentlinie links (nur Desktop) */}
             <div className="hidden md:block flex-shrink-0 w-px self-stretch bg-gradient-to-b from-[#ff1900] via-[#ff1900]/40 to-transparent" />
 
-            <div className="space-y-10">
+            <motion.div
+              className="flex-1 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl p-8 md:p-10 space-y-10"
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={motionViewport}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            >
               <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold">Über uns</p>
               <p className="text-2xl md:text-3xl lg:text-[2.5rem] text-white font-light leading-[1.35]">
                 <span className="text-[#ff1900] font-bold">Plesnicar Solutions</span> ist ein österreichisches Unternehmen 
@@ -725,20 +878,27 @@ export default function Home() {
                 Bauingenieur mit 40+ Jahren Bau-Erfahrung. Unser Angebot umfasst IT-Beratung, PC-Bau, digitale Lösungen, 
                 Grafikdesign, Bau/Hausbetreuung sowie Handel – alles aus einer Hand, <span className="text-[#ff1900] font-medium">regional in Österreich</span> und mit Remote-IT-Möglichkeiten.
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Team Section */}
-      <section id="team" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-14 md:mb-18">
-            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Das Team</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+      <section id="team" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <SectionBackground />
+        <div className="container mx-auto max-w-5xl relative z-10">
+          <motion.div
+            className="text-center mb-14 md:mb-18"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Das Team</motion.p>
+            <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
               Ihre <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Ansprechpartner</span>
-            </h2>
-          </div>
+            </motion.h2>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 gap-6 md:gap-8">
             {[
@@ -769,12 +929,17 @@ export default function Home() {
                 sigLabel: "Ing. Dietmar Plesnicar · Unterstützung"
               }
             ].map((person, i) => (
-              <div
+              <motion.div
                 key={i}
-                className={`relative rounded-2xl border transition-all duration-500 ${
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={motionViewport}
+                transition={{ duration: 0.5, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                className={`relative rounded-2xl border transition-all duration-500 bg-[#0a0a0a]/90 border-white/[0.1] backdrop-blur-xl shadow-xl p-7 md:p-9 ${
                   person.isOwner 
-                    ? 'p-7 md:p-9 bg-gradient-to-br from-white/[0.03] to-[#ff1900]/[0.04] border-[#ff1900]/25 md:hover:border-[#ff1900]/45 md:-translate-y-1' 
-                    : 'p-7 md:p-9 bg-white/[0.02] border-white/[0.06] md:hover:border-white/[0.12] md:translate-y-4'
+                    ? 'md:hover:border-[#ff1900]/45 border-[#ff1900]/25' 
+                    : 'md:hover:border-white/[0.2] md:translate-y-4'
                 } md:hover:shadow-xl md:hover:shadow-[#ff1900]/10`}
               >
                 {person.isOwner && <div className="absolute top-0 left-7 w-12 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />}
@@ -813,40 +978,47 @@ export default function Home() {
                   ))}
                 </div>
 
-                {/* Signatur + Kontakt */}
-                <div className="flex items-end justify-between pt-4 border-t border-white/[0.06]">
-                  <div className="space-y-2">
-                    <a href={person.phoneHref} className="flex items-center gap-2.5 text-white/70 hover:text-[#ff1900] transition-colors text-sm">
-                      <Phone className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2} />
-                      <span className="font-light">{person.phone}</span>
+                {/* Signatur + Kontakt – primary (red) / secondary (glass) wie Hero */}
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pt-4 border-t border-white/[0.06]">
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
+                    <a href={person.phoneHref} className="inline-flex items-center justify-center gap-2 min-w-[140px] px-4 py-2.5 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors shadow-lg shadow-[#ff1900]/25 whitespace-nowrap">
+                      <Phone className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} />
+                      <span className="truncate">{person.phone}</span>
                     </a>
-                    <a href="mailto:plesnicaroffice@gmail.com" className="flex items-center gap-2.5 text-white/70 hover:text-[#ff1900] transition-colors text-sm">
-                      <Mail className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2} />
-                      <span className="font-light">E-Mail</span>
+                    <a href="mailto:plesnicaroffice@gmail.com" className="inline-flex items-center justify-center gap-2 min-w-[120px] px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.1] hover:bg-white/[0.08] text-white font-medium text-sm transition-colors whitespace-nowrap shrink-0">
+                      <Mail className="w-3.5 h-3.5 shrink-0 text-[#ff1900]" strokeWidth={2} />
+                      E-Mail
                     </a>
                   </div>
-                  <div className="flex flex-col items-end gap-0.5">
+                  <div className="flex flex-col items-start sm:items-end gap-0.5 shrink-0 ml-0 sm:ml-4">
                     <span className="block brightness-0 invert" aria-hidden="true">
                       <Image src={person.sigImg} alt={person.sigAlt} width={120} height={40} className="h-5 w-auto opacity-80" loading="lazy" />
                     </span>
                     <p className="text-[8px] text-white/40 tracking-[0.15em] uppercase">{person.sigLabel}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Unsere Vorteile Section – Bento */}
-      <section id="warum" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-14 md:mb-18">
-            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Warum wir</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+      <section id="warum" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <SectionBackground />
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <motion.div
+            className="text-center mb-14 md:mb-18"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Warum wir</motion.p>
+            <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
               Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Vorteile</span>
-            </h2>
-          </div>
+            </motion.h2>
+          </motion.div>
 
           {/* Bento: 2 breite + 2 schmale */}
           <div className="grid md:grid-cols-2 gap-5 md:gap-6">
@@ -858,9 +1030,14 @@ export default function Home() {
             ].map((benefit, i) => {
               const IconComponent = benefit.icon;
               return (
-                <div 
+                <motion.div
                   key={i}
-                  className={`group flex items-start gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] transition-all duration-500 md:hover:border-white/[0.14] md:hover:bg-white/[0.04] md:hover:-translate-y-1 md:hover:shadow-lg md:hover:shadow-[#ff1900]/10 ${benefit.wide ? 'md:col-span-2 p-7 md:p-8' : 'p-6 md:p-7'} ${i % 2 === 0 ? 'scroll-in-left' : 'scroll-in-right'}`}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={motionViewport}
+                  transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                  className={`group flex items-start gap-5 rounded-2xl border bg-[#0a0a0a]/90 border-white/[0.1] backdrop-blur-xl shadow-xl transition-all duration-500 md:hover:border-white/[0.2] md:hover:shadow-lg md:hover:shadow-[#ff1900]/10 ${benefit.wide ? 'md:col-span-2 p-7 md:p-8' : 'p-6 md:p-7'} ${i % 2 === 0 ? 'scroll-in-left' : 'scroll-in-right'}`}
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#ff1900]/10 border border-[#ff1900]/15 flex items-center justify-center group-hover:scale-105 transition-transform duration-400">
                     <IconComponent className="w-6 h-6 text-[#ff1900]" strokeWidth={2} />
@@ -869,7 +1046,7 @@ export default function Home() {
                     <h3 className="text-lg md:text-xl font-bold text-white mb-1.5">{benefit.title}</h3>
                     <p className="text-white/60 font-light leading-relaxed text-sm">{benefit.desc}</p>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -877,14 +1054,21 @@ export default function Home() {
       </section>
 
       {/* Servicequalität Section */}
-      <section id="features" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-14 md:mb-18">
-            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Qualität</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+      <section id="features" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <SectionBackground />
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <motion.div
+            className="text-center mb-14 md:mb-18"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Qualität</motion.p>
+            <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
               Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Servicequalität</span>
-            </h2>
-          </div>
+            </motion.h2>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {[
@@ -897,12 +1081,17 @@ export default function Home() {
             ].map((feature, i) => {
               const IconComponent = feature.icon;
               return (
-                <div
+                <motion.div
                   key={i}
-                  className={`group relative p-6 md:p-7 rounded-2xl border transition-all duration-500 md:hover:-translate-y-1 md:hover:shadow-lg md:hover:shadow-[#ff1900]/8 ${
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={motionViewport}
+                  transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                  className={`group relative p-6 md:p-7 rounded-2xl border bg-[#0a0a0a]/90 border-white/[0.1] backdrop-blur-xl shadow-xl transition-all duration-500 md:hover:shadow-lg md:hover:shadow-[#ff1900]/8 ${
                     feature.highlight
-                      ? 'bg-gradient-to-br from-white/[0.04] to-[#ff1900]/[0.03] border-[#ff1900]/20 md:hover:border-[#ff1900]/35'
-                      : 'bg-white/[0.02] border-white/[0.06] md:hover:border-white/[0.12]'
+                      ? 'border-[#ff1900]/20 md:hover:border-[#ff1900]/35'
+                      : 'md:hover:border-white/[0.2]'
                   }`}
                 >
                   {feature.highlight && <div className="absolute top-0 left-6 w-10 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />}
@@ -915,7 +1104,7 @@ export default function Home() {
                       <p className="text-white/55 font-light leading-relaxed text-sm">{feature.desc}</p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -923,14 +1112,21 @@ export default function Home() {
       </section>
 
       {/* Arbeitsweise Section – Timeline */}
-      <section id="prozess" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-14 md:mb-18">
-            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">So arbeiten wir</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+      <section id="prozess" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <SectionBackground />
+        <div className="container mx-auto max-w-5xl relative z-10">
+          <motion.div
+            className="text-center mb-14 md:mb-18"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">So arbeiten wir</motion.p>
+            <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
               Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Arbeitsweise</span>
-            </h2>
-          </div>
+            </motion.h2>
+          </motion.div>
 
           {/* Timeline */}
           <div className="relative">
@@ -944,23 +1140,26 @@ export default function Home() {
                 { step: "03", title: "Umsetzung", desc: "Professionelle Ausführung: IT-Lösungen mit Updates oder Bau/Hausbetreuung mit Terminabsprache." },
                 { step: "04", title: "Betreuung", desc: "Laufende Betreuung: IT-Support oder regelmäßige Bau/Hausbetreuung nach Bedarf." }
               ].map((process, i) => (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, x: -24 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={motionViewport}
+                  transition={{ duration: 0.5, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
                   className="scroll-in-right relative md:flex items-start gap-8 md:py-8"
-                  style={{ transitionDelay: `${i * 80}ms` }}
                 >
                   {/* Nummer-Dot */}
                   <div className="hidden md:flex flex-shrink-0 w-12 h-12 rounded-full bg-[#090a11] border-2 border-[#ff1900]/40 items-center justify-center z-10">
                     <span className="text-xs font-black text-[#ff1900]">{process.step}</span>
                   </div>
-                  <div className="flex-1 p-6 md:p-7 rounded-2xl bg-white/[0.02] border border-white/[0.06] transition-all duration-500 md:hover:border-white/[0.12] md:hover:bg-white/[0.04] md:hover:-translate-y-1 md:hover:shadow-lg md:hover:shadow-[#ff1900]/8">
+                  <div className="flex-1 p-6 md:p-7 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl transition-all duration-500 md:hover:border-white/[0.2] md:hover:-translate-y-1 md:hover:shadow-lg md:hover:shadow-[#ff1900]/8">
                     <div className="flex items-center gap-3 mb-2 md:hidden">
                       <span className="text-xs font-black text-[#ff1900] px-2 py-0.5 rounded-full border border-[#ff1900]/30 bg-[#ff1900]/10">{process.step}</span>
                     </div>
                     <h3 className="text-lg md:text-xl font-bold text-white mb-2">{process.title}</h3>
                     <p className="text-white/55 font-light leading-relaxed text-sm">{process.desc}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -968,28 +1167,41 @@ export default function Home() {
       </section>
 
       {/* Kontakt Section */}
-      <section id="kontakt" className="py-16 sm:py-20 md:py-28 px-4 sm:px-6 relative border-t border-white/5">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-12 md:mb-16">
-            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Kontakt</p>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-3">
+      <section id="kontakt" className="py-16 sm:py-20 md:py-28 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <SectionBackground />
+        <div className="container mx-auto max-w-5xl relative z-10">
+          <motion.div
+            className="text-center mb-12 md:mb-16"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Kontakt</motion.p>
+            <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl font-black tracking-tight text-white mb-3">
               Sprechen wir <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">darüber</span>
-            </h2>
-            <p className="text-white/50 font-light text-sm md:text-base max-w-lg mx-auto">
+            </motion.h2>
+            <motion.p variants={staggerItem} className="text-white/50 font-light text-sm md:text-base max-w-lg mx-auto">
               Antwort innerhalb von 24 Stunden. Dringend? Einfach anrufen.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          <motion.div
+            className="grid md:grid-cols-2 gap-6 md:gap-8"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={motionViewport}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
             {/* Ansprechpartner – einheitliches Karten-Design */}
             <div className="space-y-4">
-              <div className="p-5 md:p-6 bg-white/[0.03] border border-white/[0.08] rounded-2xl hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
+              <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
                 <p className="text-white font-bold text-base mb-1">Boris Plesnicar</p>
                 <p className="text-white/55 text-sm mb-4">IT & Grafikdesign</p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <a
                     href="tel:+436644678382"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors shadow-lg shadow-[#ff1900]/25"
                   >
                     <Phone className="w-4 h-4" strokeWidth={2.5} />
                     +43 664 4678382
@@ -997,20 +1209,20 @@ export default function Home() {
                   <a
                     href="mailto:plesnicaroffice@gmail.com"
                     title="plesnicaroffice@gmail.com"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-white font-medium text-sm transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors"
                   >
                     <Mail className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
                     E-Mail
                   </a>
                 </div>
               </div>
-              <div className="p-5 md:p-6 bg-white/[0.03] border border-white/[0.08] rounded-2xl hover:bg-white/[0.05] hover:border-white/[0.12] transition-all duration-300">
+              <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
                 <p className="text-white font-bold text-base mb-1">Ing. Dietmar Plesnicar</p>
                 <p className="text-white/55 text-sm mb-4">Bau & Hausbetreuung</p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <a
                     href="tel:+436763206308"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors shadow-lg shadow-[#ff1900]/25"
                   >
                     <Phone className="w-4 h-4" strokeWidth={2.5} />
                     +43 676 3206308
@@ -1018,7 +1230,7 @@ export default function Home() {
                   <a
                     href="mailto:plesnicaroffice@gmail.com"
                     title="plesnicaroffice@gmail.com"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-white font-medium text-sm transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors"
                   >
                     <Mail className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
                     E-Mail
@@ -1029,7 +1241,7 @@ export default function Home() {
 
             {/* Standort + Adresse + Instagram kompakt */}
             <div className="space-y-4">
-              <div className="p-5 md:p-6 bg-gradient-to-br from-white/[0.03] to-[#ff1900]/[0.02] border border-[#ff1900]/15 rounded-2xl">
+              <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl border-[#ff1900]/15">
                 <h3 className="text-white font-bold text-base mb-3">Standort</h3>
                 <div className="w-full h-48 md:h-52 rounded-xl overflow-hidden border border-white/[0.08] bg-white/[0.02]">
                   {cookieConsent?.comfort ? (
@@ -1067,7 +1279,7 @@ export default function Home() {
                 href="https://www.instagram.com/plesnicarsolutions/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300"
+                className="flex items-center gap-3 p-4 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300"
               >
                 <div className="w-10 h-10 rounded-xl bg-[#ff1900]/20 border border-[#ff1900]/30 flex items-center justify-center">
                   <Instagram className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
@@ -1075,14 +1287,14 @@ export default function Home() {
                 <span className="font-semibold text-white text-sm">@plesnicarsolutions</span>
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-10 md:py-12 px-4 sm:px-6 border-t border-white/[0.08] bg-[#0a0a0a]/50 backdrop-blur-sm overflow-hidden">
+      <footer className="py-12 md:py-16 px-4 sm:px-6 border-t border-white/[0.08] bg-[#0a0a0a]/50 backdrop-blur-sm overflow-hidden">
         <div className="container mx-auto max-w-7xl">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center">
             <Image
                 src="/logos/LogoTEXTB.png"
@@ -1094,7 +1306,7 @@ export default function Home() {
             </div>
             <div className="text-center md:text-left flex-1">
               <p className="font-bold text-white mb-1">Boris Plesnicar e.U.</p>
-              <p className="font-light text-sm text-white/60">© {new Date().getFullYear()} Plesnicar Solutions. Alle Rechte vorbehalten.</p>
+              <p className="font-light text-sm text-white/50">© {new Date().getFullYear()} Plesnicar Solutions. Alle Rechte vorbehalten.</p>
             </div>
             <div className="flex items-center gap-6">
               <a 
@@ -1117,22 +1329,47 @@ export default function Home() {
         </div>
       </footer>
 
+      {/* Back to top (mobile: über Leiste, desktop: unten rechts) */}
+      {showBackToTop && (
+        <motion.button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Nach oben scrollen"
+          className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-30 w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-white/[0.08] border border-white/[0.12] text-white/80 hover:bg-white/[0.14] hover:text-white shadow-lg"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0, opacity: 0 }}
+          whileHover={{ scale: 1.12, backgroundColor: "rgba(255,255,255,0.14)" }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        >
+          <ArrowUp className="w-5 h-5" strokeWidth={2.5} />
+        </motion.button>
+      )}
+
       {/* Mobile bottom contact bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 md:hidden pointer-events-none">
-        <div className="mx-4 mb-4 rounded-xl bg-[#111111]/95 border border-white/10 shadow-lg shadow-black/40 flex gap-3 p-3 pointer-events-auto">
+        <div className="mx-4 mb-4 rounded-xl bg-[#111111]/95 border border-white/10 shadow-lg shadow-black/40 flex gap-2 sm:gap-3 p-3 pointer-events-auto">
           <a
             href="tel:+436644678382"
-            className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white text-sm font-semibold py-2 transition-colors"
+            className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white text-sm font-semibold py-3 transition-colors"
           >
-            <Phone className="w-4 h-4" strokeWidth={2} />
+            <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
             <span className="truncate">IT & Grafik</span>
           </a>
           <a
             href="tel:+436763206308"
-            className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-semibold py-2 border border-white/15 transition-colors"
+            className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-semibold py-3 border border-white/15 transition-colors"
           >
-            <Phone className="w-4 h-4" strokeWidth={2} />
+            <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
             <span className="truncate">Bau & Hausbetreuung</span>
+          </a>
+          <a
+            href="mailto:plesnicaroffice@gmail.com"
+            className="flex-none min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-colors"
+            aria-label="E-Mail schreiben"
+          >
+            <Mail className="w-5 h-5" strokeWidth={2} />
           </a>
         </div>
       </div>
@@ -1155,7 +1392,7 @@ type CookieBannerProps = {
 
 function CookieBanner({ onAllowEssential, onAllowAll }: CookieBannerProps) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50">
+    <div className="fixed inset-x-0 z-50 bottom-24 md:bottom-0">
       <div className="mx-4 mb-4 md:mx-auto md:mb-6 md:max-w-4xl rounded-2xl bg-[#050506]/95 border border-white/[0.12] shadow-2xl shadow-black/60 backdrop-blur-xl">
         <div className="px-4 py-4 md:px-6 md:py-5 flex flex-col gap-3 md:gap-4">
           <div className="flex items-start gap-3">
@@ -1184,14 +1421,14 @@ function CookieBanner({ onAllowEssential, onAllowAll }: CookieBannerProps) {
             <button
               type="button"
               onClick={onAllowEssential}
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/[0.02] px-3.5 py-2 text-xs md:text-sm font-semibold text-white/90 hover:bg-white/[0.08] hover:border-white/40 transition-all duration-200"
+              className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/[0.02] px-3.5 py-3 text-xs md:text-sm font-semibold text-white/90 hover:bg-white/[0.08] hover:border-white/40 transition-all duration-200"
             >
               Nur notwendige Cookies
             </button>
             <button
               type="button"
               onClick={onAllowAll}
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#ff1900] to-[#ff2d00] px-4 py-2 text-xs md:text-sm font-semibold text-white shadow-lg shadow-[#ff1900]/30 hover:from-[#e61700] hover:to-[#ff1900] hover:shadow-xl hover:shadow-[#ff1900]/40 transition-all duration-200"
+              className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#ff1900] to-[#ff2d00] px-4 py-3 text-xs md:text-sm font-semibold text-white shadow-lg shadow-[#ff1900]/30 hover:from-[#e61700] hover:to-[#ff1900] hover:shadow-xl hover:shadow-[#ff1900]/40 transition-all duration-200"
             >
               Alle akzeptieren
             </button>

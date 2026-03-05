@@ -14,11 +14,15 @@ function dispatchLoadingClosed() {
   }
 }
 
+const SKIP_BUTTON_DELAY_MS = 2400;
+
 export function LoadingScreen({ children }: { children: React.ReactNode }) {
   const [visible, setVisible] = useState(true);
+  const [showSkipButton, setShowSkipButton] = useState(false);
   const mountedAt = useRef(Date.now());
   const loadFired = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const skipButtonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const hide = () => {
     setVisible(false);
@@ -33,6 +37,16 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
     if (!isDesktop) {
       dispatchLoadingClosed();
     }
+  }, []);
+
+  useEffect(() => {
+    skipButtonTimeoutRef.current = setTimeout(() => setShowSkipButton(true), SKIP_BUTTON_DELAY_MS);
+    return () => {
+      if (skipButtonTimeoutRef.current) {
+        clearTimeout(skipButtonTimeoutRef.current);
+        skipButtonTimeoutRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -91,6 +105,18 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
           className="max-h-[70vh] max-w-[90vw] w-auto h-auto object-contain pointer-events-none"
           aria-label="Ladeanimation"
         />
+        {showSkipButton && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClick();
+            }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors shadow-lg shadow-[#ff1900]/30 min-h-[44px]"
+          >
+            Seite anzeigen
+          </button>
+        )}
       </div>
     </>
   );
