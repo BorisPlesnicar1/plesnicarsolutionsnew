@@ -50,6 +50,7 @@ export default function Home() {
   const [cookieConsent, setCookieConsent] = useState<CookieConsent | null>(null);
   const [showCookieBanner, setShowCookieBanner] = useState(false);
   const heroTextRef = useRef<HTMLDivElement>(null);
+  const heroImageRef = useRef<HTMLDivElement>(null);
 
   const updateConsent = (comfort: boolean) => {
     const value: CookieConsent = {
@@ -93,6 +94,7 @@ export default function Home() {
   useEffect(() => {
     const runHeroAnimation = () => {
       const el = heroTextRef.current;
+      const imgWrap = heroImageRef.current;
       if (!el) return;
 
       const lines = el.querySelectorAll(".hero-line");
@@ -110,7 +112,6 @@ export default function Home() {
         easing: "easeOutExpo",
         duration: 500,
         complete: () => {
-          // Fallback: alles sichtbar, falls Anime.js einzelne Ziele verpasst (z. B. Safari)
           allChars.forEach((node) => {
             (node as HTMLElement).style.opacity = "1";
             (node as HTMLElement).style.transform = "none";
@@ -119,8 +120,28 @@ export default function Home() {
             (node as HTMLElement).style.opacity = "1";
             (node as HTMLElement).style.transform = "none";
           });
+          if (imgWrap) {
+            imgWrap.style.opacity = "1";
+            imgWrap.style.transform = "none";
+          }
         },
       });
+
+      // Hero-Bild: von rechts reingeleitet + Fade (parallel zum Text)
+      if (imgWrap) {
+        tl.add(
+          {
+            targets: imgWrap,
+            translateX: [48, 0],
+            opacity: [0, 1],
+            scale: [0.96, 1],
+            duration: 1000,
+            easing: "easeOutCubic",
+            delay: 180,
+          },
+          0
+        );
+      }
 
       // Headline: Buchstaben nacheinander „springen“ (pro Zeile)
       for (let i = 0; i < lines.length; i++) {
@@ -180,26 +201,64 @@ export default function Home() {
     return () => window.removeEventListener("ps-loading-closed", onLoadingClosed);
   }, []);
 
+  // Scroll-in für Leistungen / Warum / Prozess (nur Desktop)
+  const rafRef = useRef<number | null>(null);
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-    if (!isDesktop) return;
-    const targets = document.querySelectorAll(".scroll-in-left, .scroll-in-right");
-    if (!targets.length) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("in-view");
-            io.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
-    );
-    targets.forEach((t) => io.observe(t));
-    return () => io.disconnect();
+    const mq = window.matchMedia("(min-width: 768px)");
+    if (!mq.matches) return;
+    const update = () => {
+      const targets = document.querySelectorAll<HTMLElement>(".scroll-in-left, .scroll-in-right");
+      const vh = window.innerHeight;
+      targets.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (vh * 0.5)));
+        if (p > 0.05) {
+          const isLeft = el.classList.contains("scroll-in-left");
+          const eased = 1 - (1 - p) ** 2;
+          const tx = isLeft ? -44 * (1 - eased) : 44 * (1 - eased);
+          el.style.transform = `translateX(${tx}px)`;
+          el.style.opacity = String(0.3 + 0.7 * eased);
+        }
+      });
+    };
+    const onScroll = () => {
+      if (rafRef.current != null) return;
+      rafRef.current = requestAnimationFrame(() => {
+        update();
+        rafRef.current = null;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
+
+  // 3D-Hover für Terminal-Card („Was wir anders machen“)
+  const card3dRef = useRef<HTMLDivElement>(null);
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = card3dRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    const maxDeg = 14;
+    const rotY = x * maxDeg;
+    const rotX = -y * maxDeg;
+    card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`;
+    card.style.transition = "none";
+  };
+  const handleCardMouseLeave = () => {
+    const card = card3dRef.current;
+    if (!card) return;
+    card.style.transition = "transform 0.4s ease-out";
+    card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+  };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -456,8 +515,11 @@ export default function Home() {
                 <span className="text-[10px] text-white/50 font-medium leading-snug mt-0.5">Handel mit Baustoffen · Verkauf & Zubehör · Individuelle Lösungen · Beratung</span>
               </div>
 
-              {/* Bild: Mobile kompakter, kein min-height; ab md wie bisher */}
-              <div className="relative z-10 w-[min(100%,300px)] sm:w-[340px] md:w-[450px] lg:w-[500px] xl:w-[560px] min-h-0 md:min-h-[70vh] flex items-center justify-center lg:justify-end">
+              {/* Bild: Einblend-Animation beim Laden (Anime.js) */}
+              <div
+                ref={heroImageRef}
+                className="hero-image-wrap relative z-10 w-[min(100%,300px)] sm:w-[340px] md:w-[450px] lg:w-[500px] xl:w-[560px] min-h-0 md:min-h-[70vh] flex items-center justify-center lg:justify-end"
+              >
                 <Image
                   src="/portraits/plesnicart.png?v=2"
                   alt="Boris Plesnicar – Inhaber von Plesnicar Solutions"
@@ -468,6 +530,79 @@ export default function Home() {
                 />
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Was wir anders machen + 3D-Hover-Card */}
+      <section className="py-16 md:py-24 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-10 md:mb-12">
+            <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Unser Ansatz</p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white mb-4">
+              Was wir <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">anders</span> machen
+            </h2>
+            <p className="text-base md:text-lg text-white/50 font-light max-w-2xl mx-auto">
+              IT, Bau & Handel Lösungen, die nicht von der Stange kommen – maßgeschneidert und zuverlässig.
+            </p>
+          </div>
+
+          {/* Terminal-Card mit 3D-Hover */}
+          <div
+            className="flex justify-center mb-10 md:mb-12 [perspective:1000px]"
+            onMouseMove={handleCardMouseMove}
+            onMouseLeave={handleCardMouseLeave}
+          >
+            <div
+              ref={card3dRef}
+              className="relative w-full max-w-[320px] h-[200px] md:w-[400px] md:h-[260px] rounded-2xl border border-white/[0.1] bg-[#0c0c14]/95 backdrop-blur-xl shadow-2xl shadow-[#ff1900]/20 cursor-default"
+              style={{ transformStyle: "preserve-3d", transition: "transform 0.4s ease-out" }}
+            >
+              <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                <div className="flex items-center gap-2 px-5 py-3 bg-white/[0.03] border-b border-white/[0.06]">
+                  <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+                  <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+                  <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+                  <span className="ml-3 text-[11px] text-white/40 font-mono">plesnicar-solutions.tsx</span>
+                </div>
+                <div className="p-5 font-mono text-xs lg:text-sm leading-relaxed space-y-1">
+                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">solution</span> = <span className="text-[#98c379]">&quot;maßgeschneidert&quot;</span>;</p>
+                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">qualität</span> = <span className="text-[#d19a66]">100</span>;</p>
+                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">branchen</span> = <span className="text-[#d19a66]">IT & Bau & Handel</span>;</p>
+
+                  <p className="text-white/20">&#47;&#47; ...</p>
+                  <p><span className="text-[#c678dd]">export</span> <span className="text-[#c678dd]">default</span> <span className="text-[#61afef]">function</span> <span className="text-[#e5c07b]">Build</span>() &#123;</p>
+                  <p className="pl-4"><span className="text-[#c678dd]">return</span> &lt;<span className="text-[#e06c75]">Ergebnis</span> <span className="text-[#d19a66]">perfekt</span> /&gt;;</p>
+                  <p>&#125;</p>
+                </div>
+              </div>
+              <div className="absolute -top-4 -right-4 w-10 h-10 rounded-xl bg-[#ff1900] flex items-center justify-center shadow-lg shadow-[#ff1900]/40" style={{ transform: "translateZ(40px)" }}>
+                <Code2 className="w-5 h-5 text-white" strokeWidth={2.5} />
+              </div>
+              <div className="absolute -bottom-3 -left-3 w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.1] flex items-center justify-center" style={{ transform: "translateZ(30px)" }}>
+                <Monitor className="w-4 h-4 text-white/60" strokeWidth={2} />
+              </div>
+            </div>
+          </div>
+
+          {/* Werte */}
+          <div className="grid grid-cols-3 gap-6 md:gap-10 max-w-3xl mx-auto">
+            {[
+              { icon: Zap, label: "Schnell", sub: "24h Reaktionszeit" },
+              { icon: Sparkles, label: "Sauber", sub: "Höchste Qualität" },
+              { icon: Rocket, label: "Modern", sub: "Aktuelle Technologien" }
+            ].map((item, idx) => {
+              const Ico = item.icon;
+              return (
+                <div key={idx} className="text-center space-y-3">
+                  <div className="mx-auto w-12 h-12 md:w-14 md:h-14 rounded-xl bg-[#ff1900]/10 border border-[#ff1900]/20 flex items-center justify-center">
+                    <Ico className="w-6 h-6 md:w-7 md:h-7 text-[#ff1900]" strokeWidth={1.5} />
+                  </div>
+                  <p className="text-lg md:text-xl font-bold text-white">{item.label}</p>
+                  <p className="text-white/45 font-light text-xs md:text-sm">{item.sub}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -656,8 +791,10 @@ export default function Home() {
                   <div className="flex-1 pt-0.5">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="font-bold text-white text-lg">{person.name}</h3>
-                      {person.isOwner && (
+                      {person.isOwner ? (
                         <span className="px-2 py-0.5 bg-[#ff1900] text-white text-[10px] font-bold rounded uppercase tracking-wider">Inhaber</span>
+                      ) : (
+                        <span className="px-2 py-0.5 bg-white/[0.06] text-white/45 text-[10px] font-semibold rounded uppercase tracking-wider">Unterstützung</span>
                       )}
                     </div>
                     <p className={`text-sm mb-1 ${person.isOwner ? 'text-[#ff1900] font-semibold' : 'text-white/55 font-medium'}`}>{person.role}</p>

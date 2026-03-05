@@ -77,6 +77,11 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
 }
 
+/* Hero-Bild: Start unsichtbar für Einblend-Animation (Anime.js) */
+.hero-image-wrap {
+  opacity: 0;
+}
+
 /* Rot pro Buchstabe (Animation sichtbar + eindeutig rot) */
 .hero-line-gradient .hero-char {
   color: #ff2d00;
@@ -88,12 +93,11 @@ section[id] {
   visibility: visible !important;
 }
 
-/* Desktop-only scroll reveal (x-axis) */
+/* Desktop-only scroll reveal: scroll-driven X (JS setzt transform/opacity) */
 @media (min-width: 768px) {
   .scroll-in-left,
   .scroll-in-right {
     opacity: 0;
-    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform, opacity;
   }
   .scroll-in-left {
