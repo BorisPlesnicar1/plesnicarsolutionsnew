@@ -546,7 +546,11 @@ export default function Home() {
                 key={id}
                 href={`#${id}`}
                 onClick={(e) => { e.preventDefault(); scrollToSection(id); }}
-                className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === id ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
+                className={`min-h-[44px] px-3 py-2.5 text-sm rounded-lg transition-all duration-200 flex items-center border-b-[3px] -mb-[1px] ${
+                  activeSection === id
+                    ? "text-white font-semibold bg-[#ff1900]/15 border-[#ff1900]"
+                    : "text-white/60 border-transparent font-medium hover:text-white hover:bg-white/5"
+                }`}
               >
                 {label}
               </a>
@@ -585,7 +589,11 @@ export default function Home() {
                   key={id}
                   href={`#${id}`}
                   onClick={(e) => { e.preventDefault(); scrollToSection(id); }}
-                  className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === id ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
+                  className={`text-left text-sm transition-colors min-h-[44px] py-3 pl-4 pr-3 rounded-r-lg flex items-center border-l-4 ${
+                    activeSection === id
+                      ? "text-white font-semibold bg-[#ff1900]/20 border-[#ff1900]"
+                      : "text-white/70 font-medium border-transparent hover:text-white hover:bg-white/5"
+                  }`}
                 >
                   {label}
                 </a>
@@ -593,7 +601,11 @@ export default function Home() {
               <a
                 href="#kontakt"
                 onClick={(e) => { e.preventDefault(); scrollToSection("kontakt"); }}
-                className="text-left min-h-[44px] px-6 py-3 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-lg transition-colors text-sm w-fit mt-2"
+                className={`text-left min-h-[44px] px-6 py-3 font-semibold rounded-lg transition-colors text-sm w-fit mt-2 ${
+                  activeSection === "kontakt"
+                    ? "bg-[#ff1900] text-white ring-2 ring-white/50 ring-offset-2 ring-offset-[#212121]"
+                    : "bg-[#ff1900] hover:bg-[#e61700] text-white"
+                }`}
               >
                 Kontakt
               </a>
