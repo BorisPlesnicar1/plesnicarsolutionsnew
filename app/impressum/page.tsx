@@ -78,6 +78,24 @@ export default function Impressum() {
                   plesnicaroffice@gmail.com
                 </a>
               </p>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Festnetz:</strong>{" "}
+                <a href="tel:+43273432048" className="text-[#ff1900] hover:underline">
+                  02734/32048
+                </a>
+              </p>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Mobil (IT & Grafik):</strong>{" "}
+                <a href="tel:+436644678382" className="text-[#ff1900] hover:underline">
+                  +43 664 4678382
+                </a>
+              </p>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Mobil (Bau & Hausbetreuung):</strong>{" "}
+                <a href="tel:+436763206308" className="text-[#ff1900] hover:underline">
+                  +43 676 3206308
+                </a>
+              </p>
             </section>
 
             <section>

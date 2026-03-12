@@ -87,7 +87,7 @@ const jsonLd = {
         height: 60,
       },
       email: "plesnicaroffice@gmail.com",
-      telephone: "+436644678382",
+      telephone: ["+436644678382", "+43273432048"],
       address: {
         "@type": "PostalAddress",
         streetAddress: "Hartriegelstraße 12",
@@ -123,7 +123,7 @@ const jsonLd = {
       description:
         "IT-Beratung, Grafikdesign, Bau, Hausbetreuung & Handel aus Langenlois, Österreich. Moderne IT-Lösungen und über 40 Jahre Bauwesen-Erfahrung aus einer Hand.",
       priceRange: "€€",
-      telephone: "+436644678382",
+      telephone: ["+436644678382", "+43273432048"],
       email: "plesnicaroffice@gmail.com",
       address: {
         "@type": "PostalAddress",

@@ -179,7 +179,8 @@ export default function Datenschutz() {
               <h3 className="text-xl font-bold text-white mb-4">Sie erreichen uns unter folgenden Kontaktdaten:</h3>
               <p className="mb-4">
                 <strong className="text-white font-semibold">Webseitenbetreiber:</strong> Plesnicar Solutions<br />
-                <strong className="text-white font-semibold">Telefonnummer:</strong> +43 664 4678382<br />
+                <strong className="text-white font-semibold">Telefon (Festnetz):</strong> 02734/32048<br />
+                <strong className="text-white font-semibold">Telefon (Mobil):</strong> +43 664 4678382<br />
                 <strong className="text-white font-semibold">Email:</strong>{" "}
                 <a href="mailto:plesnicaroffice@gmail.com" className="text-[#ff1900] hover:underline">
                   plesnicaroffice@gmail.com

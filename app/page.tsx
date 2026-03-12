@@ -1165,6 +1165,10 @@ export default function Home() {
                       <Phone className="w-3.5 h-3.5 shrink-0" strokeWidth={2.5} />
                       <span className="truncate">{person.phone}</span>
                     </a>
+                    <a href="tel:+43273432048" className="inline-flex items-center justify-center gap-2 min-w-[120px] px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.1] hover:bg-white/[0.08] text-white font-medium text-sm transition-colors whitespace-nowrap shrink-0">
+                      <Phone className="w-3.5 h-3.5 shrink-0 text-[#ff1900]" strokeWidth={2} />
+                      Festnetz 02734/32048
+                    </a>
                     <a href="mailto:plesnicaroffice@gmail.com" className="inline-flex items-center justify-center gap-2 min-w-[120px] px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.1] hover:bg-white/[0.08] text-white font-medium text-sm transition-colors whitespace-nowrap shrink-0">
                       <Mail className="w-3.5 h-3.5 shrink-0 text-[#ff1900]" strokeWidth={2} />
                       E-Mail
@@ -1378,13 +1382,20 @@ export default function Home() {
               <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
                 <p className="text-white font-bold text-base mb-1">Boris Plesnicar</p>
                 <p className="text-white/55 text-sm mb-4">IT & Grafikdesign</p>
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                   <a
                     href="tel:+436644678382"
                     className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors shadow-lg shadow-[#ff1900]/25"
                   >
                     <Phone className="w-4 h-4" strokeWidth={2.5} />
                     +43 664 4678382
+                  </a>
+                  <a
+                    href="tel:+43273432048"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors"
+                  >
+                    <Phone className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
+                    Festnetz 02734/32048
                   </a>
                   <a
                     href="mailto:plesnicaroffice@gmail.com"
@@ -1399,13 +1410,20 @@ export default function Home() {
               <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
                 <p className="text-white font-bold text-base mb-1">Ing. Dietmar Plesnicar</p>
                 <p className="text-white/55 text-sm mb-4">Bau & Hausbetreuung</p>
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                   <a
                     href="tel:+436763206308"
                     className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors shadow-lg shadow-[#ff1900]/25"
                   >
                     <Phone className="w-4 h-4" strokeWidth={2.5} />
                     +43 676 3206308
+                  </a>
+                  <a
+                    href="tel:+43273432048"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors"
+                  >
+                    <Phone className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
+                    Festnetz 02734/32048
                   </a>
                   <a
                     href="mailto:plesnicaroffice@gmail.com"
@@ -1454,6 +1472,12 @@ export default function Home() {
                 </div>
                 <p className="text-white/65 font-light text-sm mt-3">Hartriegelstraße 12, 3550 Langenlois</p>
                 <p className="text-white/50 text-xs mt-0.5">Boris Plesnicar e.U. · IT auch remote</p>
+                <p className="text-white/65 font-light text-sm mt-3">
+                  <strong className="text-white font-semibold">Festnetz:</strong>{" "}
+                  <a href="tel:+43273432048" className="text-[#ff1900] hover:underline">
+                    02734/32048
+                  </a>
+                </p>
               </div>
               <a
                 href="https://www.instagram.com/plesnicarsolutions/"
@@ -1634,8 +1658,15 @@ export default function Home() {
             ) : (
               <div className="flex flex-wrap items-stretch gap-0">
                 <a
-                  href="tel:+436644678382"
+                  href="tel:+43273432048"
                   className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-[#ff1900] hover:bg-[#e61700] active:bg-[#cc1500] text-white text-sm font-semibold transition-colors"
+                >
+                  <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
+                  <span className="truncate">Festnetz</span>
+                </a>
+                <a
+                  href="tel:+436644678382"
+                  className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white text-sm font-semibold border-l border-white/10 transition-colors"
                 >
                   <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
                   <span className="truncate">IT & Grafik</span>
