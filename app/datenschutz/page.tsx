@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Datenschutzerklärung",
+  description:
+    "Datenschutzerklärung von Plesnicar Solutions – Informationen zur Verarbeitung personenbezogener Daten gemäß DSGVO.",
+  alternates: { canonical: "/datenschutz" },
+};
 
 export default function Datenschutz() {
   return (

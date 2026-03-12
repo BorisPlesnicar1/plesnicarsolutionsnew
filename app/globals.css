@@ -251,3 +251,11 @@ html.no-backdrop-blur * {
 .hero-progress-bar {
   animation: progress-fill 1.2s ease-out forwards;
 }
+
+/* Hide scrollbar for horizontal project carousel */
+.hide-scrollbar {
+  -webkit-overflow-scrolling: touch;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

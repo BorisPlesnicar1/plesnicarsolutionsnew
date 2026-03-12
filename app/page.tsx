@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import anime from "animejs/lib/anime.es.js";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { 
   Code2, 
   Palette, 
@@ -30,8 +30,64 @@ import {
   BarChart3,
   Phone,
   Instagram,
-  Monitor
+  Monitor,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
+
+/** Project data: add more entries to show more projects (images from public/recents/<folder>). */
+type Project = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  images: string[];
+  link?: string;
+  linkLabel?: string;
+};
+
+const PROJECTS: Project[] = [
+  {
+    id: "skyline-ios",
+    title: "Skyline Hub",
+    subtitle: "iOS App",
+    description: "Im Rahmen einer Diplomarbeit an der HTL Krems entstanden. Skyline ist eine moderne iOS-App zum Verwalten deiner Fluggeschichte: Flüge erfassen, interaktive Karten, Statistiken und Achievements, Dokumenten-Upload mit OCR. Mehr Infos auf skylinehub.vercel.app.",
+    images: [
+      "/recents/Skyline Hub - iOS App/6067ABD6-A209-46DE-A975-264F6D585441_1_105_c.jpeg",
+      "/recents/Skyline Hub - iOS App/38FFC837-AA63-44CC-8594-7F7A360F27C0_1_105_c.jpeg",
+      "/recents/Skyline Hub - iOS App/437294B1-AC8E-461F-8132-1E5D0787F05A_1_105_c.jpeg",
+      "/recents/Skyline Hub - iOS App/4640FBCD-9468-4A03-9783-803649E98141_1_105_c.jpeg",
+    ],
+    link: "https://apps.apple.com/at/app/skyline-hub/id6758091952",
+    linkLabel: "Im App Store öffnen",
+  },
+  {
+    id: "skyline-website",
+    title: "Skyline Hub",
+    subtitle: "Website",
+    description: "Im Rahmen einer Diplomarbeit an der HTL Krems entstanden. Die Website zu Skyline – Infos zur App, Features (Flug-Tracking, interaktive Karte, Statistiken, Dokumenten-Upload), Team und rechtliche Hinweise. Mehr Infos auf skylinehub.vercel.app.",
+    images: [
+      "/recents/Skyline Hub - Website/iScreen Shoter - 20260311173308125.jpg",
+      "/recents/Skyline Hub - Website/iScreen Shoter - Safari - 260311173235.jpg",
+      "/recents/Skyline Hub - Website/iScreen Shoter - Safari - 260311173333.jpg",
+    ],
+    link: "https://skylinehub.vercel.app",
+    linkLabel: "skylinehub.vercel.app",
+  },
+  {
+    id: "mrdaleje",
+    title: "MrDaleJE",
+    subtitle: "Twitch-Streamer Website",
+    description: "Website für den Twitch-Streamer MrDaleJE – mit Parallax und On-Scroll-Effekten. Wichtig: Scroll-getriebene Parallax-Effekte und ein 3D-Objekt, das sich beim Scrollen bewegt. Großteils eine Test-Website zur Erprobung moderner Web-Animationen.",
+    images: [
+      "/recents/DAle/iScreen Shoter - 20260311173812422.jpg",
+      "/recents/DAle/iScreen Shoter - Safari - 260311173738.jpg",
+    ],
+  },
+];
 
 type CookieConsent = {
   necessary: true;
@@ -89,10 +145,17 @@ export default function Home() {
   const [showCookieBanner, setShowCookieBanner] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("hero");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectModalImageIndex, setProjectModalImageIndex] = useState(0);
+  const [mobileContactBarCollapsed, setMobileContactBarCollapsed] = useState(false);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const heroImageRef = useRef<HTMLDivElement>(null);
+  const projectsScrollRef = useRef<HTMLDivElement>(null);
+  const wasWirAndersRef = useRef<HTMLElement>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [wasWirAndersProgress, setWasWirAndersProgress] = useState(0);
 
-  const SECTION_IDS = ["hero", "leistungen", "ueber-uns", "team", "warum", "features", "prozess", "kontakt"] as const;
+  const SECTION_IDS = ["hero", "leistungen", "projekte", "ueber-uns", "team", "warum", "features", "prozess", "kontakt"] as const;
 
   const updateConsent = (comfort: boolean) => {
     const value: CookieConsent = {
@@ -334,6 +397,50 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const listener = () => setPrefersReducedMotion(mq.matches);
+    mq.addEventListener("change", listener);
+    return () => mq.removeEventListener("change", listener);
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const el = wasWirAndersRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const progress = Math.max(0, Math.min(1, (vh - rect.top) / (vh + rect.height)));
+        setWasWirAndersProgress(progress);
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [prefersReducedMotion]);
+
+  const getWasWirAndersStyle = () => {
+    const p = wasWirAndersProgress;
+    const y = p <= 0.2 ? 72 - (p / 0.2) * 48 : p <= 0.5 ? 24 - (p - 0.2) / 0.3 * 24 : p <= 0.8 ? -(p - 0.5) / 0.3 * 24 : -24 - (p - 0.8) / 0.2 * 32;
+    const opacity = p <= 0.15 ? p / 0.15 : p >= 0.85 ? 1 - (p - 0.85) / 0.15 * 0.3 : 1;
+    const scale = p <= 0.25 ? 0.92 + (p / 0.25) * 0.08 : p >= 0.75 ? 1 - (p - 0.75) / 0.25 * 0.06 : 1;
+    return { y, opacity, scale };
+  };
+  const wasWirAndersStyle = getWasWirAndersStyle();
+
+  const { scrollYProgress: globalScrollProgress } = useScroll();
+  const heroOrbY = useTransform(globalScrollProgress, [0, 0.35], [0, 140]);
+  const scaleX = useTransform(globalScrollProgress, [0, 1], [0, 1]);
+
   // Scroll-Spy: aktive Sektion + URL-Hash beim Scrollen
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -377,7 +484,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#212121] text-white relative overflow-x-hidden max-w-[100vw]">
-      {/* Skip-Link: nur bei Fokus sichtbar */}
       <a
         href="#hero"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#ff1900] focus:text-white focus:rounded-lg focus:font-semibold focus:outline-none focus:ring-2 focus:ring-white"
@@ -397,6 +503,13 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#ff1900]/5 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#ff1900]/3 rounded-full blur-[150px]" />
       </div>
+
+      {/* Scroll-Fortschrittsleiste (Parallax-Feedback) – nur wenn Motion erlaubt */}
+      {!prefersReducedMotion && (
+        <div className="fixed top-0 left-0 right-0 h-0.5 bg-white/10 z-[60] overflow-hidden" aria-hidden>
+          <motion.div className="h-full w-full bg-[#ff1900] origin-left" style={{ scaleX }} />
+        </div>
+      )}
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 border-b border-white/[0.08] supports-[backdrop-filter]:backdrop-blur-xl backdrop-saturate-150">
@@ -420,48 +533,31 @@ export default function Home() {
             </button>
           </div>
           <div className="hidden lg:flex items-center gap-1">
-            <button
-              onClick={() => scrollToSection("leistungen")}
-              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "leistungen" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-            >
-              Leistungen
-            </button>
-            <button
-              onClick={() => scrollToSection("ueber-uns")}
-              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "ueber-uns" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-            >
-              Über uns
-            </button>
-            <button
-              onClick={() => scrollToSection("team")}
-              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "team" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-            >
-              Team
-            </button>
-            <button
-              onClick={() => scrollToSection("warum")}
-              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "warum" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-            >
-              Vorteile
-            </button>
-            <button
-              onClick={() => scrollToSection("features")}
-              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "features" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-            >
-              Servicequalität
-            </button>
-            <button
-              onClick={() => scrollToSection("prozess")}
-              className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === "prozess" ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-            >
-              Arbeitsweise
-            </button>
-            <button
-              onClick={() => scrollToSection("kontakt")}
+            {([
+              ["leistungen", "Leistungen"],
+              ["projekte", "Projekte"],
+              ["ueber-uns", "Über uns"],
+              ["team", "Team"],
+              ["warum", "Vorteile"],
+              ["features", "Servicequalität"],
+              ["prozess", "Arbeitsweise"],
+            ] as const).map(([id, label]) => (
+              <a
+                key={id}
+                href={`#${id}`}
+                onClick={(e) => { e.preventDefault(); scrollToSection(id); }}
+                className={`min-h-[44px] px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 flex items-center border-b-2 border-transparent ${activeSection === id ? "text-white border-[#ff1900]" : "text-white/80 hover:text-white hover:bg-white/5"}`}
+              >
+                {label}
+              </a>
+            ))}
+            <a
+              href="#kontakt"
+              onClick={(e) => { e.preventDefault(); scrollToSection("kontakt"); }}
               className={`ml-2 min-h-[44px] px-6 py-2.5 font-semibold rounded-xl transition-all duration-300 text-sm flex items-center shadow-lg ${activeSection === "kontakt" ? "bg-[#ff1900] text-white ring-2 ring-white/40 ring-offset-2 ring-offset-[#0a0a0a] shadow-[#ff1900]/30" : "bg-[#ff1900] hover:bg-[#e61700] text-white shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/35 hover:-translate-y-0.5"}`}
             >
               Kontakt
-            </button>
+            </a>
           </div>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -476,60 +572,47 @@ export default function Home() {
         {mobileMenuOpen && (
             <div className="lg:hidden bg-[#212121]/98 border-t border-white/5 supports-[backdrop-filter]:backdrop-blur-xl overflow-hidden">
             <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col gap-1 max-w-[100vw]">
-              <button
-                onClick={() => scrollToSection("leistungen")}
-                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "leistungen" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-              >
-                Leistungen
-              </button>
-              <button
-                onClick={() => scrollToSection("ueber-uns")}
-                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "ueber-uns" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-              >
-                Über uns
-              </button>
-              <button
-                onClick={() => scrollToSection("team")}
-                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "team" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-              >
-                Team
-              </button>
-              <button
-                onClick={() => scrollToSection("warum")}
-                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "warum" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-              >
-                Vorteile
-              </button>
-              <button
-                onClick={() => scrollToSection("features")}
-                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "features" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-              >
-                Servicequalität
-              </button>
-              <button
-                onClick={() => scrollToSection("prozess")}
-                className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === "prozess" ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
-              >
-                Arbeitsweise
-              </button>
-              <button
-                onClick={() => scrollToSection("kontakt")}
+              {([
+                ["leistungen", "Leistungen"],
+                ["projekte", "Projekte"],
+                ["ueber-uns", "Über uns"],
+                ["team", "Team"],
+                ["warum", "Vorteile"],
+                ["features", "Servicequalität"],
+                ["prozess", "Arbeitsweise"],
+              ] as const).map(([id, label]) => (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  onClick={(e) => { e.preventDefault(); scrollToSection(id); }}
+                  className={`text-left text-sm font-medium transition-colors min-h-[44px] py-3 px-3 rounded-lg flex items-center ${activeSection === id ? "text-white bg-white/10" : "text-white/80 hover:text-white hover:bg-white/5"}`}
+                >
+                  {label}
+                </a>
+              ))}
+              <a
+                href="#kontakt"
+                onClick={(e) => { e.preventDefault(); scrollToSection("kontakt"); }}
                 className="text-left min-h-[44px] px-6 py-3 bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold rounded-lg transition-colors text-sm w-fit mt-2"
               >
                 Kontakt
-              </button>
+              </a>
             </div>
           </div>
         )}
       </header>
 
+      <main>
       {/* Hero Section – Mobile: kompakter Stack; Desktop: wie bisher */}
       <section id="hero" className="relative overflow-visible pt-20 pb-10 md:pt-28 md:pb-16 px-4 sm:px-6 min-h-0 md:min-h-[100vh] flex items-center">
         {/* Deep dark base */}
         <div className="absolute inset-0 z-0 bg-[#070709]" />
 
-        {/* Gradient mesh */}
-        <div className="hero-orb-1 absolute top-[5%] left-[15%] w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-[#ff1900]/[0.07] rounded-full blur-[140px] md:blur-[220px] z-0" />
+        {/* Gradient mesh – ein Orb mit leichtem Parallax beim Scrollen */}
+        <motion.div
+          className="hero-orb-1 absolute top-[5%] left-[15%] w-[500px] h-[500px] md:w-[800px] md:h-[800px] bg-[#ff1900]/[0.07] rounded-full blur-[140px] md:blur-[220px] z-0"
+          style={prefersReducedMotion ? undefined : { y: heroOrbY, willChange: "transform" }}
+        />
         <div className="hero-orb-2 absolute bottom-[-10%] right-[0%] w-[500px] h-[500px] md:w-[700px] md:h-[700px] bg-[#ff3d00]/[0.06] rounded-full blur-[120px] md:blur-[200px] z-0" />
         <div className="hero-orb-drift absolute top-[-5%] right-[15%] w-[350px] h-[350px] md:w-[500px] md:h-[500px] bg-[#1a0a3e]/20 rounded-full blur-[100px] md:blur-[160px] z-0" />
         <div className="absolute bottom-[10%] left-[40%] w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-[#ff1900]/[0.04] rounded-full blur-[80px] md:blur-[140px] z-0" />
@@ -569,14 +652,14 @@ export default function Home() {
               </h1>
 
               <p className="hero-animate text-base md:text-lg text-white/60 max-w-md mx-auto lg:mx-0 leading-relaxed font-light">
-                IT-Beratung, PC-Bau & digitale Lösungen sowie Bau/Hausbetreuung aus einer Hand.
+                IT-Beratung, Grafikdesign & digitale Lösungen sowie Bau und Hausbetreuung aus einer Hand.
                 <span className="text-white font-medium"> Schnell, sauber, zuverlässig.</span>
               </p>
 
               <div className="hero-animate flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-1">
-                <motion.button
-                  type="button"
-                  onClick={() => scrollToSection("kontakt")}
+                <motion.a
+                  href="#kontakt"
+                  onClick={(e: React.MouseEvent) => { e.preventDefault(); scrollToSection("kontakt"); }}
                   className="group px-10 py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] text-white text-base font-bold shadow-2xl shadow-[#ff1900]/30 flex items-center justify-center gap-2.5 rounded-2xl"
                   initial={{ borderRadius: "1rem" }}
                   whileHover={{
@@ -589,19 +672,20 @@ export default function Home() {
                 >
                   Angebot anfragen
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" strokeWidth={2.5} />
-                </motion.button>
-                <motion.button
-                  onClick={() => scrollToSection("leistungen")}
-                  className="px-10 py-4 bg-white/[0.03] border border-white/[0.1] text-white text-base font-semibold rounded-2xl backdrop-blur-sm"
+                </motion.a>
+                <motion.a
+                  href="#leistungen"
+                  onClick={(e: React.MouseEvent) => { e.preventDefault(); scrollToSection("leistungen"); }}
+                  className="px-10 py-4 bg-white/[0.03] border border-white/[0.1] text-white text-base font-semibold rounded-2xl backdrop-blur-sm text-center"
                   whileHover={{ scale: 1.02, y: -4, borderColor: "rgba(255,255,255,0.2)", backgroundColor: "rgba(255,255,255,0.08)" }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
                   Leistungen ansehen
-                </motion.button>
+                </motion.a>
               </div>
               <p className="hero-animate text-white/50 text-sm mt-2 text-center lg:text-left">
-                Wir antworten in der Regel innerhalb von 24 Stunden.
+                Antwort innerhalb von 24 Stunden – auch am Wochenende.
               </p>
             </div>
 
@@ -653,9 +737,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Was wir anders machen + 3D-Hover-Card */}
-      <section className="py-16 md:py-24 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
-        <div className="container mx-auto max-w-6xl">
+      {/* Was wir anders machen + 3D-Hover-Card – scroll-parallax */}
+      <section ref={wasWirAndersRef} className="py-16 md:py-24 px-4 sm:px-6 relative border-t border-white/5 overflow-visible bg-[#070709]">
+        <motion.div
+          className="container mx-auto max-w-6xl"
+          style={prefersReducedMotion ? undefined : { y: wasWirAndersStyle.y, opacity: wasWirAndersStyle.opacity, scale: wasWirAndersStyle.scale }}
+        >
           <motion.div
             className="text-center mb-10 md:mb-12"
             initial="initial"
@@ -668,7 +755,7 @@ export default function Home() {
               Was wir <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">anders</span> machen
             </motion.h2>
             <motion.p variants={staggerItem} className="text-base md:text-lg text-white/50 font-light max-w-2xl mx-auto">
-              IT, Bau & Handel Lösungen, die nicht von der Stange kommen – maßgeschneidert und zuverlässig.
+              Individuelle Lösungen statt Massenware – maßgeschneidert für Ihr Projekt.
             </motion.p>
           </motion.div>
 
@@ -742,7 +829,7 @@ export default function Home() {
               );
             })}
           </motion.div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Leistungen Section */}
@@ -851,6 +938,98 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Projekte Section – horizontal scroll, beliebig erweiterbar */}
+      <section id="projekte" className="py-16 sm:py-24 md:py-28 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+        <SectionBackground />
+        <div className="container mx-auto max-w-7xl relative z-10">
+          <motion.div
+            className="text-center mb-10 md:mb-14"
+            initial="initial"
+            whileInView="animate"
+            viewport={motionViewport}
+            variants={staggerParent}
+          >
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Portfolio</motion.p>
+            <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
+              Ausgewählte <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Projekte</span>
+            </motion.h2>
+            <motion.p variants={staggerItem} className="text-base text-white/50 font-light max-w-xl mx-auto mt-3">
+              Qualität und Vielfalt – eine Auswahl unserer Arbeiten.
+            </motion.p>
+          </motion.div>
+
+          {/* Horizontal scroll / Wisch-Carousel – Scroll oder Wischen auf der X-Achse */}
+          <p className="text-center text-white/40 text-sm mb-4 md:mb-5">Scrollen oder wischen zum Durchblättern</p>
+          <div className="relative -mx-4 sm:mx-0">
+            <div
+              ref={projectsScrollRef}
+              className="flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden pb-4 pt-1 px-4 sm:px-0 scroll-smooth snap-x snap-mandatory hide-scrollbar"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none", scrollPaddingLeft: "1rem", scrollPaddingRight: "1rem" }}
+            >
+              {PROJECTS.map((project, i) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={motionViewport}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                  className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] snap-center first:snap-start last:snap-end"
+                >
+                  <button
+                    type="button"
+                    onClick={() => { setSelectedProject(project); setProjectModalImageIndex(0); }}
+                    className="w-full text-left rounded-2xl border border-white/[0.1] bg-[#0a0a0a]/90 backdrop-blur-xl overflow-hidden shadow-xl hover:border-[#ff1900]/30 hover:shadow-[#ff1900]/10 transition-all duration-300 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070709]"
+                  >
+                    <div className="relative aspect-[4/3] bg-white/[0.03] overflow-hidden">
+                      <Image
+                        src={project.images[0]}
+                        alt={`${project.title}${project.subtitle ? ` – ${project.subtitle}` : ""} Projektvorschau`}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 280px, 340px"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <span className="absolute bottom-3 left-3 right-3 text-white font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        Infos anzeigen
+                      </span>
+                    </div>
+                    <div className="p-4 md:p-5">
+                      <h3 className="font-bold text-white text-lg group-hover:text-[#ff1900] transition-colors">
+                        {project.title}
+                        {project.subtitle && (
+                          <span className="block text-sm font-medium text-white/60 mt-0.5">{project.subtitle}</span>
+                        )}
+                      </h3>
+                    </div>
+                  </button>
+                </motion.div>
+              ))}
+            </div>
+            {/* Pfeile: vorheriges / nächstes Projekt (Desktop + Mobile als Option) */}
+            {PROJECTS.length > 1 && (
+              <div className="flex md:absolute md:top-1/2 md:-translate-y-1/2 md:left-0 md:right-0 md:pointer-events-none justify-center md:justify-between gap-3 mt-4 md:mt-0 md:px-0">
+                <button
+                  type="button"
+                  onClick={() => projectsScrollRef.current?.scrollBy({ left: -340, behavior: "smooth" })}
+                  className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0a0a0a]/90 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-colors"
+                  aria-label="Vorheriges Projekt"
+                >
+                  <ChevronLeft className="w-5 h-5" strokeWidth={2} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => projectsScrollRef.current?.scrollBy({ left: 340, behavior: "smooth" })}
+                  className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0a0a0a]/90 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-colors"
+                  aria-label="Nächstes Projekt"
+                >
+                  <ChevronRight className="w-5 h-5" strokeWidth={2} />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Über uns Section */}
       <section id="ueber-uns" className="py-16 sm:py-24 md:py-32 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
         <SectionBackground />
@@ -867,16 +1046,17 @@ export default function Home() {
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
               <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold">Über uns</p>
-              <p className="text-2xl md:text-3xl lg:text-[2.5rem] text-white font-light leading-[1.35]">
+              <h2 className="text-2xl md:text-3xl lg:text-[2.5rem] text-white font-light leading-[1.35]">
                 <span className="text-[#ff1900] font-bold">Plesnicar Solutions</span> ist ein österreichisches Unternehmen 
-                mit Fokus auf zuverlässige Umsetzung, schnelle Kommunikation und saubere Ergebnisse.
-              </p>
+                mit Fokus auf zuverlässige Umsetzung, schnelle Kommunikation und saubere Ergebnisse – in IT und Bau.
+              </h2>
               <div className="h-px w-20 bg-white/10" />
               <p className="text-base md:text-lg text-white/60 leading-relaxed font-light max-w-3xl">
-                Als <span className="text-white font-medium">Kleinunternehmer</span> bieten wir direkten, persönlichen Service ohne Umwege. 
-                Unser Team besteht aus zwei Experten: einem IT-Spezialisten für PC-Bau, digitale Lösungen und Grafikdesign sowie einem 
-                Bauingenieur mit 40+ Jahren Bau-Erfahrung. Unser Angebot umfasst IT-Beratung, PC-Bau, digitale Lösungen, 
-                Grafikdesign, Bau/Hausbetreuung sowie Handel – alles aus einer Hand, <span className="text-[#ff1900] font-medium">regional in Österreich</span> und mit Remote-IT-Möglichkeiten.
+                Als <span className="text-white font-medium">inhabergeführtes Unternehmen</span> bieten wir direkten, persönlichen Service ohne Umwege. 
+                <span className="text-white font-medium">Boris Plesnicar</span> (Inhaber) deckt IT-Beratung, PC-Bau, digitale Lösungen und Grafikdesign ab. 
+                Im Bereich Bau, Hausbetreuung und Handel unterstützt <span className="text-white font-medium">Ing. Dietmar Plesnicar</span> – Bauingenieur 
+                mit über <span className="text-[#ff1900] font-medium">40 Jahren Erfahrung im Bauwesen</span>. 
+                IT und Bau aus einer Hand, <span className="text-white font-medium">regional in Österreich</span> und mit Remote-IT-Möglichkeiten.
               </p>
             </motion.div>
           </div>
@@ -1182,7 +1362,7 @@ export default function Home() {
               Sprechen wir <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">darüber</span>
             </motion.h2>
             <motion.p variants={staggerItem} className="text-white/50 font-light text-sm md:text-base max-w-lg mx-auto">
-              Antwort innerhalb von 24 Stunden. Dringend? Einfach anrufen.
+              Erzählen Sie uns von Ihrem Projekt – wir antworten innerhalb von 24 Stunden. Dringend? Einfach anrufen.
             </motion.p>
           </motion.div>
 
@@ -1291,8 +1471,96 @@ export default function Home() {
         </div>
       </section>
 
+      </main>
+
+      {/* Projekt-Detail-Modal */}
+      {selectedProject && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setSelectedProject(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="project-modal-title"
+        >
+          <motion.div
+            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/[0.12] bg-[#0a0a0a] shadow-2xl"
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedProject(null)}
+              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900]"
+              aria-label="Schließen"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="p-6 md:p-8">
+              <h2 id="project-modal-title" className="text-2xl md:text-3xl font-bold text-white pr-12">
+                {selectedProject.title}
+                {selectedProject.subtitle && (
+                  <span className="block text-lg font-medium text-white/60 mt-1">{selectedProject.subtitle}</span>
+                )}
+              </h2>
+
+              {/* Bildergalerie im Modal */}
+              <div className="mt-6 rounded-xl overflow-hidden bg-white/[0.03] border border-white/[0.08]">
+                <div className="relative aspect-video">
+                  <Image
+                    src={selectedProject.images[projectModalImageIndex]}
+                    alt={`${selectedProject.title} – Bild ${projectModalImageIndex + 1}`}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, 672px"
+                  />
+                </div>
+                {selectedProject.images.length > 1 && (
+                  <div className="flex gap-2 p-3 overflow-x-auto border-t border-white/[0.06]">
+                    {selectedProject.images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setProjectModalImageIndex(idx)}
+                        className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all ${
+                          projectModalImageIndex === idx ? "border-[#ff1900] ring-2 ring-[#ff1900]/30" : "border-white/20 hover:border-white/40"
+                        }`}
+                      >
+                        <Image src={img} alt="" width={56} height={56} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <p className="mt-6 text-white/70 leading-relaxed text-sm md:text-base">
+                {selectedProject.description}
+              </p>
+
+              {selectedProject.link && (
+                <a
+                  href={selectedProject.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors"
+                >
+                  {selectedProject.linkLabel ?? "Mehr erfahren"}
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
       {/* Footer */}
-      <footer className="py-12 md:py-16 px-4 sm:px-6 border-t border-white/[0.08] bg-[#0a0a0a]/50 backdrop-blur-sm overflow-hidden">
+      <footer className="py-12 pb-24 md:pb-16 md:py-16 px-4 sm:px-6 border-t border-white/[0.08] bg-[#0a0a0a]/50 backdrop-blur-sm overflow-hidden">
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex items-center">
@@ -1347,30 +1615,57 @@ export default function Home() {
         </motion.button>
       )}
 
-      {/* Mobile bottom contact bar */}
+      {/* Mobile bottom contact bar – ein Kasten, einklappbar für Impressum/Datenschutz */}
       <div className="fixed inset-x-0 bottom-0 z-40 md:hidden pointer-events-none">
-        <div className="mx-4 mb-4 rounded-xl bg-[#111111]/95 border border-white/10 shadow-lg shadow-black/40 flex gap-2 sm:gap-3 p-3 pointer-events-auto">
-          <a
-            href="tel:+436644678382"
-            className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white text-sm font-semibold py-3 transition-colors"
-          >
-            <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
-            <span className="truncate">IT & Grafik</span>
-          </a>
-          <a
-            href="tel:+436763206308"
-            className="flex-1 min-h-[44px] inline-flex items-center justify-center gap-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-semibold py-3 border border-white/15 transition-colors"
-          >
-            <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
-            <span className="truncate">Bau & Hausbetreuung</span>
-          </a>
-          <a
-            href="mailto:plesnicaroffice@gmail.com"
-            className="flex-none min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-colors"
-            aria-label="E-Mail schreiben"
-          >
-            <Mail className="w-5 h-5" strokeWidth={2} />
-          </a>
+        <div className="mx-3 sm:mx-4 mb-3 sm:mb-4 pointer-events-auto flex justify-center">
+          <div className="w-full max-w-lg rounded-2xl bg-[#0f0f0f]/98 border border-white/[0.12] shadow-xl shadow-black/50 overflow-hidden">
+            {mobileContactBarCollapsed ? (
+              <button
+                type="button"
+                onClick={() => setMobileContactBarCollapsed(false)}
+                className="w-full min-h-[48px] flex items-center justify-center gap-2.5 py-3 px-4 text-white text-sm font-semibold"
+                aria-expanded="false"
+                aria-label="Kontaktleiste einblenden"
+              >
+                <Phone className="w-5 h-5 shrink-0 text-[#ff1900]" strokeWidth={2} />
+                <span>Kontakt anzeigen</span>
+                <ChevronUp className="w-4 h-4 shrink-0 text-white/50" />
+              </button>
+            ) : (
+              <div className="flex flex-wrap items-stretch gap-0">
+                <a
+                  href="tel:+436644678382"
+                  className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-[#ff1900] hover:bg-[#e61700] active:bg-[#cc1500] text-white text-sm font-semibold transition-colors"
+                >
+                  <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
+                  <span className="truncate">IT & Grafik</span>
+                </a>
+                <a
+                  href="tel:+436763206308"
+                  className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white text-sm font-semibold border-l border-white/10 transition-colors"
+                >
+                  <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
+                  <span className="truncate">Bau & Hausbetreuung</span>
+                </a>
+                <a
+                  href="mailto:plesnicaroffice@gmail.com"
+                  className="flex-none w-12 min-h-[48px] inline-flex items-center justify-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white border-l border-white/10 transition-colors"
+                  aria-label="E-Mail"
+                >
+                  <Mail className="w-5 h-5" strokeWidth={2} />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setMobileContactBarCollapsed(true)}
+                  className="flex-none w-12 min-h-[48px] inline-flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] active:bg-white/[0.06] text-white/70 hover:text-white border-l border-white/10 transition-colors"
+                  aria-label="Einklappen – Impressum & Datenschutz erreichbar"
+                  title="Einklappen"
+                >
+                  <ChevronDown className="w-5 h-5" strokeWidth={2} />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Impressum",
+  description:
+    "Impressum von Plesnicar Solutions (Boris Plesnicar e.U.) – Angaben gemäß § 5 TMG, Kontaktdaten und Haftungshinweise.",
+  alternates: { canonical: "/impressum" },
+};
 
 export default function Impressum() {
   return (

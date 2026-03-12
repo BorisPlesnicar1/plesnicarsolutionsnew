@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       { pathname: '/portraits/**' },
       { pathname: '/signatures/**' },
       { pathname: '/logos/**' },
+      { pathname: '/recents/**' },
     ],
     remotePatterns: [
       {
