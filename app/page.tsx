@@ -37,6 +37,7 @@ import {
   ChevronDown,
   ChevronUp
 } from "lucide-react";
+import { TRANSLATIONS, PROJECT_TRANSLATIONS, type Lang } from "./translations";
 
 /** Project data: add more entries to show more projects (images from public/recents/<folder>). */
 type Project = {
@@ -54,7 +55,7 @@ const PROJECTS: Project[] = [
     id: "skyline-ios",
     title: "Skyline Hub",
     subtitle: "iOS App",
-    description: "Im Rahmen einer Diplomarbeit an der HTL Krems entstanden. Skyline ist eine moderne iOS-App zum Verwalten deiner Fluggeschichte: Flüge erfassen, interaktive Karten, Statistiken und Achievements, Dokumenten-Upload mit OCR. Mehr Infos auf skylinehub.vercel.app.",
+    description: "",
     images: [
       "/recents/Skyline Hub - iOS App/6067ABD6-A209-46DE-A975-264F6D585441_1_105_c.jpeg",
       "/recents/Skyline Hub - iOS App/38FFC837-AA63-44CC-8594-7F7A360F27C0_1_105_c.jpeg",
@@ -62,26 +63,26 @@ const PROJECTS: Project[] = [
       "/recents/Skyline Hub - iOS App/4640FBCD-9468-4A03-9783-803649E98141_1_105_c.jpeg",
     ],
     link: "https://apps.apple.com/at/app/skyline-hub/id6758091952",
-    linkLabel: "Im App Store öffnen",
+    linkLabel: "",
   },
   {
     id: "skyline-website",
     title: "Skyline Hub",
     subtitle: "Website",
-    description: "Im Rahmen einer Diplomarbeit an der HTL Krems entstanden. Die Website zu Skyline – Infos zur App, Features (Flug-Tracking, interaktive Karte, Statistiken, Dokumenten-Upload), Team und rechtliche Hinweise. Mehr Infos auf skylinehub.vercel.app.",
+    description: "",
     images: [
       "/recents/Skyline Hub - Website/iScreen Shoter - 20260311173308125.jpg",
       "/recents/Skyline Hub - Website/iScreen Shoter - Safari - 260311173235.jpg",
       "/recents/Skyline Hub - Website/iScreen Shoter - Safari - 260311173333.jpg",
     ],
     link: "https://skylinehub.vercel.app",
-    linkLabel: "skylinehub.vercel.app",
+    linkLabel: "",
   },
   {
     id: "mrdaleje",
     title: "MrDaleJE",
     subtitle: "Twitch-Streamer Website",
-    description: "Website für den Twitch-Streamer MrDaleJE – mit Parallax und On-Scroll-Effekten. Wichtig: Scroll-getriebene Parallax-Effekte und ein 3D-Objekt, das sich beim Scrollen bewegt. Großteils eine Test-Website zur Erprobung moderner Web-Animationen.",
+    description: "",
     images: [
       "/recents/DAle/iScreen Shoter - 20260311173812422.jpg",
       "/recents/DAle/iScreen Shoter - Safari - 260311173738.jpg",
@@ -139,7 +140,18 @@ function SectionBackground() {
   );
 }
 
+const LANG_STORAGE_KEY = "ps_lang";
+
 export default function Home() {
+  const [lang, setLangState] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "de";
+    try {
+      const s = window.localStorage.getItem(LANG_STORAGE_KEY);
+      return s === "en" ? "en" : "de";
+    } catch {
+      return "de";
+    }
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cookieConsent, setCookieConsent] = useState<CookieConsent | null>(null);
   const [showCookieBanner, setShowCookieBanner] = useState(false);
@@ -155,7 +167,33 @@ export default function Home() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [wasWirAndersProgress, setWasWirAndersProgress] = useState(0);
 
+  const t = TRANSLATIONS[lang];
   const SECTION_IDS = ["hero", "leistungen", "projekte", "ueber-uns", "team", "warum", "features", "prozess", "kontakt"] as const;
+
+  const setLang = (newLang: Lang) => {
+    setLangState(newLang);
+    try {
+      window.localStorage.setItem(LANG_STORAGE_KEY, newLang);
+    } catch {
+      // ignore
+    }
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = newLang;
+    }
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  useEffect(() => {
+    try {
+      const s = window.localStorage.getItem(LANG_STORAGE_KEY);
+      if (s === "en" && lang !== "en") setLangState("en");
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const updateConsent = (comfort: boolean) => {
     const value: CookieConsent = {
@@ -319,6 +357,29 @@ export default function Home() {
     window.addEventListener("ps-loading-closed", onLoadingClosed);
     return () => window.removeEventListener("ps-loading-closed", onLoadingClosed);
   }, []);
+
+  // Nach Sprachwechsel: Hero-Text sofort sichtbar machen (neue .hero-char haben sonst opacity: 0)
+  useEffect(() => {
+    const el = heroTextRef.current;
+    const imgWrap = heroImageRef.current;
+    if (!el) return;
+    const show = () => {
+      el.querySelectorAll(".hero-char").forEach((node) => {
+        (node as HTMLElement).style.opacity = "1";
+        (node as HTMLElement).style.transform = "none";
+      });
+      el.querySelectorAll(".hero-animate").forEach((node) => {
+        (node as HTMLElement).style.opacity = "1";
+        (node as HTMLElement).style.transform = "none";
+      });
+      if (imgWrap) {
+        imgWrap.style.opacity = "1";
+        imgWrap.style.transform = "none";
+      }
+    };
+    const raf = requestAnimationFrame(() => requestAnimationFrame(show));
+    return () => cancelAnimationFrame(raf);
+  }, [lang]);
 
   // Scroll-in für Leistungen / Warum / Prozess (nur Desktop)
   const rafRef = useRef<number | null>(null);
@@ -488,7 +549,7 @@ export default function Home() {
         href="#hero"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#ff1900] focus:text-white focus:rounded-lg focus:font-semibold focus:outline-none focus:ring-2 focus:ring-white"
       >
-        Zum Inhalt springen
+        {t.skipLink}
       </a>
       {/* (splatter effect removed) – objectBoundingBox 0–1 */}
       <svg aria-hidden className="absolute w-0 h-0 overflow-hidden pointer-events-none" style={{ position: "absolute" }}>
@@ -518,7 +579,8 @@ export default function Home() {
             <button
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              aria-label="Nach oben scrollen"
+              aria-label={t.ariaScrollTop}
+              title={t.ariaScrollTop}
               className="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] rounded-lg"
             >
               <Image
@@ -534,13 +596,13 @@ export default function Home() {
           </div>
           <div className="hidden lg:flex items-center gap-1">
             {([
-              ["leistungen", "Leistungen"],
-              ["projekte", "Projekte"],
-              ["ueber-uns", "Über uns"],
-              ["team", "Team"],
-              ["warum", "Vorteile"],
-              ["features", "Servicequalität"],
-              ["prozess", "Arbeitsweise"],
+              ["leistungen", t.nav.leistungen],
+              ["projekte", t.nav.projekte],
+              ["ueber-uns", t.nav.ueberUns],
+              ["team", t.nav.team],
+              ["warum", t.nav.vorteile],
+              ["features", t.nav.servicequalitaet],
+              ["prozess", t.nav.arbeitsweise],
             ] as const).map(([id, label]) => (
               <a
                 key={id}
@@ -555,21 +617,31 @@ export default function Home() {
                 {label}
               </a>
             ))}
+            <div className="ml-2 flex items-center rounded-lg border border-white/[0.12] bg-white/[0.03] p-0.5">
+              <button type="button" onClick={() => setLang("de")} className={`min-h-[36px] px-2.5 rounded-md text-sm font-medium transition-colors ${lang === "de" ? "bg-[#ff1900] text-white" : "text-white/70 hover:text-white"}`} aria-pressed={lang === "de"} aria-label="Deutsch">DE</button>
+              <button type="button" onClick={() => setLang("en")} className={`min-h-[36px] px-2.5 rounded-md text-sm font-medium transition-colors ${lang === "en" ? "bg-[#ff1900] text-white" : "text-white/70 hover:text-white"}`} aria-pressed={lang === "en"} aria-label="English">EN</button>
+            </div>
             <a
               href="#kontakt"
               onClick={(e) => { e.preventDefault(); scrollToSection("kontakt"); }}
               className={`ml-2 min-h-[44px] px-6 py-2.5 font-semibold rounded-xl transition-all duration-300 text-sm flex items-center shadow-lg ${activeSection === "kontakt" ? "bg-[#ff1900] text-white ring-2 ring-white/40 ring-offset-2 ring-offset-[#0a0a0a] shadow-[#ff1900]/30" : "bg-[#ff1900] hover:bg-[#e61700] text-white shadow-[#ff1900]/25 hover:shadow-xl hover:shadow-[#ff1900]/35 hover:-translate-y-0.5"}`}
             >
-              Kontakt
+              {t.nav.kontakt}
             </a>
           </div>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center text-white/80 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5"
-            aria-label={mobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="flex lg:hidden items-center gap-1">
+            <div className="flex items-center rounded-lg border border-white/[0.12] bg-white/[0.03] p-0.5">
+              <button type="button" onClick={() => setLang("de")} className={`min-h-[36px] px-2 rounded-md text-xs font-medium transition-colors ${lang === "de" ? "bg-[#ff1900] text-white" : "text-white/70 hover:text-white"}`} aria-pressed={lang === "de"}>DE</button>
+              <button type="button" onClick={() => setLang("en")} className={`min-h-[36px] px-2 rounded-md text-xs font-medium transition-colors ${lang === "en" ? "bg-[#ff1900] text-white" : "text-white/70 hover:text-white"}`} aria-pressed={lang === "en"}>EN</button>
+            </div>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-white/80 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5"
+              aria-label={mobileMenuOpen ? t.ariaMenuClose : t.ariaMenuOpen}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </nav>
 
         {/* Mobile / Tablet Menu (lg:hidden) */}
@@ -577,13 +649,13 @@ export default function Home() {
             <div className="lg:hidden bg-[#212121]/98 border-t border-white/5 supports-[backdrop-filter]:backdrop-blur-xl overflow-hidden">
             <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col gap-1 max-w-[100vw]">
               {([
-                ["leistungen", "Leistungen"],
-                ["projekte", "Projekte"],
-                ["ueber-uns", "Über uns"],
-                ["team", "Team"],
-                ["warum", "Vorteile"],
-                ["features", "Servicequalität"],
-                ["prozess", "Arbeitsweise"],
+                ["leistungen", t.nav.leistungen],
+                ["projekte", t.nav.projekte],
+                ["ueber-uns", t.nav.ueberUns],
+                ["team", t.nav.team],
+                ["warum", t.nav.vorteile],
+                ["features", t.nav.servicequalitaet],
+                ["prozess", t.nav.arbeitsweise],
               ] as const).map(([id, label]) => (
                 <a
                   key={id}
@@ -607,7 +679,7 @@ export default function Home() {
                     : "bg-[#ff1900] hover:bg-[#e61700] text-white"
                 }`}
               >
-                Kontakt
+                {t.nav.kontakt}
               </a>
             </div>
           </div>
@@ -651,21 +723,22 @@ export default function Home() {
         <div className="relative z-10 container mx-auto px-0 sm:px-6 pr-4 sm:pr-6 lg:pr-10 xl:pr-16 max-w-[100vw] w-full overflow-visible">
           <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_auto] gap-10 md:gap-12 lg:gap-0 items-center">
 
-            {/* Left / Top: Text – Anime.js Animation */}
+            {/* Left / Top: Text – Anime.js Animation; key={lang} damit Layout bei Sprachwechsel neu berechnet wird */}
             <div
+              key={lang}
               ref={heroTextRef}
               className="text-center lg:text-left space-y-5 md:space-y-7 lg:pr-10 xl:pr-14 pb-8 md:pb-10 max-w-2xl overflow-visible [font-family:var(--font-syne)]"
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold leading-[1.28] tracking-tight break-words pb-1">
-                <span className="hero-line block">{heroChars("Moderne")}</span>
-                <span className="hero-line block mt-1">{heroChars("Lösungen.")}</span>
-                <span className="hero-line hero-line-gradient block mt-2">{heroChars("Zuverlässige")}</span>
-                <span className="hero-line hero-line-gradient block mt-1">{heroChars("Umsetzung.")}</span>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold leading-[1.28] tracking-tight break-words pb-1 w-full overflow-visible">
+                <span className="hero-line block overflow-visible">{heroChars(t.hero.line1)}</span>
+                <span className="hero-line block mt-1 overflow-visible">{heroChars(t.hero.line2)}</span>
+                <span className="hero-line hero-line-gradient block mt-2 overflow-visible">{heroChars(t.hero.line3)}</span>
+                <span className="hero-line hero-line-gradient block mt-1 overflow-visible">{heroChars(t.hero.line4)}</span>
               </h1>
 
               <p className="hero-animate text-base md:text-lg text-white/60 max-w-md mx-auto lg:mx-0 leading-relaxed font-light">
-                IT-Beratung, Grafikdesign & digitale Lösungen sowie Bau und Hausbetreuung aus einer Hand.
-                <span className="text-white font-medium"> Schnell, sauber, zuverlässig.</span>
+                {t.hero.paragraph}
+                <span className="text-white font-medium">{t.hero.paragraphBold}</span>
               </p>
 
               <div className="hero-animate flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-1">
@@ -682,7 +755,7 @@ export default function Home() {
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 320, damping: 22 }}
                 >
-                  Angebot anfragen
+                  {t.hero.ctaOffer}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" strokeWidth={2.5} />
                 </motion.a>
                 <motion.a
@@ -693,11 +766,11 @@ export default function Home() {
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
-                  Leistungen ansehen
+                  {t.hero.ctaServices}
                 </motion.a>
               </div>
               <p className="hero-animate text-white/50 text-sm mt-2 text-center lg:text-left">
-                Antwort innerhalb von 24 Stunden – auch am Wochenende.
+                {t.hero.sub}
               </p>
             </div>
 
@@ -715,19 +788,19 @@ export default function Home() {
               <div className="absolute bottom-[20%] md:bottom-[18%] left-[-5%] md:left-[-15%] z-20 hidden sm:flex flex-col px-4 py-3 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl">
                 <div className="flex items-center gap-2 mb-1">
                   <Code2 className="w-4 h-4 text-[#ff1900]" strokeWidth={2.5} />
-                  <span className="text-[11px] text-white/80 font-bold">IT & Grafikdesign</span>
+                  <span className="text-[11px] text-white/80 font-bold">{t.heroPills.itTitle}</span>
                 </div>
-                <span className="text-[10px] text-white/50 font-medium">PC-Bau · Webdesign · Branding</span>
+                <span className="text-[10px] text-white/50 font-medium">{t.heroPills.itSub}</span>
               </div>
 
               {/* Pill: Bau & Handel – hinter dem Portrait (z < Bild), höher damit Text frei bleibt */}
               <div className="absolute bottom-[57%] md:bottom-[49%] left-[-5%] md:left-[-15%] z-0 hidden sm:flex flex-col px-4 py-3 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl max-w-[200px] md:max-w-[220px]">
                 <div className="flex items-center gap-2 mb-1">
                   <Wrench className="w-4 h-4 shrink-0 text-[#ff1900]" strokeWidth={2.5} />
-                  <span className="text-[11px] text-white/80 font-bold">Bau & Handel</span>
+                  <span className="text-[11px] text-white/80 font-bold">{t.heroPills.bauTitle}</span>
                 </div>
-                <span className="text-[10px] text-white/50 font-medium leading-snug">Einfache Reinigung · Objektbezogene Tätigkeiten · Hausbetreuung</span>
-                <span className="text-[10px] text-white/50 font-medium leading-snug mt-0.5">Handel mit Baustoffen · Verkauf & Zubehör · Individuelle Lösungen · Beratung</span>
+                <span className="text-[10px] text-white/50 font-medium leading-snug">{t.heroPills.bauSub1}</span>
+                <span className="text-[10px] text-white/50 font-medium leading-snug mt-0.5">{t.heroPills.bauSub2}</span>
               </div>
 
               {/* Bild: Einblend-Animation beim Laden (Anime.js) */}
@@ -762,12 +835,12 @@ export default function Home() {
             viewport={motionViewport}
             variants={staggerParent}
           >
-            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Unser Ansatz</motion.p>
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">{t.wasWirAnders.label}</motion.p>
             <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white mb-4">
-              Was wir <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">anders</span> machen
+              {t.wasWirAnders.title} <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.wasWirAnders.titleHighlight}</span>{t.wasWirAnders.titleSuffix ? ` ${t.wasWirAnders.titleSuffix}` : ""}
             </motion.h2>
             <motion.p variants={staggerItem} className="text-base md:text-lg text-white/50 font-light max-w-2xl mx-auto">
-              Individuelle Lösungen statt Massenware – maßgeschneidert für Ihr Projekt.
+              {t.wasWirAnders.subtitle}
             </motion.p>
           </motion.div>
 
@@ -794,13 +867,13 @@ export default function Home() {
                   <span className="ml-3 text-[11px] text-white/40 font-mono">plesnicar-solutions.tsx</span>
                 </div>
                 <div className="p-5 font-mono text-xs lg:text-sm leading-relaxed space-y-1">
-                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">solution</span> = <span className="text-[#98c379]">&quot;maßgeschneidert&quot;</span>;</p>
-                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">qualität</span> = <span className="text-[#d19a66]">100</span>;</p>
-                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">branchen</span> = <span className="text-[#d19a66]">IT & Bau & Handel</span>;</p>
+                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">solution</span> = <span className="text-[#98c379]">&quot;{t.wasWirAnders.terminalSolution}&quot;</span>;</p>
+                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">{t.wasWirAnders.terminalQualitaet}</span> = <span className="text-[#d19a66]">100</span>;</p>
+                  <p><span className="text-[#c678dd]">const</span> <span className="text-[#61afef]">{t.wasWirAnders.terminalBranchen}</span> = <span className="text-[#d19a66]">{t.wasWirAnders.terminalValue}</span>;</p>
 
                   <p className="text-white/20">&#47;&#47; ...</p>
                   <p><span className="text-[#c678dd]">export</span> <span className="text-[#c678dd]">default</span> <span className="text-[#61afef]">function</span> <span className="text-[#e5c07b]">Build</span>() &#123;</p>
-                  <p className="pl-4"><span className="text-[#c678dd]">return</span> &lt;<span className="text-[#e06c75]">Ergebnis</span> <span className="text-[#d19a66]">perfekt</span> /&gt;;</p>
+                  <p className="pl-4"><span className="text-[#c678dd]">return</span> &lt;<span className="text-[#e06c75]">{t.wasWirAnders.terminalErgebnis}</span> <span className="text-[#d19a66]">{t.wasWirAnders.terminalPerfekt}</span> /&gt;;</p>
                   <p>&#125;</p>
                 </div>
               </div>
@@ -822,9 +895,9 @@ export default function Home() {
             variants={staggerParent}
           >
             {[
-              { icon: Zap, label: "Schnell", sub: "24h Reaktionszeit" },
-              { icon: Sparkles, label: "Sauber", sub: "Höchste Qualität" },
-              { icon: Rocket, label: "Modern", sub: "Aktuelle Technologien" }
+              { icon: Zap, label: t.wasWirAnders.value1, sub: t.wasWirAnders.value1Sub },
+              { icon: Sparkles, label: t.wasWirAnders.value2, sub: t.wasWirAnders.value2Sub },
+              { icon: Rocket, label: t.wasWirAnders.value3, sub: t.wasWirAnders.value3Sub }
             ].map((item, idx) => {
               const Ico = item.icon;
               return (
@@ -855,57 +928,19 @@ export default function Home() {
             viewport={motionViewport}
             variants={staggerParent}
           >
-            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Was wir bieten</motion.p>
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">{t.leistungen.label}</motion.p>
             <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
-              Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Leistungen</span>
+              {t.leistungen.title} <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.leistungen.titleHighlight}</span>
             </motion.h2>
           </motion.div>
 
           {/* Bento-Layout: IT groß, Rest kleiner */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {[
-              {
-                title: "IT / Automatische Datenverarbeitung",
-                icon: Code2,
-                items: [
-                  "PC-Bau und Hardware-Konfiguration",
-                  "Beratung, Einrichtung und Betreuung von Systemen",
-                  "Digitale Lösungen und Automatisierungen",
-                  "Laufender Support und Wartung"
-                ],
-                wide: true
-              },
-              {
-                title: "Grafikdesign / Werbeagentur",
-                icon: Palette,
-                items: [
-                  "Branding und Corporate Design",
-                  "Social Media Content und Werbemittel",
-                  "Professionelle Design-Lösungen",
-                  "Logo-Design und Visuelle Identität"
-                ],
-                wide: false
-              },
-              {
-                title: "Bau / Hausbetreuung",
-                icon: Wrench,
-                items: [
-                  "Einfache Reinigungstätigkeiten",
-                  "Objektbezogene einfache Tätigkeiten",
-                  "Zuverlässige Hausbetreuung"
-                ],
-                wide: false
-              },
-              {
-                title: "Handel",
-                icon: ShoppingCart,
-                items: [
-                  "Verkauf passender Produkte und Zubehör",
-                  "Individuelle Lösungen für Ihre Bedürfnisse",
-                  "Kompetente Beratung beim Kauf"
-                ],
-                wide: false
-              }
+              { ...t.leistungen.services[0], icon: Code2, wide: true as const },
+              { ...t.leistungen.services[1], icon: Palette, wide: false as const },
+              { ...t.leistungen.services[2], icon: Wrench, wide: false as const },
+              { ...t.leistungen.services[3], icon: ShoppingCart, wide: false as const }
             ].map((service, i) => {
               const IconComponent = service.icon;
               return (
@@ -950,7 +985,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Projekte Section – horizontal scroll, beliebig erweiterbar */}
+      {/* Projekte Section */}
       <section id="projekte" className="py-16 sm:py-24 md:py-28 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
         <SectionBackground />
         <div className="container mx-auto max-w-7xl relative z-10">
@@ -961,17 +996,16 @@ export default function Home() {
             viewport={motionViewport}
             variants={staggerParent}
           >
-            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Portfolio</motion.p>
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">{t.projekte.label}</motion.p>
             <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
-              Ausgewählte <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Projekte</span>
+              {t.projekte.title} <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.projekte.titleHighlight}</span>
             </motion.h2>
             <motion.p variants={staggerItem} className="text-base text-white/50 font-light max-w-xl mx-auto mt-3">
-              Qualität und Vielfalt – eine Auswahl unserer Arbeiten.
+              {t.projekte.subtitle}
             </motion.p>
           </motion.div>
 
-          {/* Horizontal scroll / Wisch-Carousel – Scroll oder Wischen auf der X-Achse */}
-          <p className="text-center text-white/40 text-sm mb-4 md:mb-5">Scrollen oder wischen zum Durchblättern</p>
+          <p className="text-center text-white/40 text-sm mb-4 md:mb-5">{t.projekte.scrollHint}</p>
           <div className="relative -mx-4 sm:mx-0">
             <div
               ref={projectsScrollRef}
@@ -995,21 +1029,21 @@ export default function Home() {
                     <div className="relative aspect-[4/3] bg-white/[0.03] overflow-hidden">
                       <Image
                         src={project.images[0]}
-                        alt={`${project.title}${project.subtitle ? ` – ${project.subtitle}` : ""} Projektvorschau`}
+                        alt={[project.title, PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle].filter(Boolean).join(" – ") + " " + t.projekte.imageAltPreview}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 280px, 340px"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <span className="absolute bottom-3 left-3 right-3 text-white font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        Infos anzeigen
+                        {t.projekte.showInfo}
                       </span>
                     </div>
                     <div className="p-4 md:p-5">
                       <h3 className="font-bold text-white text-lg group-hover:text-[#ff1900] transition-colors">
                         {project.title}
-                        {project.subtitle && (
-                          <span className="block text-sm font-medium text-white/60 mt-0.5">{project.subtitle}</span>
+                        {(PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle) && (
+                          <span className="block text-sm font-medium text-white/60 mt-0.5">{PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle}</span>
                         )}
                       </h3>
                     </div>
@@ -1024,7 +1058,7 @@ export default function Home() {
                   type="button"
                   onClick={() => projectsScrollRef.current?.scrollBy({ left: -340, behavior: "smooth" })}
                   className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0a0a0a]/90 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-colors"
-                  aria-label="Vorheriges Projekt"
+                  aria-label={t.projekte.ariaPrev}
                 >
                   <ChevronLeft className="w-5 h-5" strokeWidth={2} />
                 </button>
@@ -1032,7 +1066,7 @@ export default function Home() {
                   type="button"
                   onClick={() => projectsScrollRef.current?.scrollBy({ left: 340, behavior: "smooth" })}
                   className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0a0a0a]/90 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-colors"
-                  aria-label="Nächstes Projekt"
+                  aria-label={t.projekte.ariaNext}
                 >
                   <ChevronRight className="w-5 h-5" strokeWidth={2} />
                 </button>
@@ -1057,18 +1091,13 @@ export default function Home() {
               viewport={motionViewport}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold">Über uns</p>
+              <p className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold">{t.ueberUns.label}</p>
               <h2 className="text-2xl md:text-3xl lg:text-[2.5rem] text-white font-light leading-[1.35]">
-                <span className="text-[#ff1900] font-bold">Plesnicar Solutions</span> ist ein österreichisches Unternehmen 
-                mit Fokus auf zuverlässige Umsetzung, schnelle Kommunikation und saubere Ergebnisse – in IT und Bau.
+                <span className="text-[#ff1900] font-bold">{t.ueberUns.heading}</span> {t.ueberUns.headingRest}
               </h2>
               <div className="h-px w-20 bg-white/10" />
               <p className="text-base md:text-lg text-white/60 leading-relaxed font-light max-w-3xl">
-                Als <span className="text-white font-medium">inhabergeführtes Unternehmen</span> bieten wir direkten, persönlichen Service ohne Umwege. 
-                <span className="text-white font-medium">Boris Plesnicar</span> (Inhaber) deckt IT-Beratung, PC-Bau, digitale Lösungen und Grafikdesign ab. 
-                Im Bereich Bau, Hausbetreuung und Handel unterstützt <span className="text-white font-medium">Ing. Dietmar Plesnicar</span> – Bauingenieur 
-                mit über <span className="text-[#ff1900] font-medium">40 Jahren Erfahrung im Bauwesen</span>. 
-                IT und Bau aus einer Hand, <span className="text-white font-medium">regional in Österreich</span> und mit Remote-IT-Möglichkeiten.
+                {t.ueberUns.body}
               </p>
             </motion.div>
           </div>
@@ -1086,9 +1115,9 @@ export default function Home() {
             viewport={motionViewport}
             variants={staggerParent}
           >
-            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Das Team</motion.p>
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">{t.team.label}</motion.p>
             <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
-              Ihre <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Ansprechpartner</span>
+              {t.team.title} <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.team.titleHighlight}</span>
             </motion.h2>
           </motion.div>
 
@@ -1096,29 +1125,29 @@ export default function Home() {
             {[
               {
                 name: "Boris Plesnicar",
-                role: "IT-Spezialist & Grafikdesign",
-                education: "HTL Krems IT, Freelancer",
+                role: t.team.borisRole,
+                education: t.team.borisEdu,
                 image: "/portraits/boris.jpg",
                 isOwner: true,
-                expertise: ["PC-Bau", "Grafikdesign", "Webdesign", "IT-Support", "Handwerk"],
+                expertise: t.team.expertiseBoris,
                 phone: "+43 664 467 8382",
                 phoneHref: "tel:+436644678382",
                 sigImg: "/signatures/signatureboris.png",
-                sigAlt: "Unterschrift von Boris Plesnicar",
-                sigLabel: "Boris Plesnicar · Inhaber"
+                sigAlt: t.team.sigAltBoris,
+                sigLabel: t.team.sigBoris
               },
               {
                 name: "Ing. Dietmar Plesnicar",
-                role: "Bau-Beratung & Handel",
-                education: "Ingenieur · 40+ Jahre Erfahrung",
+                role: t.team.dietmarRole,
+                education: t.team.dietmarEdu,
                 image: "/portraits/dietmar.png",
                 isOwner: false,
-                expertise: ["Bauwesen", "Projektplanung", "Hausbetreuung", "Handel", "Beratung"],
+                expertise: t.team.expertiseDietmar,
                 phone: "+43 676 320 6308",
                 phoneHref: "tel:+436763206308",
                 sigImg: "/signatures/signaturedietmar.png",
-                sigAlt: "Unterschrift von Ing. Dietmar Plesnicar",
-                sigLabel: "Ing. Dietmar Plesnicar · Unterstützung"
+                sigAlt: t.team.sigAltDietmar,
+                sigLabel: t.team.sigDietmar
               }
             ].map((person, i) => (
               <motion.div
@@ -1149,9 +1178,9 @@ export default function Home() {
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="font-bold text-white text-lg">{person.name}</h3>
                       {person.isOwner ? (
-                        <span className="px-2 py-0.5 bg-[#ff1900] text-white text-[10px] font-bold rounded uppercase tracking-wider">Inhaber</span>
+                        <span className="px-2 py-0.5 bg-[#ff1900] text-white text-[10px] font-bold rounded uppercase tracking-wider">{t.team.owner}</span>
                       ) : (
-                        <span className="px-2 py-0.5 bg-white/[0.06] text-white/45 text-[10px] font-semibold rounded uppercase tracking-wider">Unterstützung</span>
+                        <span className="px-2 py-0.5 bg-white/[0.06] text-white/45 text-[10px] font-semibold rounded uppercase tracking-wider">{t.team.support}</span>
                       )}
                     </div>
                     <p className={`text-sm mb-1 ${person.isOwner ? 'text-[#ff1900] font-semibold' : 'text-white/55 font-medium'}`}>{person.role}</p>
@@ -1179,11 +1208,11 @@ export default function Home() {
                     </a>
                     <a href="tel:+43273432048" className="inline-flex items-center justify-center gap-2 min-w-[120px] px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.1] hover:bg-white/[0.08] text-white font-medium text-sm transition-colors whitespace-nowrap shrink-0">
                       <Phone className="w-3.5 h-3.5 shrink-0 text-[#ff1900]" strokeWidth={2} />
-                      Festnetz 02734/32048
+                      {t.team.landline}
                     </a>
                     <a href="mailto:plesnicaroffice@gmail.com" className="inline-flex items-center justify-center gap-2 min-w-[120px] px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.1] hover:bg-white/[0.08] text-white font-medium text-sm transition-colors whitespace-nowrap shrink-0">
                       <Mail className="w-3.5 h-3.5 shrink-0 text-[#ff1900]" strokeWidth={2} />
-                      E-Mail
+                      {t.team.email}
                     </a>
                   </div>
                   <div className="flex flex-col items-start sm:items-end gap-0.5 shrink-0 ml-0 sm:ml-4">
@@ -1210,21 +1239,17 @@ export default function Home() {
             viewport={motionViewport}
             variants={staggerParent}
           >
-            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Warum wir</motion.p>
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">{t.warum.label}</motion.p>
             <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
-              Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Vorteile</span>
+              {t.warum.title} <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.warum.titleHighlight}</span>
             </motion.h2>
           </motion.div>
 
-          {/* Bento: 2 breite + 2 schmale */}
           <div className="grid md:grid-cols-2 gap-5 md:gap-6">
-            {[
-              { icon: Zap, title: "Schnell", desc: "Rasche Reaktionszeiten und zügige Umsetzung – ob IT-Systeme oder Bau-Aufgaben.", wide: true },
-              { icon: Sparkles, title: "Sauber", desc: "Präzise Arbeit und hochwertige Ergebnisse in IT, Design und Hausbetreuung.", wide: false },
-              { icon: User, title: "Direkt", desc: "Ein Ansprechpartner für IT und Bau – kurze Wege, persönlicher Service.", wide: false },
-              { icon: Rocket, title: "Modern", desc: "Aktuelle Technologien für IT und zeitgemäße Lösungen für Bau.", wide: true }
-            ].map((benefit, i) => {
-              const IconComponent = benefit.icon;
+            {t.warum.items.map((benefit, i) => {
+              const icons = [Zap, Sparkles, User, Rocket];
+              const IconComponent = icons[i];
+              const wide = i === 0 || i === 3;
               return (
                 <motion.div
                   key={i}
@@ -1233,7 +1258,7 @@ export default function Home() {
                   viewport={motionViewport}
                   transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                   whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                  className={`group flex items-start gap-5 rounded-2xl border bg-[#0a0a0a]/90 border-white/[0.1] backdrop-blur-xl shadow-xl transition-all duration-500 md:hover:border-white/[0.2] md:hover:shadow-lg md:hover:shadow-[#ff1900]/10 ${benefit.wide ? 'md:col-span-2 p-7 md:p-8' : 'p-6 md:p-7'} ${i % 2 === 0 ? 'scroll-in-left' : 'scroll-in-right'}`}
+                  className={`group flex items-start gap-5 rounded-2xl border bg-[#0a0a0a]/90 border-white/[0.1] backdrop-blur-xl shadow-xl transition-all duration-500 md:hover:border-white/[0.2] md:hover:shadow-lg md:hover:shadow-[#ff1900]/10 ${wide ? 'md:col-span-2 p-7 md:p-8' : 'p-6 md:p-7'} ${i % 2 === 0 ? 'scroll-in-left' : 'scroll-in-right'}`}
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#ff1900]/10 border border-[#ff1900]/15 flex items-center justify-center group-hover:scale-105 transition-transform duration-400">
                     <IconComponent className="w-6 h-6 text-[#ff1900]" strokeWidth={2} />
@@ -1260,22 +1285,17 @@ export default function Home() {
             viewport={motionViewport}
             variants={staggerParent}
           >
-            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Qualität</motion.p>
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">{t.features.label}</motion.p>
             <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
-              Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Servicequalität</span>
+              {t.features.title} <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.features.titleHighlight}</span>
             </motion.h2>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {[
-              { icon: Clock, title: "Schnelle Reaktionszeiten", desc: "Kontaktaufnahme innerhalb von 24 Stunden. Zügige Projektumsetzung.", highlight: true },
-              { icon: CheckCircle2, title: "Qualitätssicherung", desc: "Hochwertige Ergebnisse nach etablierten Standards.", highlight: false },
-              { icon: TrendingUp, title: "Moderne Lösungsansätze", desc: "Aktuelle Technologien und bewährte Methoden.", highlight: false },
-              { icon: Users, title: "Persönliche Betreuung", desc: "Direkter Ansprechpartner – IT und Bau aus einer Hand.", highlight: false },
-              { icon: BarChart3, title: "Transparente Kommunikation", desc: "Klare Absprachen und regelmäßige Statusupdates.", highlight: false },
-              { icon: Award, title: "Erfahrung & Kompetenz", desc: "Langjährige Expertise für zuverlässige Ergebnisse.", highlight: true }
-            ].map((feature, i) => {
-              const IconComponent = feature.icon;
+            {t.features.items.map((feature, i) => {
+              const icons = [Clock, CheckCircle2, TrendingUp, Users, BarChart3, Award];
+              const IconComponent = icons[i];
+              const highlight = i === 0 || i === 5;
               return (
                 <motion.div
                   key={i}
@@ -1285,12 +1305,12 @@ export default function Home() {
                   transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
                   whileHover={{ y: -6, transition: { duration: 0.2 } }}
                   className={`group relative p-6 md:p-7 rounded-2xl border bg-[#0a0a0a]/90 border-white/[0.1] backdrop-blur-xl shadow-xl transition-all duration-500 md:hover:shadow-lg md:hover:shadow-[#ff1900]/8 ${
-                    feature.highlight
+                    highlight
                       ? 'border-[#ff1900]/20 md:hover:border-[#ff1900]/35'
                       : 'md:hover:border-white/[0.2]'
                   }`}
                 >
-                  {feature.highlight && <div className="absolute top-0 left-6 w-10 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />}
+                  {highlight && <div className="absolute top-0 left-6 w-10 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />}
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[#ff1900]/10 border border-[#ff1900]/15 flex items-center justify-center group-hover:scale-105 transition-transform duration-400">
                       <IconComponent className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
@@ -1318,24 +1338,17 @@ export default function Home() {
             viewport={motionViewport}
             variants={staggerParent}
           >
-            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">So arbeiten wir</motion.p>
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">{t.prozess.label}</motion.p>
             <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white">
-              Unsere <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">Arbeitsweise</span>
+              {t.prozess.title} <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.prozess.titleHighlight}</span>
             </motion.h2>
           </motion.div>
 
-          {/* Timeline */}
           <div className="relative">
-            {/* Vertikale Linie (nur md+) */}
             <div className="hidden md:block absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[#ff1900]/40 via-white/10 to-transparent" />
 
             <div className="space-y-6 md:space-y-0">
-              {[
-                { step: "01", title: "Kontakt", desc: "Sie nehmen Kontakt auf und beschreiben Ihr Anliegen – ob IT oder Bau." },
-                { step: "02", title: "Beratung", desc: "Wir analysieren Ihre Anforderungen und erstellen ein individuelles Angebot." },
-                { step: "03", title: "Umsetzung", desc: "Professionelle Ausführung: IT-Lösungen mit Updates oder Bau/Hausbetreuung mit Terminabsprache." },
-                { step: "04", title: "Betreuung", desc: "Laufende Betreuung: IT-Support oder regelmäßige Bau/Hausbetreuung nach Bedarf." }
-              ].map((process, i) => (
+              {t.prozess.steps.map((process, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, x: -24 }}
@@ -1346,11 +1359,11 @@ export default function Home() {
                 >
                   {/* Nummer-Dot */}
                   <div className="hidden md:flex flex-shrink-0 w-12 h-12 rounded-full bg-[#090a11] border-2 border-[#ff1900]/40 items-center justify-center z-10">
-                    <span className="text-xs font-black text-[#ff1900]">{process.step}</span>
+                    <span className="text-xs font-black text-[#ff1900]">{String(i + 1).padStart(2, "0")}</span>
                   </div>
                   <div className="flex-1 p-6 md:p-7 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl transition-all duration-500 md:hover:border-white/[0.2] md:hover:-translate-y-1 md:hover:shadow-lg md:hover:shadow-[#ff1900]/8">
                     <div className="flex items-center gap-3 mb-2 md:hidden">
-                      <span className="text-xs font-black text-[#ff1900] px-2 py-0.5 rounded-full border border-[#ff1900]/30 bg-[#ff1900]/10">{process.step}</span>
+                      <span className="text-xs font-black text-[#ff1900] px-2 py-0.5 rounded-full border border-[#ff1900]/30 bg-[#ff1900]/10">{String(i + 1).padStart(2, "0")}</span>
                     </div>
                     <h3 className="text-lg md:text-xl font-bold text-white mb-2">{process.title}</h3>
                     <p className="text-white/55 font-light leading-relaxed text-sm">{process.desc}</p>
@@ -1373,12 +1386,12 @@ export default function Home() {
             viewport={motionViewport}
             variants={staggerParent}
           >
-            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">Kontakt</motion.p>
+            <motion.p variants={staggerItem} className="text-sm uppercase tracking-[0.2em] text-[#ff1900] font-semibold mb-4">{t.kontakt.label}</motion.p>
             <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl font-black tracking-tight text-white mb-3">
-              Sprechen wir <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">darüber</span>
+              {t.kontakt.title} <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.kontakt.titleHighlight}</span>
             </motion.h2>
             <motion.p variants={staggerItem} className="text-white/50 font-light text-sm md:text-base max-w-lg mx-auto">
-              Erzählen Sie uns von Ihrem Projekt – wir antworten innerhalb von 24 Stunden. Dringend? Einfach anrufen.
+              {t.kontakt.subtitle}
             </motion.p>
           </motion.div>
 
@@ -1392,8 +1405,8 @@ export default function Home() {
             {/* Ansprechpartner – einheitliches Karten-Design */}
             <div className="space-y-4">
               <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
-                <p className="text-white font-bold text-base mb-1">Boris Plesnicar</p>
-                <p className="text-white/55 text-sm mb-4">IT & Grafikdesign</p>
+                <p className="text-white font-bold text-base mb-1">{t.kontakt.boris}</p>
+                <p className="text-white/55 text-sm mb-4">{t.kontakt.borisRole}</p>
                 <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                   <a
                     href="tel:+436644678382"
@@ -1407,7 +1420,7 @@ export default function Home() {
                     className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors"
                   >
                     <Phone className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                    Festnetz 02734/32048
+                    {t.team.landline}
                   </a>
                   <a
                     href="mailto:plesnicaroffice@gmail.com"
@@ -1415,13 +1428,13 @@ export default function Home() {
                     className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors"
                   >
                     <Mail className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                    E-Mail
+                    {t.team.email}
                   </a>
                 </div>
               </div>
               <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
-                <p className="text-white font-bold text-base mb-1">Ing. Dietmar Plesnicar</p>
-                <p className="text-white/55 text-sm mb-4">Bau & Hausbetreuung</p>
+                <p className="text-white font-bold text-base mb-1">{t.kontakt.dietmar}</p>
+                <p className="text-white/55 text-sm mb-4">{t.kontakt.dietmarRole}</p>
                 <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
                   <a
                     href="tel:+436763206308"
@@ -1435,7 +1448,7 @@ export default function Home() {
                     className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors"
                   >
                     <Phone className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                    Festnetz 02734/32048
+                    {t.team.landline}
                   </a>
                   <a
                     href="mailto:plesnicaroffice@gmail.com"
@@ -1443,16 +1456,15 @@ export default function Home() {
                     className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors"
                   >
                     <Mail className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                    E-Mail
+                    {t.team.email}
                   </a>
                 </div>
               </div>
             </div>
 
-            {/* Standort + Adresse + Instagram kompakt */}
             <div className="space-y-4">
               <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl border-[#ff1900]/15">
-                <h3 className="text-white font-bold text-base mb-3">Standort</h3>
+                <h3 className="text-white font-bold text-base mb-3">{t.kontakt.standort}</h3>
                 <div className="w-full h-48 md:h-52 rounded-xl overflow-hidden border border-white/[0.08] bg-white/[0.02]">
                   {cookieConsent?.comfort ? (
                     <iframe
@@ -1469,23 +1481,23 @@ export default function Home() {
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-3 px-4 text-center">
                       <p className="text-white/65 text-xs md:text-sm font-light">
-                        Karte laden wir erst nach Ihrer Cookie-Einwilligung. Details in der Datenschutzerklärung.
+                        {t.kontakt.mapConsent}
                       </p>
                       <button
                         type="button"
                         onClick={() => updateConsent(true)}
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white text-sm font-semibold transition-colors"
                       >
-                        Cookies akzeptieren
+                        {t.kontakt.acceptCookies}
                         <ArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
                       </button>
                     </div>
                   )}
                 </div>
-                <p className="text-white/65 font-light text-sm mt-3">Hartriegelstraße 12, 3550 Langenlois</p>
-                <p className="text-white/50 text-xs mt-0.5">Boris Plesnicar e.U. · IT auch remote</p>
+                <p className="text-white/65 font-light text-sm mt-3">{t.kontakt.address}</p>
+                <p className="text-white/50 text-xs mt-0.5">{t.kontakt.addressNote}</p>
                 <p className="text-white/65 font-light text-sm mt-3">
-                  <strong className="text-white font-semibold">Festnetz:</strong>{" "}
+                  <strong className="text-white font-semibold">{t.kontakt.festnetz}:</strong>{" "}
                   <a href="tel:+43273432048" className="text-[#ff1900] hover:underline">
                     02734/32048
                   </a>
@@ -1533,7 +1545,7 @@ export default function Home() {
               type="button"
               onClick={() => setSelectedProject(null)}
               className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900]"
-              aria-label="Schließen"
+              aria-label={t.modal.close}
             >
               <X className="w-5 h-5" />
             </button>
@@ -1541,8 +1553,8 @@ export default function Home() {
             <div className="p-6 md:p-8">
               <h2 id="project-modal-title" className="text-2xl md:text-3xl font-bold text-white pr-12">
                 {selectedProject.title}
-                {selectedProject.subtitle && (
-                  <span className="block text-lg font-medium text-white/60 mt-1">{selectedProject.subtitle}</span>
+                {(PROJECT_TRANSLATIONS[lang][selectedProject.id]?.subtitle ?? selectedProject.subtitle) && (
+                  <span className="block text-lg font-medium text-white/60 mt-1">{PROJECT_TRANSLATIONS[lang][selectedProject.id]?.subtitle ?? selectedProject.subtitle}</span>
                 )}
               </h2>
 
@@ -1551,7 +1563,7 @@ export default function Home() {
                 <div className="relative aspect-video">
                   <Image
                     src={selectedProject.images[projectModalImageIndex]}
-                    alt={`${selectedProject.title} – Bild ${projectModalImageIndex + 1}`}
+                    alt={`${selectedProject.title} – ${t.modal.imageAlt} ${projectModalImageIndex + 1}`}
                     fill
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, 672px"
@@ -1576,7 +1588,7 @@ export default function Home() {
               </div>
 
               <p className="mt-6 text-white/70 leading-relaxed text-sm md:text-base">
-                {selectedProject.description}
+                {PROJECT_TRANSLATIONS[lang][selectedProject.id]?.description ?? selectedProject.description}
               </p>
 
               {selectedProject.link && (
@@ -1586,7 +1598,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="mt-6 inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors"
                 >
-                  {selectedProject.linkLabel ?? "Mehr erfahren"}
+                  {PROJECT_TRANSLATIONS[lang][selectedProject.id]?.linkLabel ?? selectedProject.linkLabel ?? t.projekte.moreInfo}
                   <ExternalLink className="w-4 h-4" />
                 </a>
               )}
@@ -1610,7 +1622,7 @@ export default function Home() {
             </div>
             <div className="text-center md:text-left flex-1">
               <p className="font-bold text-white mb-1">Boris Plesnicar e.U.</p>
-              <p className="font-light text-sm text-white/50">© {new Date().getFullYear()} Plesnicar Solutions. Alle Rechte vorbehalten.</p>
+              <p className="font-light text-sm text-white/50">© {new Date().getFullYear()} Plesnicar Solutions. {t.footer.rights}</p>
             </div>
             <div className="flex items-center gap-6">
               <a 
@@ -1623,10 +1635,10 @@ export default function Home() {
                 <Instagram className="w-5 h-5" strokeWidth={2} />
               </a>
               <Link href="/impressum" className="text-white/60 hover:text-white transition-colors duration-200 font-medium text-sm">
-                Impressum
+                {t.footer.impressum}
               </Link>
               <Link href="/datenschutz" className="text-white/60 hover:text-white transition-colors duration-200 font-medium text-sm">
-                Datenschutz
+                {t.footer.datenschutz}
               </Link>
             </div>
           </div>
@@ -1638,7 +1650,7 @@ export default function Home() {
         <motion.button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Nach oben scrollen"
+          aria-label={t.ariaScrollTop}
           className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-30 w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-white/[0.08] border border-white/[0.12] text-white/80 hover:bg-white/[0.14] hover:text-white shadow-lg"
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -1661,10 +1673,10 @@ export default function Home() {
                 onClick={() => setMobileContactBarCollapsed(false)}
                 className="w-full min-h-[48px] flex items-center justify-center gap-2.5 py-3 px-4 text-white text-sm font-semibold"
                 aria-expanded="false"
-                aria-label="Kontaktleiste einblenden"
+                aria-label={t.mobileBar.showContact}
               >
                 <Phone className="w-5 h-5 shrink-0 text-[#ff1900]" strokeWidth={2} />
-                <span>Kontakt anzeigen</span>
+                <span>{t.mobileBar.showContact}</span>
                 <ChevronUp className="w-4 h-4 shrink-0 text-white/50" />
               </button>
             ) : (
@@ -1674,26 +1686,26 @@ export default function Home() {
                   className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-[#ff1900] hover:bg-[#e61700] active:bg-[#cc1500] text-white text-sm font-semibold transition-colors"
                 >
                   <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
-                  <span className="truncate">Festnetz</span>
+                  <span className="truncate">{t.mobileBar.landline}</span>
                 </a>
                 <a
                   href="tel:+436644678382"
                   className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white text-sm font-semibold border-l border-white/10 transition-colors"
                 >
                   <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
-                  <span className="truncate">IT & Grafik</span>
+                  <span className="truncate">{t.mobileBar.itGrafik}</span>
                 </a>
                 <a
                   href="tel:+436763206308"
                   className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white text-sm font-semibold border-l border-white/10 transition-colors"
                 >
                   <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
-                  <span className="truncate">Bau & Hausbetreuung</span>
+                  <span className="truncate">{t.mobileBar.bauHaus}</span>
                 </a>
                 <a
                   href="mailto:plesnicaroffice@gmail.com"
                   className="flex-none w-12 min-h-[48px] inline-flex items-center justify-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white border-l border-white/10 transition-colors"
-                  aria-label="E-Mail"
+                  aria-label={t.team.email}
                 >
                   <Mail className="w-5 h-5" strokeWidth={2} />
                 </a>
@@ -1701,8 +1713,8 @@ export default function Home() {
                   type="button"
                   onClick={() => setMobileContactBarCollapsed(true)}
                   className="flex-none w-12 min-h-[48px] inline-flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] active:bg-white/[0.06] text-white/70 hover:text-white border-l border-white/10 transition-colors"
-                  aria-label="Einklappen – Impressum & Datenschutz erreichbar"
-                  title="Einklappen"
+                  aria-label={t.mobileBar.collapseAria}
+                  title={t.mobileBar.collapseTitle}
                 >
                   <ChevronDown className="w-5 h-5" strokeWidth={2} />
                 </button>
@@ -1712,9 +1724,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Cookie Banner (desktop & mobile) */}
       {showCookieBanner && (
         <CookieBanner
+          lang={lang}
           onAllowEssential={() => updateConsent(false)}
           onAllowAll={() => updateConsent(true)}
         />
@@ -1724,11 +1736,13 @@ export default function Home() {
 }
 
 type CookieBannerProps = {
+  lang: Lang;
   onAllowEssential: () => void;
   onAllowAll: () => void;
 };
 
-function CookieBanner({ onAllowEssential, onAllowAll }: CookieBannerProps) {
+function CookieBanner({ lang, onAllowEssential, onAllowAll }: CookieBannerProps) {
+  const c = TRANSLATIONS[lang].cookie;
   return (
     <div className="fixed inset-x-0 z-50 bottom-24 md:bottom-0">
       <div className="mx-4 mb-4 md:mx-auto md:mb-6 md:max-w-4xl rounded-2xl bg-[#050506]/95 border border-white/[0.12] shadow-2xl shadow-black/60 backdrop-blur-xl">
@@ -1739,17 +1753,12 @@ function CookieBanner({ onAllowEssential, onAllowAll }: CookieBannerProps) {
             </div>
             <div className="flex-1">
               <h2 className="text-sm md:text-base font-semibold text-white mb-1">
-                Datenschutzeinstellungen
+                {c.title}
               </h2>
               <p className="text-xs md:text-sm text-white/70 leading-relaxed">
-                Wir verwenden Cookies und ähnliche Technologien. Einige sind technisch erforderlich, um diese Website
-                sicher und zuverlässig zu betreiben (z.&nbsp;B. für grundlegende Funktionen und Sicherheit). Zusätzlich
-                können Sie optionale Komfort-Cookies für eingebettete Inhalte wie Google Maps aktivieren. Dabei können
-                personenbezogene Daten (z.&nbsp;B. Ihre IP-Adresse) an Drittanbieter innerhalb der EU und ggf. in
-                Drittländer übermittelt werden. Sie können nur notwendige Cookies zulassen oder alle Cookies
-                akzeptieren. Ausführliche Informationen finden Sie in unserer{" "}
+                {c.body}{" "}
                 <Link href="/datenschutz" className="underline underline-offset-2 decoration-white/40 hover:text-white">
-                  Datenschutzerklärung
+                  {c.privacyLink}
                 </Link>
                 .
               </p>
@@ -1761,14 +1770,14 @@ function CookieBanner({ onAllowEssential, onAllowAll }: CookieBannerProps) {
               onClick={onAllowEssential}
               className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/[0.02] px-3.5 py-3 text-xs md:text-sm font-semibold text-white/90 hover:bg-white/[0.08] hover:border-white/40 transition-all duration-200"
             >
-              Nur notwendige Cookies
+              {c.essential}
             </button>
             <button
               type="button"
               onClick={onAllowAll}
               className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-[#ff1900] to-[#ff2d00] px-4 py-3 text-xs md:text-sm font-semibold text-white shadow-lg shadow-[#ff1900]/30 hover:from-[#e61700] hover:to-[#ff1900] hover:shadow-xl hover:shadow-[#ff1900]/40 transition-all duration-200"
             >
-              Alle akzeptieren
+              {c.acceptAll}
             </button>
           </div>
         </div>
