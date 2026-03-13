@@ -88,6 +88,16 @@ const PROJECTS: Project[] = [
       "/recents/DAle/iScreen Shoter - Safari - 260311173738.jpg",
     ],
   },
+  {
+    id: "plesnicar-crm",
+    title: "PlesnicarCRM",
+    subtitle: "Eigenes CRM",
+    description: "",
+    images: [
+      "/recents/PlesnicarCRM - eigenes CRM/crm1.jpg",
+      "/recents/PlesnicarCRM - eigenes CRM/crm2.jpg",
+    ],
+  },
 ];
 
 type CookieConsent = {
@@ -159,13 +169,20 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectModalImageIndex, setProjectModalImageIndex] = useState(0);
-  const [mobileContactBarCollapsed, setMobileContactBarCollapsed] = useState(false);
+  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
+  const [mobileContactBarCollapsed, setMobileContactBarCollapsed] = useState(true);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const heroImageRef = useRef<HTMLDivElement>(null);
   const projectsScrollRef = useRef<HTMLDivElement>(null);
+  const projectCardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const wasWirAndersRef = useRef<HTMLElement>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [wasWirAndersProgress, setWasWirAndersProgress] = useState(0);
+  const statsRef = useRef<HTMLElement>(null);
+  const [statsInView, setStatsInView] = useState(false);
+  const statsAnimatedRef = useRef(false);
+  const [statsDisplay, setStatsDisplay] = useState({ years: 0, projects: 0, clients: 0 });
+  const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
 
   const t = TRANSLATIONS[lang];
   const SECTION_IDS = ["hero", "leistungen", "projekte", "ueber-uns", "team", "warum", "features", "prozess", "kontakt"] as const;
@@ -240,6 +257,76 @@ export default function Home() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Track which project card is in view for dots navigation
+  useEffect(() => {
+    const container = projectsScrollRef.current;
+    const cards = projectCardRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (!container || cards.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const index = cards.indexOf(entry.target as HTMLDivElement);
+          if (index >= 0) setActiveProjectIndex(index);
+        });
+      },
+      { root: container, rootMargin: "0px", threshold: 0.5 }
+    );
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
+
+  // Stats: IntersectionObserver – Section als „in view“ markieren
+  useEffect(() => {
+    const el = statsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setStatsInView(true);
+        });
+      },
+      { rootMargin: "0px 0px -20% 0px", threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Stats: Count-up-Animation (einmalig wenn sichtbar)
+  useEffect(() => {
+    if (!statsInView || statsAnimatedRef.current) return;
+    const targets = { years: t.stats.years, projects: t.stats.projects, clients: t.stats.clients };
+    if (prefersReducedMotion) {
+      setStatsDisplay(targets);
+      statsAnimatedRef.current = true;
+      return;
+    }
+    statsAnimatedRef.current = true;
+    const duration = 1400;
+    const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+    const start = performance.now();
+    let rafId: number;
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOutQuart(progress);
+      setStatsDisplay({
+        years: Math.round(eased * targets.years),
+        projects: Math.round(eased * targets.projects),
+        clients: Math.round(eased * targets.clients),
+      });
+      if (progress < 1) rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [statsInView, prefersReducedMotion, t.stats.years, t.stats.projects, t.stats.clients]);
+
+  useEffect(() => {
+    if (statsAnimatedRef.current) {
+      setStatsDisplay({ years: t.stats.years, projects: t.stats.projects, clients: t.stats.clients });
+    }
+  }, [lang, t.stats.years, t.stats.projects, t.stats.clients]);
 
   useEffect(() => {
     const setHeroVisible = () => {
@@ -572,6 +659,16 @@ export default function Home() {
         </div>
       )}
 
+      {showSuccessAnimation && (
+        <SuccessOverlay
+          prefersReducedMotion={prefersReducedMotion}
+          onComplete={() => {
+            setShowSuccessAnimation(false);
+            scrollToSection("kontakt");
+          }}
+        />
+      )}
+
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 border-b border-white/[0.08] supports-[backdrop-filter]:backdrop-blur-xl backdrop-saturate-150">
         <nav className="container mx-auto px-4 sm:px-6 py-3 md:py-4 flex items-center justify-between max-w-[100vw]">
@@ -744,7 +841,10 @@ export default function Home() {
               <div className="hero-animate flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-1">
                 <motion.a
                   href="#kontakt"
-                  onClick={(e: React.MouseEvent) => { e.preventDefault(); scrollToSection("kontakt"); }}
+                  onClick={(e: React.MouseEvent) => {
+                    e.preventDefault();
+                    setShowSuccessAnimation(true);
+                  }}
                   className="group px-10 py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] text-white text-base font-bold shadow-2xl shadow-[#ff1900]/30 flex items-center justify-center gap-2.5 rounded-2xl"
                   initial={{ borderRadius: "1rem" }}
                   whileHover={{
@@ -817,6 +917,32 @@ export default function Home() {
                   priority
                 />
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats-Leiste: animierte Count-up-Zahlen */}
+      <section ref={statsRef} className="py-8 md:py-10 px-4 sm:px-6 border-t border-white/5 bg-[#070709]">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-3 gap-6 md:gap-8">
+            <div className="text-center">
+              <p className="text-2xl md:text-3xl font-black text-[#ff1900] tabular-nums">
+                {statsDisplay.years}+
+              </p>
+              <p className="text-white/60 text-sm md:text-base font-medium mt-1">{t.stats.yearsLabel}</p>
+            </div>
+            <div className="text-center border-x border-white/10">
+              <p className="text-2xl md:text-3xl font-black text-[#ff1900] tabular-nums">
+                {statsDisplay.projects}+
+              </p>
+              <p className="text-white/60 text-sm md:text-base font-medium mt-1">{t.stats.projectsLabel}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl md:text-3xl font-black text-[#ff1900] tabular-nums">
+                {statsDisplay.clients}+
+              </p>
+              <p className="text-white/60 text-sm md:text-base font-medium mt-1">{t.stats.clientsLabel}</p>
             </div>
           </div>
         </div>
@@ -1006,6 +1132,51 @@ export default function Home() {
           </motion.div>
 
           <p className="text-center text-white/40 text-sm mb-4 md:mb-5">{t.projekte.scrollHint}</p>
+
+          {/* LED-Slideshow: zuerst, automatisch durchlaufend */}
+          <div className="relative w-full mb-10 md:mb-14 overflow-hidden" aria-hidden>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#ff1900]/8 via-transparent to-[#ff1900]/8 pointer-events-none z-10" />
+            <div
+              className="py-5 md:py-6 border-y border-[#ff1900]/20 bg-[#080808]/95 backdrop-blur-sm"
+              style={{ perspective: "1600px", transformStyle: "preserve-3d" }}
+            >
+              <div className="flex items-center overflow-hidden" style={{ transform: "rotateX(2deg)", transformStyle: "preserve-3d" }}>
+                <div className="led-ticker-track flex items-stretch gap-5 md:gap-6 shrink-0 pl-4 md:pl-6" style={{ width: "max-content" }}>
+                  {[...PROJECTS, ...PROJECTS].map((project, i) => (
+                    <div
+                      key={`${project.id}-${i}`}
+                      className="flex-shrink-0 w-[200px] sm:w-[230px] md:w-[260px] rounded-xl overflow-hidden border border-white/15 bg-[#0d0d0d] shadow-xl"
+                      style={{
+                        boxShadow: "0 12px 40px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
+                      }}
+                    >
+                      <div className="relative aspect-[4/3] bg-white/5">
+                        <Image
+                          src={project.images[0]}
+                          alt=""
+                          fill
+                          className="object-cover opacity-95"
+                          sizes="260px"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                        <div className="absolute bottom-2 left-2.5 right-2.5">
+                          <p className="text-white font-bold text-sm truncate drop-shadow-lg">{project.title}</p>
+                          <p className="text-white/80 text-xs truncate mt-0.5">
+                            {PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle ?? ""}
+                          </p>
+                        </div>
+                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="absolute left-0 top-0 bottom-0 w-20 md:w-28 bg-gradient-to-r from-[#070709] via-[#070709]/95 to-transparent pointer-events-none z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 md:w-28 bg-gradient-to-l from-[#070709] via-[#070709]/95 to-transparent pointer-events-none z-10" />
+          </div>
+
+          {/* Interaktives Carousel mit Dots und Pfeilen (unterhalb der Slideshow) */}
           <div className="relative -mx-4 sm:mx-0">
             <div
               ref={projectsScrollRef}
@@ -1015,31 +1186,70 @@ export default function Home() {
               {PROJECTS.map((project, i) => (
                 <motion.div
                   key={project.id}
+                  ref={(el) => { projectCardRefs.current[i] = el; }}
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={motionViewport}
                   transition={{ duration: 0.4, delay: i * 0.06 }}
-                  className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] snap-center first:snap-start last:snap-end"
+                  className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] snap-center first:snap-start last:snap-end flex justify-center"
+                  style={{ perspective: "1200px" }}
                 >
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => { setSelectedProject(project); setProjectModalImageIndex(0); }}
-                    className="w-full text-left rounded-2xl border border-white/[0.1] bg-[#0a0a0a]/90 backdrop-blur-xl overflow-hidden shadow-xl hover:border-[#ff1900]/30 hover:shadow-[#ff1900]/10 transition-all duration-300 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070709]"
+                    layout
+                    animate={
+                      prefersReducedMotion
+                        ? {}
+                        : {
+                            scale: activeProjectIndex === i ? 1.03 : 0.98,
+                            y: activeProjectIndex === i ? -6 : 0,
+                            rotateX: 0,
+                            rotateY: 0,
+                            boxShadow: activeProjectIndex === i
+                              ? "0 24px 48px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,25,0,0.25), 0 0 40px -8px rgba(255,25,0,0.2)"
+                              : "0 12px 24px -8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06)",
+                          }
+                    }
+                    whileHover={
+                      prefersReducedMotion
+                        ? undefined
+                        : {
+                            scale: 1.04,
+                            y: -8,
+                            rotateX: 4,
+                            rotateY: -6,
+                            boxShadow: "0 28px 56px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,25,0,0.4), 0 0 48px -6px rgba(255,25,0,0.35)",
+                            transition: { type: "spring", stiffness: 400, damping: 25 },
+                          }
+                    }
+                    whileTap={prefersReducedMotion ? undefined : { scale: 1, transition: { duration: 0.1 } }}
+                    transition={{ type: "spring", stiffness: 320, damping: 30 }}
+                    style={{ transformOrigin: "center center" }}
+                    className="w-full max-w-[340px] text-left rounded-2xl border border-white/[0.1] bg-[#0a0a0a]/95 backdrop-blur-xl overflow-hidden group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070709]"
                   >
                     <div className="relative aspect-[4/3] bg-white/[0.03] overflow-hidden">
                       <Image
                         src={project.images[0]}
                         alt={[project.title, PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle].filter(Boolean).join(" – ") + " " + t.projekte.imageAltPreview}
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 640px) 280px, 340px"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <span className="absolute top-3 left-3 text-white/80 font-mono text-xs tabular-nums">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {project.id === "plesnicar-crm" && (
+                        <span className="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-[#ff1900]/90 text-white text-[10px] font-semibold uppercase tracking-wider">
+                          {t.projekte.inHouseLabel}
+                        </span>
+                      )}
                       <span className="absolute bottom-3 left-3 right-3 text-white font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         {t.projekte.showInfo}
                       </span>
                     </div>
-                    <div className="p-4 md:p-5">
+                    <div className="p-4 md:p-5 relative">
                       <h3 className="font-bold text-white text-lg group-hover:text-[#ff1900] transition-colors">
                         {project.title}
                         {(PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle) && (
@@ -1047,17 +1257,46 @@ export default function Home() {
                         )}
                       </h3>
                     </div>
-                  </button>
+                  </motion.button>
                 </motion.div>
               ))}
             </div>
-            {/* Pfeile: vorheriges / nächstes Projekt (Desktop + Mobile als Option) */}
+            {/* Scroll-Dots: aktives Projekt + Klick zum Springen */}
+            {PROJECTS.length > 1 && (
+              <div className="flex justify-center gap-2 mt-5 md:mt-6">
+                {PROJECTS.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => {
+                      const container = projectsScrollRef.current;
+                      const card = projectCardRefs.current[i];
+                      if (container && card) {
+                        const left = card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2;
+                        container.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+                      }
+                    }}
+                    className="rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070709]"
+                    aria-label={t.projekte.ariaGoToProject.replace("%s", String(i + 1))}
+                  >
+                    <span
+                      className={`block rounded-full transition-all duration-300 ${
+                        activeProjectIndex === i
+                          ? "w-8 h-2.5 bg-[#ff1900]"
+                          : "w-2.5 h-2.5 bg-white/30 hover:bg-white/50"
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+            {/* Pfeile: vorheriges / nächstes Projekt – pointer-events-auto damit Klicks trotz overlay ankommen */}
             {PROJECTS.length > 1 && (
               <div className="flex md:absolute md:top-1/2 md:-translate-y-1/2 md:left-0 md:right-0 md:pointer-events-none justify-center md:justify-between gap-3 mt-4 md:mt-0 md:px-0">
                 <button
                   type="button"
                   onClick={() => projectsScrollRef.current?.scrollBy({ left: -340, behavior: "smooth" })}
-                  className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0a0a0a]/90 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-colors"
+                  className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0a0a0a]/90 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-colors pointer-events-auto z-20"
                   aria-label={t.projekte.ariaPrev}
                 >
                   <ChevronLeft className="w-5 h-5" strokeWidth={2} />
@@ -1065,7 +1304,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => projectsScrollRef.current?.scrollBy({ left: 340, behavior: "smooth" })}
-                  className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0a0a0a]/90 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-colors"
+                  className="flex-shrink-0 w-11 h-11 md:w-12 md:h-12 rounded-full bg-[#0a0a0a]/90 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 active:scale-95 transition-colors pointer-events-auto z-20"
                   aria-label={t.projekte.ariaNext}
                 >
                   <ChevronRight className="w-5 h-5" strokeWidth={2} />
@@ -1663,15 +1902,15 @@ export default function Home() {
         </motion.button>
       )}
 
-      {/* Mobile bottom contact bar – ein Kasten, einklappbar für Impressum/Datenschutz */}
+      {/* Mobile bottom contact bar – Stack-Layout (Dock-ähnlich), alles lesbar */}
       <div className="fixed inset-x-0 bottom-0 z-40 md:hidden pointer-events-none">
         <div className="mx-3 sm:mx-4 mb-3 sm:mb-4 pointer-events-auto flex justify-center">
-          <div className="w-full max-w-lg rounded-2xl bg-[#0f0f0f]/98 border border-white/[0.12] shadow-xl shadow-black/50 overflow-hidden">
+          <div className="w-full max-w-sm rounded-2xl bg-[#0f0f0f]/98 border border-white/[0.12] shadow-xl shadow-black/50 overflow-hidden">
             {mobileContactBarCollapsed ? (
               <button
                 type="button"
                 onClick={() => setMobileContactBarCollapsed(false)}
-                className="w-full min-h-[48px] flex items-center justify-center gap-2.5 py-3 px-4 text-white text-sm font-semibold"
+                className="w-full min-h-[52px] flex items-center justify-center gap-2.5 py-3.5 px-4 text-white text-sm font-semibold rounded-2xl"
                 aria-expanded="false"
                 aria-label={t.mobileBar.showContact}
               >
@@ -1680,43 +1919,65 @@ export default function Home() {
                 <ChevronUp className="w-4 h-4 shrink-0 text-white/50" />
               </button>
             ) : (
-              <div className="flex flex-wrap items-stretch gap-0">
+              <div className="flex flex-col">
                 <a
                   href="tel:+43273432048"
-                  className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-[#ff1900] hover:bg-[#e61700] active:bg-[#cc1500] text-white text-sm font-semibold transition-colors"
+                  className="flex items-center gap-3 py-3.5 px-4 bg-[#ff1900]/90 hover:bg-[#ff1900] active:bg-[#cc1500] text-white transition-colors min-h-[52px]"
                 >
-                  <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
-                  <span className="truncate">{t.mobileBar.landline}</span>
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/20">
+                    <Phone className="w-4 h-4" strokeWidth={2} />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="font-semibold text-sm">{t.mobileBar.landline}</p>
+                    <p className="text-xs text-white/80 font-mono">02734 32048</p>
+                  </div>
                 </a>
                 <a
                   href="tel:+436644678382"
-                  className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white text-sm font-semibold border-l border-white/10 transition-colors"
+                  className="flex items-center gap-3 py-3 px-4 border-t border-white/10 hover:bg-white/[0.06] active:bg-white/[0.08] text-white transition-colors min-h-[48px]"
                 >
-                  <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
-                  <span className="truncate">{t.mobileBar.itGrafik}</span>
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.08]">
+                    <Phone className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2} />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="font-medium text-sm text-white">{t.mobileBar.itGrafik}</p>
+                    <p className="text-xs text-white/60 font-mono">0664 4678382</p>
+                  </div>
                 </a>
                 <a
                   href="tel:+436763206308"
-                  className="flex-1 min-w-0 min-h-[48px] inline-flex items-center justify-center gap-2 rounded-none py-3 px-3 text-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white text-sm font-semibold border-l border-white/10 transition-colors"
+                  className="flex items-center gap-3 py-3 px-4 border-t border-white/10 hover:bg-white/[0.06] active:bg-white/[0.08] text-white transition-colors min-h-[48px]"
                 >
-                  <Phone className="w-4 h-4 shrink-0" strokeWidth={2} />
-                  <span className="truncate">{t.mobileBar.bauHaus}</span>
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.08]">
+                    <Phone className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2} />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="font-medium text-sm text-white">{t.mobileBar.bauHaus}</p>
+                    <p className="text-xs text-white/60 font-mono">0676 3206308</p>
+                  </div>
                 </a>
                 <a
                   href="mailto:plesnicaroffice@gmail.com"
-                  className="flex-none w-12 min-h-[48px] inline-flex items-center justify-center bg-white/[0.06] hover:bg-white/[0.12] active:bg-white/[0.08] text-white border-l border-white/10 transition-colors"
+                  className="flex items-center gap-3 py-3 px-4 border-t border-white/10 hover:bg-white/[0.06] active:bg-white/[0.08] text-white transition-colors min-h-[48px]"
                   aria-label={t.team.email}
                 >
-                  <Mail className="w-5 h-5" strokeWidth={2} />
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.08]">
+                    <Mail className="w-3.5 h-3.5 text-[#ff1900]" strokeWidth={2} />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="font-medium text-sm text-white">{t.team.email}</p>
+                    <p className="text-xs text-white/60 truncate" title="plesnicaroffice@gmail.com">plesnicaroffice@gmail.com</p>
+                  </div>
                 </a>
                 <button
                   type="button"
                   onClick={() => setMobileContactBarCollapsed(true)}
-                  className="flex-none w-12 min-h-[48px] inline-flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] active:bg-white/[0.06] text-white/70 hover:text-white border-l border-white/10 transition-colors"
+                  className="flex items-center justify-center gap-2 py-2.5 px-4 border-t border-white/10 bg-white/[0.03] hover:bg-white/[0.06] active:bg-white/[0.04] text-white/60 hover:text-white/90 text-sm transition-colors min-h-[44px]"
                   aria-label={t.mobileBar.collapseAria}
                   title={t.mobileBar.collapseTitle}
                 >
-                  <ChevronDown className="w-5 h-5" strokeWidth={2} />
+                  <ChevronDown className="w-4 h-4" strokeWidth={2} />
+                  <span>{t.mobileBar.collapseTitle}</span>
                 </button>
               </div>
             )}
@@ -1731,6 +1992,64 @@ export default function Home() {
           onAllowAll={() => updateConsent(true)}
         />
       )}
+    </div>
+  );
+}
+
+type SuccessOverlayProps = {
+  onComplete: () => void;
+  prefersReducedMotion: boolean;
+};
+
+function SuccessOverlay({ onComplete, prefersReducedMotion }: SuccessOverlayProps) {
+  const particles = useRef<Array<{ id: number; x: number; y: number; color: string; delay: number; rotate: number; endY: number }>>(null);
+  if (particles.current === null) {
+    const colors = ["#ff1900", "#ffffff", "rgba(255,255,255,0.7)", "rgba(255,25,0,0.8)"];
+    particles.current = Array.from({ length: 32 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: 15 + Math.random() * 25,
+      color: colors[i % colors.length],
+      delay: Math.random() * 0.25,
+      rotate: (Math.random() - 0.5) * 360,
+      endY: 100 + Math.random() * 80,
+    }));
+  }
+  const list = particles.current;
+
+  useEffect(() => {
+    const t = prefersReducedMotion ? 600 : 1300;
+    const id = setTimeout(onComplete, t);
+    return () => clearTimeout(id);
+  }, [onComplete, prefersReducedMotion]);
+
+  return (
+    <div className="fixed inset-0 z-[55] flex items-center justify-center bg-black/40 pointer-events-auto" aria-hidden>
+      <motion.div
+        initial={{ scale: 0, rotate: -20 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ type: "spring", stiffness: 400, damping: 22 }}
+        className="relative flex items-center justify-center rounded-full bg-[#0a0a0a]/95 border-2 border-[#ff1900] p-4 shadow-[0_0_48px_rgba(255,25,0,0.35)]"
+      >
+        <CheckCircle2 className="w-16 h-16 md:w-20 md:h-20 text-[#ff1900]" strokeWidth={2} />
+      </motion.div>
+      {!prefersReducedMotion &&
+        list.map((p) => (
+          <motion.div
+            key={p.id}
+            className="absolute w-2 h-2 rounded-sm"
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              backgroundColor: p.color,
+              originX: "center",
+              originY: "center",
+            }}
+            initial={{ y: 0, opacity: 1, rotate: 0 }}
+            animate={{ y: p.endY, opacity: 0, rotate: p.rotate }}
+            transition={{ duration: 1.2, delay: p.delay, ease: "easeOut" }}
+          />
+        ))}
     </div>
   );
 }

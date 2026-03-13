@@ -31,6 +31,14 @@ export const TRANSLATIONS = {
       ctaServices: "Leistungen ansehen",
       sub: "Antwort innerhalb von 24 Stunden – auch am Wochenende.",
     },
+    stats: {
+      years: 40,
+      yearsLabel: "Jahre Erfahrung",
+      projects: 50,
+      projectsLabel: "Projekte",
+      clients: 100,
+      clientsLabel: "Zufriedene Kunden",
+    },
     heroPills: {
       itTitle: "IT & Grafikdesign",
       itSub: "PC-Bau · Webdesign · Branding",
@@ -104,11 +112,14 @@ export const TRANSLATIONS = {
       titleHighlight: "Projekte",
       subtitle: "Qualität und Vielfalt – eine Auswahl unserer Arbeiten.",
       scrollHint: "Scrollen oder wischen zum Durchblättern",
+      scrollGateHint: "Alle Projekte durchblättern (← → oder Mausrad), dann geht’s weiter nach unten.",
       ariaPrev: "Vorheriges Projekt",
       ariaNext: "Nächstes Projekt",
+      ariaGoToProject: "Zu Projekt %s scrollen",
       showInfo: "Infos anzeigen",
       moreInfo: "Mehr erfahren",
       imageAltPreview: "Projektvorschau",
+      inHouseLabel: "Eigenes Projekt",
     },
     ueberUns: {
       label: "Über uns",
@@ -238,6 +249,14 @@ export const TRANSLATIONS = {
       ctaServices: "View services",
       sub: "We reply within 24 hours – including weekends.",
     },
+    stats: {
+      years: 40,
+      yearsLabel: "Years of experience",
+      projects: 50,
+      projectsLabel: "Projects",
+      clients: 100,
+      clientsLabel: "Happy clients",
+    },
     heroPills: {
       itTitle: "IT & Graphic design",
       itSub: "PC builds · Web design · Branding",
@@ -311,11 +330,14 @@ export const TRANSLATIONS = {
       titleHighlight: "projects",
       subtitle: "Quality and variety – a selection of our work.",
       scrollHint: "Scroll or swipe to browse",
+      scrollGateHint: "Scroll through all projects (← → or mouse wheel), then you can scroll down.",
       ariaPrev: "Previous project",
       ariaNext: "Next project",
+      ariaGoToProject: "Scroll to project %s",
       showInfo: "Show info",
       moreInfo: "Learn more",
       imageAltPreview: "Project preview",
+      inHouseLabel: "In-house",
     },
     ueberUns: {
       label: "About us",
@@ -445,6 +467,12 @@ export const PROJECT_TRANSLATIONS: Record<
         "Website für den Twitch-Streamer MrDaleJE – mit Parallax und On-Scroll-Effekten. Scroll-getriebene Parallax-Effekte und ein 3D-Objekt, das sich beim Scrollen bewegt. Großteils eine Test-Website zur Erprobung moderner Web-Animationen.",
       linkLabel: "Mehr erfahren",
     },
+    "plesnicar-crm": {
+      subtitle: "Eigenes CRM",
+      description:
+        "PlesnicarCRM ist unser eigenes, maßgeschneidertes CRM-System für Kundenverwaltung, Angebote und Projektverfolgung. Entwickelt für die Bedürfnisse von Plesnicar Solutions – schlank, übersichtlich und direkt einsetzbar.",
+      linkLabel: "Mehr erfahren",
+    },
   },
   en: {
     "skyline-ios": {
@@ -463,6 +491,12 @@ export const PROJECT_TRANSLATIONS: Record<
       subtitle: "Twitch streamer website",
       description:
         "Website for the Twitch streamer MrDaleJE – with parallax and on-scroll effects. Scroll-driven parallax and a 3D object that moves on scroll. Largely a test site for modern web animations.",
+      linkLabel: "Learn more",
+    },
+    "plesnicar-crm": {
+      subtitle: "In-house CRM",
+      description:
+        "PlesnicarCRM is our own custom CRM for customer management, quotes and project tracking. Built for Plesnicar Solutions’ needs – lean, clear and ready to use.",
       linkLabel: "Learn more",
     },
   },

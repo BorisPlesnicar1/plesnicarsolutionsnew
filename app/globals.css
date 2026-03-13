@@ -259,3 +259,18 @@ html.no-backdrop-blur * {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* LED-Ticker: Endlos-Scroll (Projekte-Carousel) */
+@keyframes led-ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.led-ticker-track {
+  animation: led-ticker-scroll 45s linear infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .led-ticker-track {
+    animation: none;
+  }
+}
