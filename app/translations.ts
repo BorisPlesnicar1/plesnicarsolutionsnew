@@ -120,6 +120,11 @@ export const TRANSLATIONS = {
       moreInfo: "Mehr erfahren",
       imageAltPreview: "Projektvorschau",
       inHouseLabel: "Eigenes Projekt",
+      categoryIt: "IT & Digital",
+      categoryBau: "Bau",
+      itBauHint: "IT- und Bau-Projekte sind farblich gekennzeichnet.",
+      bauBefaehigungHinweis:
+        "Klarstellung: Im Zusammenhang mit diesem Bau-Referenz wurden von uns keine Montagearbeiten und keine sonstigen Tätigkeiten durchgeführt, für die nach den einschlägigen Bestimmungen (z. B. Gewerbeordnung) ein Befähigungsnachweis vorgeschrieben ist.",
     },
     ueberUns: {
       label: "Über uns",
@@ -338,6 +343,11 @@ export const TRANSLATIONS = {
       moreInfo: "Learn more",
       imageAltPreview: "Project preview",
       inHouseLabel: "In-house",
+      categoryIt: "IT & Digital",
+      categoryBau: "Construction",
+      itBauHint: "IT and construction projects are color-coded.",
+      bauBefaehigungHinweis:
+        "Clarification: In connection with this construction reference we did not perform assembly work or any other activities for which a certificate of competence is required under applicable regulations (e.g. trade law).",
     },
     ueberUns: {
       label: "About us",
@@ -473,6 +483,12 @@ export const PROJECT_TRANSLATIONS: Record<
         "PlesnicarCRM ist unser eigenes, maßgeschneidertes CRM-System für Kundenverwaltung, Angebote und Projektverfolgung. Entwickelt für die Bedürfnisse von Plesnicar Solutions – schlank, übersichtlich und direkt einsetzbar.",
       linkLabel: "Mehr erfahren",
     },
+    betonlieferung: {
+      subtitle: "Betonlieferung",
+      description:
+        "Bau-Referenz: Betonlieferung und Baustellenlogistik – koordinierte Anlieferung, Einsatz auf dem Objekt und Zusammenarbeit mit dem Bauträger. Es wurden keine Montagearbeiten und keine Tätigkeiten ausgeführt, für die ein Befähigungsnachweis erforderlich wäre. Ein Beispiel aus unserem Bau- und Handelsbereich.",
+      linkLabel: "Mehr erfahren",
+    },
   },
   en: {
     "skyline-ios": {
@@ -497,6 +513,12 @@ export const PROJECT_TRANSLATIONS: Record<
       subtitle: "In-house CRM",
       description:
         "PlesnicarCRM is our own custom CRM for customer management, quotes and project tracking. Built for Plesnicar Solutions’ needs – lean, clear and ready to use.",
+      linkLabel: "Learn more",
+    },
+    betonlieferung: {
+      subtitle: "Concrete delivery",
+      description:
+        "Construction reference: concrete delivery and site logistics – coordinated deliveries, on-site coordination and collaboration with the contractor. No assembly work or activities requiring a certificate of competence were performed. An example from our construction and trade division.",
       linkLabel: "Learn more",
     },
   },

@@ -40,6 +40,8 @@ import {
 import { TRANSLATIONS, PROJECT_TRANSLATIONS, type Lang } from "./translations";
 
 /** Project data: add more entries to show more projects (images from public/recents/<folder>). */
+type ProjectCategory = "it" | "bau";
+
 type Project = {
   id: string;
   title: string;
@@ -48,14 +50,21 @@ type Project = {
   images: string[];
   link?: string;
   linkLabel?: string;
+  category: ProjectCategory;
+  /** Eigenes Produkt / internes Tool (zusätzliches Badge) */
+  inHouse?: boolean;
+  /** Höher = neuer; Anzeige immer absteigend (neuestes zuerst). Neues Projekt: höchsten Wert + 10. */
+  sortOrder: number;
 };
 
-const PROJECTS: Project[] = [
+const PROJECTS_RAW: Project[] = [
   {
     id: "skyline-ios",
     title: "Skyline Hub",
     subtitle: "iOS App",
     description: "",
+    category: "it",
+    sortOrder: 10,
     images: [
       "/recents/Skyline Hub - iOS App/6067ABD6-A209-46DE-A975-264F6D585441_1_105_c.jpeg",
       "/recents/Skyline Hub - iOS App/38FFC837-AA63-44CC-8594-7F7A360F27C0_1_105_c.jpeg",
@@ -70,6 +79,8 @@ const PROJECTS: Project[] = [
     title: "Skyline Hub",
     subtitle: "Website",
     description: "",
+    category: "it",
+    sortOrder: 20,
     images: [
       "/recents/Skyline Hub - Website/iScreen Shoter - 20260311173308125.jpg",
       "/recents/Skyline Hub - Website/iScreen Shoter - Safari - 260311173235.jpg",
@@ -83,6 +94,8 @@ const PROJECTS: Project[] = [
     title: "MrDaleJE",
     subtitle: "Twitch-Streamer Website",
     description: "",
+    category: "it",
+    sortOrder: 30,
     images: [
       "/recents/DAle/iScreen Shoter - 20260311173812422.jpg",
       "/recents/DAle/iScreen Shoter - Safari - 260311173738.jpg",
@@ -93,12 +106,66 @@ const PROJECTS: Project[] = [
     title: "PlesnicarCRM",
     subtitle: "Eigenes CRM",
     description: "",
+    category: "it",
+    inHouse: true,
+    sortOrder: 40,
     images: [
       "/recents/PlesnicarCRM - eigenes CRM/crm1.jpg",
       "/recents/PlesnicarCRM - eigenes CRM/crm2.jpg",
     ],
   },
+  {
+    id: "betonlieferung",
+    title: "Betonlieferung",
+    subtitle: "",
+    description: "",
+    category: "bau",
+    sortOrder: 50,
+    images: [
+      "/recents/betonlieferung/64357146-4B8C-4367-8FFF-3362BF3DFCE8_1_105_c.jpeg",
+      "/recents/betonlieferung/5DA6A726-213B-44EA-9EFC-291E9894BF41.jpeg",
+      "/recents/betonlieferung/DA615F58-E135-426E-ACC5-29A49B2B1004.jpeg",
+      "/recents/betonlieferung/FA3A9532-43C9-490F-9673-3F2D9690DF98_4_5005_c.jpeg",
+    ],
+  },
 ];
+
+/** Neuestes Projekt zuerst (Carousel, LED-Ticker, Dots). */
+const PROJECTS: Project[] = [...PROJECTS_RAW].sort((a, b) => b.sortOrder - a.sortOrder);
+
+function projectFocusShadow(category: ProjectCategory, active: boolean): string {
+  if (!active) return "0 12px 24px -8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06)";
+  if (category === "bau") {
+    return "0 24px 48px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(217,119,6,0.45), 0 0 40px -8px rgba(245,158,11,0.22)";
+  }
+  return "0 24px 48px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,25,0,0.25), 0 0 40px -8px rgba(255,25,0,0.2)";
+}
+
+function projectHoverShadow(category: ProjectCategory): string {
+  if (category === "bau") {
+    return "0 28px 56px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(245,158,11,0.45), 0 0 48px -6px rgba(245,158,11,0.3)";
+  }
+  return "0 28px 56px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,25,0,0.4), 0 0 48px -6px rgba(255,25,0,0.35)";
+}
+
+/** Welche Karte liegt am nächsten zur Mitte des sichtbaren Carousel-Bereichs (zuverlässiger als IntersectionObserver bei mehreren gleichzeitig sichtbaren Karten). */
+function getClosestProjectIndexToCenter(container: HTMLDivElement, cards: HTMLDivElement[]): number {
+  if (cards.length === 0) return 0;
+  const cRect = container.getBoundingClientRect();
+  const centerX = cRect.left + cRect.width / 2;
+  let best = 0;
+  let bestDist = Infinity;
+  cards.forEach((card, i) => {
+    const r = card.getBoundingClientRect();
+    const cardCenter = r.left + r.width / 2;
+    const dist = Math.abs(cardCenter - centerX);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = i;
+    }
+  });
+  return best;
+}
 
 type CookieConsent = {
   necessary: true;
@@ -170,6 +237,8 @@ export default function Home() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectModalImageIndex, setProjectModalImageIndex] = useState(0);
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
+  /** Nur wenn horizontales Scrollen nötig ist: Dots/Pfeile und Fokus-Scale sinnvoll. */
+  const [projectsCarouselHasOverflow, setProjectsCarouselHasOverflow] = useState(true);
   const [mobileContactBarCollapsed, setMobileContactBarCollapsed] = useState(true);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const heroImageRef = useRef<HTMLDivElement>(null);
@@ -258,24 +327,38 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Track which project card is in view for dots navigation
+  // Carousel: aktiver Index = Karte nächst zur Mitte; bei keinem Overflow keine Dots (vermeidet „stuck“ bei mehreren gleichzeitig sichtbaren Karten)
   useEffect(() => {
     const container = projectsScrollRef.current;
-    const cards = projectCardRefs.current.filter(Boolean) as HTMLDivElement[];
-    if (!container || cards.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const index = cards.indexOf(entry.target as HTMLDivElement);
-          if (index >= 0) setActiveProjectIndex(index);
-        });
-      },
-      { root: container, rootMargin: "0px", threshold: 0.5 }
-    );
-    cards.forEach((card) => observer.observe(card));
-    return () => observer.disconnect();
-  }, []);
+    const update = () => {
+      const cards = projectCardRefs.current.filter(Boolean) as HTMLDivElement[];
+      if (!container || cards.length === 0) return;
+      const overflow = container.scrollWidth - container.clientWidth > 4;
+      setProjectsCarouselHasOverflow(overflow);
+      if (!overflow) {
+        setActiveProjectIndex(0);
+        return;
+      }
+      setActiveProjectIndex(getClosestProjectIndexToCenter(container, cards));
+    };
+    update();
+    container?.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(update) : null;
+    if (container && ro) ro.observe(container);
+    let raf1 = 0;
+    let raf2 = 0;
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(update);
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      container?.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      ro?.disconnect();
+    };
+  }, [lang, PROJECTS.length]);
 
   // Stats: IntersectionObserver – Section als „in view“ markieren
   useEffect(() => {
@@ -1131,7 +1214,18 @@ export default function Home() {
             </motion.p>
           </motion.div>
 
-          <p className="text-center text-white/40 text-sm mb-4 md:mb-5">{t.projekte.scrollHint}</p>
+          <p className="text-center text-white/40 text-sm mb-2 md:mb-3">{t.projekte.scrollHint}</p>
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-4 md:mb-5">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ff1900]/35 bg-[#ff1900]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#ff1900]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#ff1900]" aria-hidden />
+              {t.projekte.categoryIt}
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden />
+              {t.projekte.categoryBau}
+            </span>
+          </div>
+          <p className="text-center text-white/35 text-xs mb-4 md:mb-5 max-w-md mx-auto">{t.projekte.itBauHint}</p>
 
           {/* LED-Slideshow: zuerst, automatisch durchlaufend */}
           <div className="relative w-full mb-10 md:mb-14 overflow-hidden" aria-hidden>
@@ -1145,9 +1239,13 @@ export default function Home() {
                   {[...PROJECTS, ...PROJECTS].map((project, i) => (
                     <div
                       key={`${project.id}-${i}`}
-                      className="flex-shrink-0 w-[200px] sm:w-[230px] md:w-[260px] rounded-xl overflow-hidden border border-white/15 bg-[#0d0d0d] shadow-xl"
+                      className={`flex-shrink-0 w-[200px] sm:w-[230px] md:w-[260px] rounded-xl overflow-hidden bg-[#0d0d0d] shadow-xl ${
+                        project.category === "bau"
+                          ? "border border-amber-500/35 ring-1 ring-amber-500/15"
+                          : "border border-[#ff1900]/25 ring-1 ring-[#ff1900]/10"
+                      }`}
                       style={{
-                        boxShadow: "0 12px 40px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.04)",
+                        boxShadow: "0 12px 40px -12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)",
                       }}
                     >
                       <div className="relative aspect-[4/3] bg-white/5">
@@ -1158,6 +1256,13 @@ export default function Home() {
                           className="object-cover opacity-95"
                           sizes="260px"
                         />
+                        <span
+                          className={`absolute top-2 right-2 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide text-white ${
+                            project.category === "bau" ? "bg-amber-600/95" : "bg-[#ff1900]/95"
+                          }`}
+                        >
+                          {project.category === "bau" ? t.projekte.categoryBau : t.projekte.categoryIt}
+                        </span>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                         <div className="absolute bottom-2 left-2.5 right-2.5">
                           <p className="text-white font-bold text-sm truncate drop-shadow-lg">{project.title}</p>
@@ -1202,13 +1307,18 @@ export default function Home() {
                       prefersReducedMotion
                         ? {}
                         : {
-                            scale: activeProjectIndex === i ? 1.03 : 0.98,
-                            y: activeProjectIndex === i ? -6 : 0,
+                            scale: !projectsCarouselHasOverflow
+                              ? 1
+                              : activeProjectIndex === i
+                                ? 1.03
+                                : 0.98,
+                            y: activeProjectIndex === i && projectsCarouselHasOverflow ? -6 : 0,
                             rotateX: 0,
                             rotateY: 0,
-                            boxShadow: activeProjectIndex === i
-                              ? "0 24px 48px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,25,0,0.25), 0 0 40px -8px rgba(255,25,0,0.2)"
-                              : "0 12px 24px -8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06)",
+                            boxShadow: projectFocusShadow(
+                              project.category,
+                              activeProjectIndex === i && projectsCarouselHasOverflow
+                            ),
                           }
                     }
                     whileHover={
@@ -1219,14 +1329,18 @@ export default function Home() {
                             y: -8,
                             rotateX: 4,
                             rotateY: -6,
-                            boxShadow: "0 28px 56px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,25,0,0.4), 0 0 48px -6px rgba(255,25,0,0.35)",
+                            boxShadow: projectHoverShadow(project.category),
                             transition: { type: "spring", stiffness: 400, damping: 25 },
                           }
                     }
                     whileTap={prefersReducedMotion ? undefined : { scale: 1, transition: { duration: 0.1 } }}
                     transition={{ type: "spring", stiffness: 320, damping: 30 }}
                     style={{ transformOrigin: "center center" }}
-                    className="w-full max-w-[340px] text-left rounded-2xl border border-white/[0.1] bg-[#0a0a0a]/95 backdrop-blur-xl overflow-hidden group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff1900] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070709]"
+                    className={`w-full max-w-[340px] text-left rounded-2xl border bg-[#0a0a0a]/95 backdrop-blur-xl overflow-hidden group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070709] ${
+                      project.category === "bau"
+                        ? "border-amber-500/25 focus-visible:ring-amber-500"
+                        : "border-white/[0.1] focus-visible:ring-[#ff1900]"
+                    }`}
                   >
                     <div className="relative aspect-[4/3] bg-white/[0.03] overflow-hidden">
                       <Image
@@ -1240,11 +1354,22 @@ export default function Home() {
                       <span className="absolute top-3 left-3 text-white/80 font-mono text-xs tabular-nums">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      {project.id === "plesnicar-crm" && (
-                        <span className="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-[#ff1900]/90 text-white text-[10px] font-semibold uppercase tracking-wider">
-                          {t.projekte.inHouseLabel}
+                      <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5 z-[1] max-w-[55%]">
+                        <span
+                          className={`px-2 py-0.5 rounded-md text-white text-[10px] font-semibold uppercase tracking-wider ${
+                            project.category === "bau"
+                              ? "bg-amber-600/95 ring-1 ring-amber-400/40"
+                              : "bg-[#ff1900]/95 ring-1 ring-white/20"
+                          }`}
+                        >
+                          {project.category === "bau" ? t.projekte.categoryBau : t.projekte.categoryIt}
                         </span>
-                      )}
+                        {project.inHouse && (
+                          <span className="px-2 py-0.5 rounded-md bg-white/15 text-white text-[10px] font-semibold uppercase tracking-wider ring-1 ring-white/25">
+                            {t.projekte.inHouseLabel}
+                          </span>
+                        )}
+                      </div>
                       <span className="absolute bottom-3 left-3 right-3 text-white font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         {t.projekte.showInfo}
                       </span>
@@ -1261,8 +1386,8 @@ export default function Home() {
                 </motion.div>
               ))}
             </div>
-            {/* Scroll-Dots: aktives Projekt + Klick zum Springen */}
-            {PROJECTS.length > 1 && (
+            {/* Scroll-Dots nur wenn horizontales Scrollen nötig (sonst irreführend / „stuck“) */}
+            {PROJECTS.length > 1 && projectsCarouselHasOverflow && (
               <div className="flex justify-center gap-2 mt-5 md:mt-6">
                 {PROJECTS.map((_, i) => (
                   <button
@@ -1290,8 +1415,8 @@ export default function Home() {
                 ))}
               </div>
             )}
-            {/* Pfeile: vorheriges / nächstes Projekt – pointer-events-auto damit Klicks trotz overlay ankommen */}
-            {PROJECTS.length > 1 && (
+            {/* Pfeile nur bei horizontalem Overflow */}
+            {PROJECTS.length > 1 && projectsCarouselHasOverflow && (
               <div className="flex md:absolute md:top-1/2 md:-translate-y-1/2 md:left-0 md:right-0 md:pointer-events-none justify-center md:justify-between gap-3 mt-4 md:mt-0 md:px-0">
                 <button
                   type="button"
@@ -1790,6 +1915,20 @@ export default function Home() {
             </button>
 
             <div className="p-6 md:p-8">
+              <div className="flex flex-wrap items-center gap-2 mb-2 pr-12">
+                <span
+                  className={`inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white ${
+                    selectedProject.category === "bau" ? "bg-amber-600/95 ring-1 ring-amber-400/35" : "bg-[#ff1900]/95 ring-1 ring-white/20"
+                  }`}
+                >
+                  {selectedProject.category === "bau" ? t.projekte.categoryBau : t.projekte.categoryIt}
+                </span>
+                {selectedProject.inHouse && (
+                  <span className="inline-flex items-center rounded-md bg-white/12 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white ring-1 ring-white/20">
+                    {t.projekte.inHouseLabel}
+                  </span>
+                )}
+              </div>
               <h2 id="project-modal-title" className="text-2xl md:text-3xl font-bold text-white pr-12">
                 {selectedProject.title}
                 {(PROJECT_TRANSLATIONS[lang][selectedProject.id]?.subtitle ?? selectedProject.subtitle) && (
@@ -1816,7 +1955,11 @@ export default function Home() {
                         type="button"
                         onClick={() => setProjectModalImageIndex(idx)}
                         className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-all ${
-                          projectModalImageIndex === idx ? "border-[#ff1900] ring-2 ring-[#ff1900]/30" : "border-white/20 hover:border-white/40"
+                          projectModalImageIndex === idx
+                            ? selectedProject.category === "bau"
+                              ? "border-amber-500 ring-2 ring-amber-500/35"
+                              : "border-[#ff1900] ring-2 ring-[#ff1900]/30"
+                            : "border-white/20 hover:border-white/40"
                         }`}
                       >
                         <Image src={img} alt="" width={56} height={56} className="w-full h-full object-cover" />
@@ -1830,12 +1973,22 @@ export default function Home() {
                 {PROJECT_TRANSLATIONS[lang][selectedProject.id]?.description ?? selectedProject.description}
               </p>
 
+              {selectedProject.category === "bau" && (
+                <p className="mt-4 rounded-xl border border-amber-500/35 bg-amber-500/10 px-4 py-3 text-amber-100/95 text-xs md:text-sm leading-relaxed">
+                  {t.projekte.bauBefaehigungHinweis}
+                </p>
+              )}
+
               {selectedProject.link && (
                 <a
                   href={selectedProject.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors"
+                  className={`mt-6 inline-flex items-center gap-2 px-4 py-3 rounded-xl text-white font-semibold text-sm transition-colors ${
+                    selectedProject.category === "bau"
+                      ? "bg-amber-600 hover:bg-amber-500 shadow-lg shadow-amber-600/25"
+                      : "bg-[#ff1900] hover:bg-[#e61700] shadow-lg shadow-[#ff1900]/25"
+                  }`}
                 >
                   {PROJECT_TRANSLATIONS[lang][selectedProject.id]?.linkLabel ?? selectedProject.linkLabel ?? t.projekte.moreInfo}
                   <ExternalLink className="w-4 h-4" />
