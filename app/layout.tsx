@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     template: "%s | Plesnicar Solutions",
   },
   description:
-    "Schwerpunkt IT: Beratung, Web, Grafik & Systeme aus Langenlois, NÖ. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau (Ing. Dietmar Plesnicar). Jetzt anfragen.",
+    "Schwerpunkt IT: Beratung, Web, Grafik & Systeme für Unternehmen und Privatkunden in Österreich. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau durch Ing. Dietmar Plesnicar. Jetzt anfragen – Langenlois, NÖ.",
   metadataBase: new URL(SITE_URL),
   robots: {
     index: true,
@@ -55,15 +55,15 @@ export const metadata: Metadata = {
     locale: "de_AT",
     url: SITE_URL,
     siteName: "Plesnicar Solutions",
-    title: "Plesnicar Solutions – IT & Digital aus Österreich",
+    title: "Plesnicar Solutions – IT, Web & Hausbetreuung | NÖ",
     description:
-      "Schwerpunkt IT: Beratung, Web, Grafik & Systeme. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau – aus Langenlois, Österreich.",
+      "Schwerpunkt IT: Beratung, Web, Grafik & Systeme für Unternehmen und Privatkunden in Österreich. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau durch Ing. Dietmar Plesnicar. Jetzt anfragen – Langenlois, NÖ.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Plesnicar Solutions – IT & Digital aus Österreich",
+    title: "Plesnicar Solutions – IT, Web & Hausbetreuung | NÖ",
     description:
-      "Schwerpunkt IT: Beratung, Web, Grafik & Systeme. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau – aus Langenlois, Österreich.",
+      "Schwerpunkt IT: Beratung, Web, Grafik & Systeme für Unternehmen und Privatkunden in Österreich. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau durch Ing. Dietmar Plesnicar. Jetzt anfragen – Langenlois, NÖ.",
   },
   icons: {
     icon: "/favicon.ico",

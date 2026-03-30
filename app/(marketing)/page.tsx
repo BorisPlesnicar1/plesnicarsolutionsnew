@@ -5,24 +5,28 @@ import { HomePage } from "./home-page";
 
 const SITE = "https://plesnicarsolutions.at";
 
+/** ~150–220 Zeichen; Kernbegriffe für Snippet & Tools */
 const DESC =
-  "Schwerpunkt IT: Beratung, Web, Grafik & Systeme aus Österreich. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau. Jetzt anfragen.";
+  "Schwerpunkt IT: Beratung, Web, Grafik & Systeme für Unternehmen und Privatkunden in Österreich. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau durch Ing. Dietmar Plesnicar. Jetzt anfragen – Langenlois, NÖ.";
+
+/** Ohne layout.tsx-Template, sonst doppelt: „… | Plesnicar Solutions“ und >60 Zeichen */
+const HOME_TITLE =
+  "Plesnicar Solutions – IT, Web & Hausbetreuung | NÖ";
 
 export const metadata: Metadata = {
-  title: "Plesnicar Solutions – IT & Digital aus Österreich",
+  title: { absolute: HOME_TITLE },
   description: DESC,
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Plesnicar Solutions – IT & Digital aus Österreich",
-    description:
-      "Schwerpunkt IT: Beratung, Web, Grafik & Systeme. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau – aus Österreich.",
+    title: HOME_TITLE,
+    description: DESC,
     url: SITE,
   },
 };
 
 const homeJsonLd = pageJsonLdGraph({
   path: "/",
-  name: "Plesnicar Solutions – IT & Digital aus Österreich",
+  name: HOME_TITLE,
   description: DESC,
   breadcrumbs: [{ name: "Start", path: "/" }],
 });

@@ -57,7 +57,6 @@ export function PartnerLogosSection() {
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center justify-center min-w-[120px] max-w-[160px] md:max-w-[180px] opacity-90 hover:opacity-100 transition-opacity"
-              aria-label={partner.name}
             >
               <span
                 className={
@@ -68,9 +67,10 @@ export function PartnerLogosSection() {
               >
                 <Image
                   src={partner.logoSrc}
-                  alt=""
+                  alt={`Logo ${partner.name}`}
                   width={partner.logoWidth}
                   height={partner.logoHeight}
+                  sizes="(max-width: 640px) 120px, 180px"
                   className={
                     partner.logoOnLightBg
                       ? "h-8 sm:h-9 md:h-10 w-auto max-w-full object-contain transition-opacity duration-300"
