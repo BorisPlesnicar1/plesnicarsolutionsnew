@@ -6,8 +6,11 @@ import { ArrowLeft } from "lucide-react";
 export const metadata: Metadata = {
   title: "Impressum",
   description:
-    "Impressum von Plesnicar Solutions (Boris Plesnicar e.U.) – Angaben gemäß § 5 TMG, Kontaktdaten und Haftungshinweise.",
-  alternates: { canonical: "/impressum" },
+    "Impressum von Plesnicar Solutions (Boris Plesnicar e.U.) – Pflichtangaben gemäß § 5 ECG (Österreich) und Kontaktdaten.",
+  alternates: {
+    canonical: "/impressum",
+    languages: { de: "/impressum", en: "/impressum-en" },
+  },
 };
 
 export default function Impressum() {
@@ -52,7 +55,13 @@ export default function Impressum() {
 
           <div className="space-y-8 text-white/90 font-light leading-relaxed">
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Angaben gemäß § 5 TMG</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">Angaben gemäß § 5 ECG (E-Commerce-Gesetz)</h2>
+              <p className="mb-4 text-white/80 text-sm">
+                Diese Website wird von einem in <strong>Österreich</strong> niedergelassenen Unternehmen betrieben. Für
+                geschäftliche Online-Auftritte gelten die Informationspflichten des{" "}
+                <strong>§ 5 ECG</strong>. Entsprechende Pflichten aus dem deutschen TMG können für Besucher aus Deutschland
+                inhaltlich vergleichbar sein; maßgeblich für unser Impressum ist das österreichische Recht.
+              </p>
               <p className="mb-2">
                 <strong className="text-white font-semibold">Boris Plesnicar e.U.</strong>
               </p>
@@ -85,13 +94,13 @@ export default function Impressum() {
                 </a>
               </p>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Mobil (IT & Grafik):</strong>{" "}
+                <strong className="text-white font-semibold">Mobil (Schwerpunkt IT & Grafik):</strong>{" "}
                 <a href="tel:+436644678382" className="text-[#ff1900] hover:underline">
                   +43 664 4678382
                 </a>
               </p>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Mobil (Bau & Hausbetreuung):</strong>{" "}
+                <strong className="text-white font-semibold">Mobil (Unterstützung Bau):</strong>{" "}
                 <a href="tel:+436763206308" className="text-[#ff1900] hover:underline">
                   +43 676 3206308
                 </a>
@@ -116,7 +125,11 @@ export default function Impressum() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">Medieninhaber und Inhalte (Mediengesetz)</h2>
+              <p className="mb-4 text-white/80 text-sm">
+                Soweit einschlägig gelten die Vorgaben des österreichischen Mediengesetzes (MedienG) zu Medieninhaberschaft
+                und redaktionell-medialen Inhalten. Verantwortlich für den redaktionellen Inhalt dieser Website:
+              </p>
               <p className="mb-2">
                 Boris Plesnicar
               </p>
@@ -149,7 +162,10 @@ export default function Impressum() {
                 <div>
                   <h3 className="text-xl font-semibold text-white mb-2">Urheberrecht</h3>
                   <p>
-                    Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+                    Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem{" "}
+                    <strong>österreichischen Urheberrecht</strong> (UrhG). Vervielfältigung, Bearbeitung, Verbreitung und
+                    jede Art der Verwertung außerhalb der gesetzlichen Grenzen bedürfen der schriftlichen Zustimmung des
+                    jeweiligen Rechteinhabers.
                   </p>
                 </div>
               </div>

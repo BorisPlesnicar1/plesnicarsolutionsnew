@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MIN_DISPLAY_MS = 2200;
 const LOADING_CLOSED_EVENT = "ps-loading-closed";
-const PROGRESS_INTERVAL_MS = 26;
-const PROGRESS_STEP = 2;
+/** Füllzeit des Balkens an der echten Zeit – funktioniert auch nach Browser-Tab-Wechsel (kein hängender Fortschritt). */
+const PROGRESS_FILL_MS = 1300;
 const COMPLETE_PAUSE_MS = 300;
 const SKIP_BUTTON_DELAY_MS = 1400;
 
@@ -24,6 +24,7 @@ function dispatchLoadingClosed() {
 }
 
 const ease = [0.22, 1, 0.36, 1];
+const SEEN_KEY = "ps_loading_seen";
 
 export function LoadingScreen({ children }: { children: React.ReactNode }) {
   const [visible, setVisible] = useState(true);
@@ -32,7 +33,7 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
   const [showSkip, setShowSkip] = useState(false);
 
   const mountedAt = useRef(Date.now());
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rafRef = useRef<number>(0);
   const completeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const exitDoneRef = useRef(false);
@@ -45,6 +46,11 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
   const finishExit = () => {
     if (exitDoneRef.current) return;
     exitDoneRef.current = true;
+    try {
+      sessionStorage.setItem(SEEN_KEY, "1");
+    } catch {
+      /* ignore */
+    }
     setVisible(false);
     dispatchLoadingClosed();
   };
@@ -60,6 +66,17 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
     if (win) win.__ps_loading_closed = false;
   }, []);
 
+  useLayoutEffect(() => {
+    try {
+      if (sessionStorage.getItem(SEEN_KEY) === "1") {
+        setVisible(false);
+        dispatchLoadingClosed();
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   useEffect(() => {
     skipRef.current = setTimeout(() => setShowSkip(true), SKIP_BUTTON_DELAY_MS);
     return () => {
@@ -68,20 +85,36 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setProgress((p) => {
-        if (p >= 100) {
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
-          return 100;
-        }
-        return Math.min(100, p + PROGRESS_STEP);
-      });
-    }, PROGRESS_INTERVAL_MS);
+    const syncProgress = () => {
+      const elapsed = Date.now() - mountedAt.current;
+      return Math.min(100, (elapsed / PROGRESS_FILL_MS) * 100);
+    };
+
+    const loop = () => {
+      const p = syncProgress();
+      setProgress(p);
+      if (p < 100) {
+        rafRef.current = requestAnimationFrame(loop);
+      }
+    };
+
+    const onVisibility = () => {
+      if (document.visibilityState !== "visible") return;
+      const p = syncProgress();
+      setProgress(p);
+      if (p < 100) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = requestAnimationFrame(loop);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(loop);
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 
@@ -221,7 +254,7 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
                   e.stopPropagation();
                   hide();
                 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white/40 hover:text-white/60 text-[10px] font-medium tracking-widest uppercase transition-colors min-h-[44px] pointer-events-auto"
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white/40 hover:text-white/60 text-[10px] font-medium tracking-widest uppercase transition-colors min-h-[44px] pointer-events-auto"
               >
                 Überspringen
               </motion.button>

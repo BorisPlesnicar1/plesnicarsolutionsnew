@@ -7,7 +7,10 @@ export const metadata: Metadata = {
   title: "Datenschutzerklärung",
   description:
     "Datenschutzerklärung von Plesnicar Solutions – Informationen zur Verarbeitung personenbezogener Daten gemäß DSGVO.",
-  alternates: { canonical: "/datenschutz" },
+  alternates: {
+    canonical: "/datenschutz",
+    languages: { de: "/datenschutz", en: "/datenschutz-en" },
+  },
 };
 
 export default function Datenschutz() {
@@ -58,13 +61,73 @@ export default function Datenschutz() {
               </p>
               <p className="mb-4">
                 In folgender Datenschutzerklärung informieren wir Sie über die wichtigsten Aspekte der Datenverarbeitung
-                im Rahmen unserer Webseite. Wir erheben und verarbeiten personenbezogene Daten nur auf Grundlage der gesetzlichen
-                Bestimmungen (Datenschutzgrundverordnung, Telekommunikationsgesetz 2003).
+                im Rahmen unserer Website. Maßgeblich sind die{" "}
+                <strong>Datenschutz-Grundverordnung (DSGVO)</strong> sowie das{" "}
+                <strong>österreichische Telekommunikationsgesetz 2021 (TKG 2021)</strong> – letzteres u. a. für den Einsatz von
+                Cookies und ähnlichen Technologien auf Ihrem Endgerät, soweit einschlägig.
               </p>
               <p className="mb-6">
-                Sobald Sie als Benutzer auf unsere Webseite zugreifen oder diese besuchen wird Ihre IP-Adresse, Beginn sowie Beginn und Ende der Sitzung erfasst. Dies ist
-                technisch bedingt und stellt somit ein berechtigtes Interesse iSv Art 6 Abs 1 lit f DSGVO.
+                Beim Zugriff auf unsere Website werden technisch bedingt u. a. Ihre IP-Adresse sowie Beginn und Ende der Nutzung
+                (Server- bzw. Hosting-Logs) verarbeitet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (betriebswirtschaftlicher
+                Betrieb und Sicherheit des Webangebots).
               </p>
+            </section>
+
+            <section>
+              <h3 className="text-xl font-bold text-white mb-4">Bilder, Portfolio und selbst gehostete Inhalte</h3>
+              <p className="mb-4">
+                Fotos und Grafiken auf dieser Website (einschließlich Bildern im Portfolio) werden über unsere eigene
+                Domain und unseren Hosting-Anbieter ausgeliefert. Dafür sind <strong>keine gesonderten Cookies oder
+                Einwilligungen</strong> erforderlich – abgesehen von der allgemeinen technischen Verarbeitung beim Aufruf
+                der Seite (siehe Server-Logfiles). Es werden keine externen Bild-CDNs oder Social-Media-Einbettungen für diese
+                Inhalte verwendet, die zusätzlich Tracking setzen würden.
+              </p>
+              <p className="mb-4">
+                Soweit auf Fotos Personen erkennbar sein könnten, werden Aufnahmen nur im Rahmen der jeweils erforderlichen
+                Rechtsgrundlagen veröffentlicht (z. B. Einwilligung oder berechtigtes Interesse unter Abwägung mit
+                Persönlichkeitsrechten). Im Zweifel werden keine Namen von Geschäftspartnern oder Kunden im öffentlichen Text
+                der Website genannt.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="text-xl font-bold text-white mb-4">Cookies, lokaler Speicher und Einwilligungsbanner</h3>
+              <p className="mb-4">
+                Für die Speicherung Ihrer <strong>Cookie-/Datenschutzeinstellung</strong> verwenden wir den{" "}
+                <strong>lokalen Speicher Ihres Browsers</strong> (Local Storage, Schlüssel zur Wiedererkennung Ihrer Auswahl).
+                Dies dient der Umsetzung Ihrer Entscheidung und der Nachweisbarkeit der Einstellung; Rechtsgrundlage ist Art. 6
+                Abs. 1 lit. f DSGVO (technische Umsetzung der Privatsphäre-Einstellungen) bzw. bei optionalen Diensten Art. 6
+                Abs. 1 lit. a DSGVO i. V. m. TKG 2021, soweit eine Einwilligung erforderlich ist.
+              </p>
+              <p className="mb-4">
+                <strong>Notwendig:</strong> Betrieb und Sicherheit der Website. <strong>Optional (Komfort):</strong> z. B. die
+                Einbindung von <strong>Google Maps</strong> im Kontaktbereich – diese wird erst geladen, wenn Sie der Kategorie
+                zustimmen bzw. „alle akzeptieren“ wählen. Ohne diese Einwilligung findet keine Verbindung zu Google für die Karte
+                statt.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="text-xl font-bold text-white mb-4">Google Maps (eingebettete Karte)</h3>
+              <p className="mb-4">
+                Wenn Sie der optionalen Kategorie zustimmen, kann im Kontaktbereich eine Karte von{" "}
+                <strong>Google Ireland Limited</strong> (Gordon House, Barrow Street, Dublin 4, Irland) geladen werden. Dabei
+                können personenbezogene Daten (u. a. IP-Adresse, Nutzungsdaten) an Google übermittelt und in Drittländern
+                (z. B. USA) verarbeitet werden. Google stellt hierzu u. a. Standardvertragsklauseln der EU-Kommission bereit;
+                näheres entnehmen Sie der Datenschutzerklärung von Google.
+              </p>
+              <p className="mb-4">
+                Rechtsgrundlage für die Einbindung nach Ihrer Auswahl ist Ihre <strong>Einwilligung</strong> gemäß Art. 6 Abs. 1
+                lit. a DSGVO i. V. m. TKG 2021. Sie können Ihre Einstellung widerrufen, indem Sie den lokalen Speicher für diese
+                Website löschen und die Seite erneut besuchen.
+              </p>
+              <ul className="list-disc list-inside mb-4 space-y-2">
+                <li>
+                  <a href="https://policies.google.com/privacy?hl=de" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
+                    Google Datenschutzerklärung
+                  </a>
+                </li>
+              </ul>
             </section>
 
             <section>
@@ -120,13 +183,10 @@ export default function Datenschutz() {
                 </li>
               </ul>
               <p className="mb-4">
-                Google verarbeitet die Daten auch in den USA, hat sich jedoch dem
-                EU-US Privacy-Shield unterworfen.
-              </p>
-              <p className="mb-4">
-                <a href="https://www.privacyshield.gov/EU-US-Framework" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
-                  https://www.privacyshield.gov/EU-US-Framework
-                </a>
+                Soweit Google Daten in Drittländern verarbeitet, erfolgt dies auf Grundlage der von Google beschriebenen
+                Garantien (u. a. EU-Standardvertragsklauseln, ggf. EU-US Data Privacy Framework). Details finden Sie in der
+                aktuellen Datenschutzerklärung von Google; der EuGH hat das frühere „Privacy Shield“-Abkommen nicht mehr als
+                ausreichende Grundlage anerkannt – wir verweisen deshalb auf die von Google genannten aktuellen Übermittlungsmechanismen.
               </p>
             </section>
 

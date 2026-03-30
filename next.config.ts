@@ -1,6 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/projekte",
+        destination: "/leistungen#projekte",
+        permanent: true,
+      },
+    ];
+  },
+  experimental: {
+    optimizePackageImports: ["lucide-react"],
+  },
   images: {
     localPatterns: [
       { pathname: '/portraits/**' },

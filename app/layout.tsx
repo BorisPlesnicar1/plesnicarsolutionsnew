@@ -29,15 +29,12 @@ const SITE_URL = "https://plesnicarsolutions.at";
 
 export const metadata: Metadata = {
   title: {
-    default: "Plesnicar Solutions – IT & Bau aus Österreich",
+    default: "Plesnicar Solutions – IT & Digital aus Österreich",
     template: "%s | Plesnicar Solutions",
   },
   description:
-    "Plesnicar Solutions – IT-Beratung, Grafikdesign, Bau, Hausbetreuung & Handel aus Österreich. Moderne IT trifft 40+ Jahre Bauwesen-Erfahrung. Jetzt anfragen.",
+    "Schwerpunkt IT: Beratung, Web, Grafik & Systeme aus Langenlois, NÖ. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau (Ing. Dietmar Plesnicar). Jetzt anfragen.",
   metadataBase: new URL(SITE_URL),
-  alternates: {
-    canonical: "/",
-  },
   robots: {
     index: true,
     follow: true,
@@ -54,15 +51,15 @@ export const metadata: Metadata = {
     locale: "de_AT",
     url: SITE_URL,
     siteName: "Plesnicar Solutions",
-    title: "Plesnicar Solutions – IT & Bau aus Österreich",
+    title: "Plesnicar Solutions – IT & Digital aus Österreich",
     description:
-      "IT-Beratung, Grafikdesign, Bau, Hausbetreuung & Handel aus Österreich. Moderne IT trifft 40+ Jahre Bauwesen-Erfahrung.",
+      "Schwerpunkt IT: Beratung, Web, Grafik & Systeme. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau – aus Langenlois, Österreich.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Plesnicar Solutions – IT & Bau aus Österreich",
+    title: "Plesnicar Solutions – IT & Digital aus Österreich",
     description:
-      "IT-Beratung, Grafikdesign, Bau, Hausbetreuung & Handel aus Österreich. Moderne IT trifft 40+ Jahre Bauwesen-Erfahrung.",
+      "Schwerpunkt IT: Beratung, Web, Grafik & Systeme. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau – aus Langenlois, Österreich.",
   },
   icons: {
     icon: "/favicon.ico",
@@ -103,14 +100,14 @@ const jsonLd = {
         {
           "@type": "Person",
           name: "Boris Plesnicar",
-          jobTitle: "Inhaber – IT-Beratung, Grafikdesign & Bau",
+          jobTitle: "Inhaber – Schwerpunkt IT, Web & Grafikdesign",
         },
         {
           "@type": "Person",
           name: "Ing. Dietmar Plesnicar",
-          jobTitle: "Bau-Beratung, Hausbetreuung & Handel",
+          jobTitle: "Unterstützung Bau, Hausbetreuung & Handel",
           description:
-            "Bauingenieur mit über 40 Jahren Erfahrung im Bauwesen",
+            "Unterstützung im Bau-Bereich; Bauingenieur mit über 40 Jahren Erfahrung im Bauwesen",
         },
       ],
     },
@@ -121,7 +118,7 @@ const jsonLd = {
       url: SITE_URL,
       image: `${SITE_URL}/logos/LogoTEXTB.png`,
       description:
-        "IT-Beratung, Grafikdesign, Bau, Hausbetreuung & Handel aus Langenlois, Österreich. Moderne IT-Lösungen und über 40 Jahre Bauwesen-Erfahrung aus einer Hand.",
+        "Schwerpunkt IT: Beratung, Web, Grafik & digitale Systeme aus Langenlois, Österreich. Ergänzend Hausbetreuung, Baustoffe und Unterstützung im Bau durch eingebundene Fachkompetenz.",
       priceRange: "€€",
       telephone: ["+436644678382", "+43273432048"],
       email: "plesnicaroffice@gmail.com",
@@ -166,9 +163,9 @@ const jsonLd = {
             "@type": "Offer",
             itemOffered: {
               "@type": "Service",
-              name: "Bau & Hausbetreuung",
+              name: "Hausbetreuung & Unterstützung Bau",
               description:
-                "Reinigungstätigkeiten, objektbezogene Tätigkeiten und zuverlässige Hausbetreuung",
+                "Hausbetreuung, Reinigung und objektbezogene Tätigkeiten; im Bau-Bereich Unterstützung durch erfahrene Fachkompetenz",
             },
           },
           {
