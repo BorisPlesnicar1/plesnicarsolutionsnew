@@ -287,6 +287,9 @@ export function HeroSection() {
                 height={1200}
                 className="w-full h-auto max-h-[55vh] md:max-h-[85vh] object-contain object-bottom drop-shadow-[0_0_80px_rgba(255,25,0,0.12)]"
                 priority
+                fetchPriority="high"
+                sizes="(max-width: 640px) 92vw, (max-width: 1024px) 420px, 560px"
+                quality={80}
               />
             </div>
           </div>

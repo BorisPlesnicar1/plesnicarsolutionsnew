@@ -20,21 +20,25 @@ import { useSite } from "@/app/contexts/SiteContext";
 import { CookieBanner } from "@/app/components/site/CookieBanner";
 import { useHashScroll, SCROLL_SPY_HEADER_OFFSET } from "@/app/components/site/useHashScroll";
 
+/** Entscheidungsreise: Start → Richtpreise → Leistungen & Projekte → Handelspartner → Über uns; Kontakt = CTA */
 const NAV_DESKTOP = [
   { href: "/", labelKey: "home" as const, match: (p: string) => p === "/" },
   {
     href: "/preise",
     labelKey: "richtpreise" as const,
     match: (p: string) => p === "/preise" || p.startsWith("/preise/"),
-    promoted: true,
   },
-  { href: "/leistungen", labelKey: "leistungenProjekte" as const, match: (p: string) => p === "/leistungen" || p.startsWith("/leistungen/") },
-  { href: "/ueber-uns", labelKey: "ueberUns" as const, match: (p: string) => p === "/ueber-uns" || p.startsWith("/ueber-uns/") },
+  {
+    href: "/leistungen",
+    labelKey: "leistungenProjekte" as const,
+    match: (p: string) => p === "/leistungen" || p.startsWith("/leistungen/"),
+  },
   {
     href: "/handelspartner",
     labelKey: "handelspartner" as const,
     match: (p: string) => p === "/handelspartner" || p.startsWith("/handelspartner/"),
   },
+  { href: "/ueber-uns", labelKey: "ueberUns" as const, match: (p: string) => p === "/ueber-uns" || p.startsWith("/ueber-uns/") },
 ] as const;
 
 const FOOTER_MAIN_LINKS = [
@@ -191,23 +195,22 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
               />
             </button>
           </div>
-          <nav aria-label={t.ariaMainNav} className="hidden lg:flex items-center gap-1">
+          <nav aria-label={t.ariaMainNav} className="hidden lg:flex items-center gap-1.5">
             {NAV_DESKTOP.map((item) => {
               const active = item.match(pathname);
               const label = t.nav[item.labelKey];
-              const promoted = "promoted" in item && item.promoted;
+              const isPreise = item.href === "/preise";
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch
                   aria-current={active ? "page" : undefined}
                   className={`min-h-[44px] px-3 py-2.5 text-sm rounded-lg transition-colors duration-200 flex items-center justify-center border-b-[3px] -mb-[1px] ${
                     active
                       ? "text-white font-semibold bg-[#ff1900]/15 border-[color:var(--accent)]"
-                      : promoted
-                        ? "font-medium text-[color:color-mix(in_oklab,var(--accent)_22%,white)] border-transparent bg-[color:color-mix(in_srgb,var(--accent)_9%,#0a0a0a)] hover:bg-[color:color-mix(in_srgb,var(--accent)_14%,#0a0a0a)] hover:text-white"
-                        : "text-white/60 border-transparent font-medium hover:text-white hover:bg-white/5"
-                  }`}
+                      : "text-white/60 border-transparent font-medium hover:text-white hover:bg-white/5"
+                  } ${isPreise ? `nav-text-glow-preise${active ? " nav-text-glow-preise--on" : ""}` : ""}`}
                 >
                   {label}
                 </Link>
@@ -239,6 +242,7 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
             </div>
             <Link
               href="/kontakt"
+              prefetch
               aria-current={pathname === "/kontakt" || pathname.startsWith("/kontakt/") ? "page" : undefined}
               aria-label={t.ariaKontaktCta}
               className={`ml-2 min-h-[44px] px-6 py-2.5 font-semibold rounded-xl transition-all duration-300 text-sm flex items-center shadow-lg ${
@@ -294,40 +298,42 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
             aria-label={t.ariaMobileNav}
             className="lg:hidden bg-[#212121]/98 border-t border-white/5 supports-[backdrop-filter]:backdrop-blur-xl overflow-hidden"
           >
-            <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col gap-1 max-w-[100vw]">
+            <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col gap-1.5 max-w-[100vw]">
               {NAV_DESKTOP.map((item) => {
                 const active = item.match(pathname);
                 const label = t.nav[item.labelKey];
-                const promoted = "promoted" in item && item.promoted;
+                const isPreise = item.href === "/preise";
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
+                    prefetch
                     aria-current={active ? "page" : undefined}
                     className={`text-left text-sm transition-colors min-h-[44px] py-3 pl-4 pr-3 rounded-r-lg flex items-center border-l-4 ${
                       active
                         ? "text-white font-semibold bg-[#ff1900]/20 border-[color:var(--accent)]"
-                        : promoted
-                          ? "font-medium text-[color:color-mix(in_oklab,var(--accent)_20%,white)] border-white/[0.12] bg-[color:color-mix(in_srgb,var(--accent)_8%,#212121)] hover:bg-[color:color-mix(in_srgb,var(--accent)_12%,#212121)] hover:text-white"
-                          : "text-white/70 font-medium border-transparent hover:text-white hover:bg-white/5"
-                    }`}
+                        : "text-white/70 font-medium border-transparent hover:text-white hover:bg-white/5"
+                    } ${isPreise ? `nav-text-glow-preise nav-text-glow-preise--mobile${active ? " nav-text-glow-preise--on" : ""}` : ""}`}
                   >
                     {label}
                   </Link>
                 );
               })}
-              <Link
-                href="/kontakt"
-                aria-current={pathname === "/kontakt" || pathname.startsWith("/kontakt/") ? "page" : undefined}
-                aria-label={t.ariaKontaktCta}
-                className={`text-left min-h-[44px] px-6 py-3 font-semibold rounded-lg transition-colors text-sm w-fit mt-2 ${
-                  pathname === "/kontakt" || pathname.startsWith("/kontakt/")
-                    ? "bg-[#ff1900] text-white ring-2 ring-white/50 ring-offset-2 ring-offset-[#212121]"
-                    : "bg-[#ff1900] hover:bg-[#e61700] text-white"
-                }`}
-              >
-                {t.nav.kontakt}
-              </Link>
+              <div className="flex flex-col gap-2 mt-3 pt-2 border-t border-white/[0.08]">
+                <Link
+                  href="/kontakt"
+                  prefetch
+                  aria-current={pathname === "/kontakt" || pathname.startsWith("/kontakt/") ? "page" : undefined}
+                  aria-label={t.ariaKontaktCta}
+                  className={`text-center min-h-[44px] px-6 py-3 font-semibold rounded-lg transition-colors text-sm ${
+                    pathname === "/kontakt" || pathname.startsWith("/kontakt/")
+                      ? "bg-[#ff1900] text-white ring-2 ring-white/50 ring-offset-2 ring-offset-[#212121]"
+                      : "bg-[#ff1900] hover:bg-[#e61700] text-white"
+                  }`}
+                >
+                  {t.nav.kontakt}
+                </Link>
+              </div>
             </div>
           </nav>
         )}

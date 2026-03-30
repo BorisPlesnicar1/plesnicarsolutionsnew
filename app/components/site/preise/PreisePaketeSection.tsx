@@ -137,6 +137,13 @@ export function PreisePaketeSection() {
           </motion.p>
           <motion.p
             variants={staggerItem}
+            role="note"
+            className="mt-5 text-left sm:text-center max-w-3xl mx-auto rounded-xl border border-[#ff1900]/22 bg-[#ff1900]/[0.07] px-4 py-3 text-sm text-white/75 font-light leading-relaxed"
+          >
+            {p.ustNote}
+          </motion.p>
+          <motion.p
+            variants={staggerItem}
             className="mt-5 text-left sm:text-center max-w-3xl mx-auto rounded-xl p-[1px] bg-gradient-to-br from-[#ff1900]/35 via-[#ff1900]/10 to-white/[0.08] shadow-[0_0_48px_-16px_rgba(255,25,0,0.2)]"
           >
             <span className="block rounded-[11px] border border-white/[0.06] bg-[#0a0a0f]/90 supports-[backdrop-filter]:backdrop-blur-md px-4 py-3.5 text-sm text-white/58 font-light leading-relaxed">

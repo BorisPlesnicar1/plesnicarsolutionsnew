@@ -15,6 +15,7 @@ export const TRANSLATIONS = {
     ariaMobileNav: "Seitenmenü",
     ariaLang: "Sprache der Website",
     ariaKontaktCta: "Kontakt aufnehmen",
+    ariaPreiseSecondary: "Zu den Richtpreisen",
     footerNavPages: "Alle Seiten",
     notFound: {
       title: "Seite nicht gefunden",
@@ -335,6 +336,7 @@ export const TRANSLATIONS = {
     ariaMobileNav: "Site menu",
     ariaLang: "Website language",
     ariaKontaktCta: "Contact us",
+    ariaPreiseSecondary: "Guide prices",
     footerNavPages: "All pages",
     notFound: {
       title: "Page not found",

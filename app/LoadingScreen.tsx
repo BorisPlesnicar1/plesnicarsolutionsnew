@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
-const MIN_DISPLAY_MS = 2200;
+/** Kürzer = besserer LCP/Speed Index (PSI); Intro nur noch auf der Startseite sichtbar. */
+const MIN_DISPLAY_MS = 950;
 const LOADING_CLOSED_EVENT = "ps-loading-closed";
-/** Füllzeit des Balkens an der echten Zeit – funktioniert auch nach Browser-Tab-Wechsel (kein hängender Fortschritt). */
-const PROGRESS_FILL_MS = 1300;
-const COMPLETE_PAUSE_MS = 300;
-const SKIP_BUTTON_DELAY_MS = 1400;
+const PROGRESS_FILL_MS = 650;
+const COMPLETE_PAUSE_MS = 120;
+const SKIP_BUTTON_DELAY_MS = 450;
+const EXIT_ANIM_MS = 380;
 
 const win =
   typeof window !== "undefined"
@@ -23,10 +24,10 @@ function dispatchLoadingClosed() {
   }
 }
 
-const ease = [0.22, 1, 0.36, 1];
 const SEEN_KEY = "ps_loading_seen";
 
 export function LoadingScreen({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -38,14 +39,11 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
   const skipRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const exitDoneRef = useRef(false);
 
-  const hide = () => {
-    if (exiting) return;
-    setExiting(true);
-  };
-
-  const finishExit = () => {
+  const finishExit = useCallback(() => {
     if (exitDoneRef.current) return;
     exitDoneRef.current = true;
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = 0;
     try {
       sessionStorage.setItem(SEEN_KEY, "1");
     } catch {
@@ -53,14 +51,18 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
     }
     setVisible(false);
     dispatchLoadingClosed();
-  };
+  }, []);
+
+  const hide = useCallback(() => {
+    if (exiting) return;
+    setExiting(true);
+  }, [exiting]);
 
   useEffect(() => {
     if (!exiting) return;
-    const t = setTimeout(finishExit, 800);
+    const t = setTimeout(finishExit, EXIT_ANIM_MS);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exiting]);
+  }, [exiting, finishExit]);
 
   useEffect(() => {
     if (win) win.__ps_loading_closed = false;
@@ -71,11 +73,19 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
       if (sessionStorage.getItem(SEEN_KEY) === "1") {
         setVisible(false);
         dispatchLoadingClosed();
+        exitDoneRef.current = true;
       }
     } catch {
       /* ignore */
     }
   }, []);
+
+  /** Kein Vollbild-Intro auf Unterseiten – besserer LCP/TBT bei direkten Links. */
+  useLayoutEffect(() => {
+    if (pathname !== "/") {
+      finishExit();
+    }
+  }, [pathname, finishExit]);
 
   useEffect(() => {
     skipRef.current = setTimeout(() => setShowSkip(true), SKIP_BUTTON_DELAY_MS);
@@ -128,140 +138,92 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
     return () => {
       if (completeRef.current) clearTimeout(completeRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress]);
+  }, [progress, hide]);
 
   return (
     <>
       {children}
-      <AnimatePresence>
-        {visible && (
-          <motion.div
-            role="button"
-            tabIndex={0}
-            onClick={() => !exiting && hide()}
-            onKeyDown={(e) => e.key === "Enter" && !exiting && hide()}
-            className="fixed inset-0 z-[9999] flex items-center justify-center cursor-pointer overflow-hidden bg-[#050506]"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease }}
-            style={{ pointerEvents: visible ? "auto" : "none" }}
-            aria-hidden={!visible}
-            aria-label="Ladeanimation schließen"
-          >
-            {/* Ein roter Sweep von links nach rechts – dezenter, ein Statement */}
-            {!exiting && (
-              <motion.div
-                className="absolute inset-0 z-[2] pointer-events-none"
-                aria-hidden
-              >
-                <motion.div
-                  className="absolute inset-y-0 w-[55vw] max-w-[480px]"
-                  initial={{ x: "-100%" }}
-                  animate={{ x: "120vw" }}
-                  transition={{
-                    duration: 1,
-                    ease,
-                  }}
-                  style={{
-                    background:
-                      "linear-gradient(90deg, transparent 0%, rgba(255,25,0,0.08) 30%, rgba(255,25,0,0.4) 48%, rgba(255,45,0,0.55) 50%, rgba(255,25,0,0.4) 52%, rgba(255,25,0,0.08) 70%, transparent 100%)",
-                    boxShadow: "0 0 60px rgba(255,25,0,0.15)",
-                  }}
-                />
-              </motion.div>
-            )}
+      {visible && (
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => !exiting && hide()}
+          onKeyDown={(e) => e.key === "Enter" && !exiting && hide()}
+          className={`loading-screen-overlay fixed inset-0 z-[9999] flex cursor-pointer items-center justify-center overflow-hidden bg-[#050506] transition-opacity duration-300 ease-out motion-reduce:transition-none ${
+            exiting ? "pointer-events-none opacity-0" : "opacity-100"
+          }`}
+          style={{ willChange: exiting ? "opacity" : "auto" }}
+          aria-hidden={!visible}
+          aria-label="Ladeanimation schließen"
+        >
+          {!exiting && (
+            <div className="loading-sweep-wrap pointer-events-none absolute inset-0 z-[2]" aria-hidden>
+              <div className="loading-sweep-bar absolute inset-y-0 w-[55vw] max-w-[480px]" />
+            </div>
+          )}
 
-            {/* Hintergrund: ruhig, leichtes Grid */}
-            <div
-              className="absolute inset-0 z-[1]"
-              style={{
-                background:
-                  "linear-gradient(180deg, #070709 0%, #050506 50%, #070709 100%)",
-              }}
-            />
-            <div
-              className="absolute inset-0 z-[1] opacity-[0.03]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-                backgroundSize: "64px 64px",
-              }}
-              aria-hidden
-            />
+          <div
+            className="absolute inset-0 z-[1]"
+            style={{
+              background: "linear-gradient(180deg, #070709 0%, #050506 50%, #070709 100%)",
+            }}
+          />
+          <div
+            className="absolute inset-0 z-[1] opacity-[0.03]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+              backgroundSize: "64px 64px",
+            }}
+            aria-hidden
+          />
 
-            {/* Logo + Progress – klare Einblendung, kein Gimmick */}
-            <motion.div
-              className="relative z-10 flex flex-col items-center gap-9 px-6 pointer-events-none"
-              initial={{ opacity: 0, y: 8, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{
-                delay: 0.4,
-                duration: 0.6,
-                ease,
-              }}
-            >
-              <div className="relative w-full max-w-[200px] sm:max-w-[260px]">
-                <Image
-                  src="/logos/LogoTEXTB.png"
-                  alt="Plesnicar Solutions"
-                  width={280}
-                  height={84}
-                  className="w-full h-auto"
-                  priority
-                />
-                <div
-                  className="absolute -inset-6 -z-10 rounded-full opacity-80"
-                  style={{
-                    background: "radial-gradient(circle, rgba(255,25,0,0.06) 0%, transparent 70%)",
-                    filter: "blur(20px)",
-                  }}
-                />
-              </div>
-
-              <div className="w-full max-w-[240px] sm:max-w-[280px] space-y-2.5">
-                <div className="h-px rounded-full bg-white/[0.06] overflow-hidden">
-                  <motion.div
-                    className="h-full rounded-full bg-[#ff1900]"
-                    initial={{ width: "0%" }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.15, ease: "linear" }}
-                  />
-                </div>
-                <p className="text-center text-white/30 text-[10px] font-medium tracking-[0.25em] uppercase">
-                  Laden
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Exit: weicher Fade, optional ein dezenter Wisch */}
-            {exiting && (
-              <motion.div
-                className="absolute inset-0 z-[20] pointer-events-none bg-[#050506]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.35, ease }}
+          <div className="loading-screen-logo relative z-10 flex flex-col items-center gap-9 px-6 pointer-events-none">
+            <div className="relative w-full max-w-[200px] sm:max-w-[260px]">
+              <Image
+                src="/logos/LogoTEXTB.png"
+                alt="Plesnicar Solutions"
+                width={280}
+                height={84}
+                className="h-auto w-full"
+                priority
+                sizes="(max-width: 640px) 200px, 260px"
               />
-            )}
-
-            {showSkip && !exiting && (
-              <motion.button
-                type="button"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.35 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  hide();
+              <div
+                className="absolute -inset-6 -z-10 rounded-full opacity-80"
+                style={{
+                  background: "radial-gradient(circle, rgba(255,25,0,0.06) 0%, transparent 70%)",
+                  boxShadow: "0 0 40px rgba(255,25,0,0.12)",
                 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white/40 hover:text-white/60 text-[10px] font-medium tracking-widest uppercase transition-colors min-h-[44px] pointer-events-auto"
-              >
-                Überspringen
-              </motion.button>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+                aria-hidden
+              />
+            </div>
+
+            <div className="w-full max-w-[240px] space-y-2.5 sm:max-w-[280px]">
+              <div className="h-px overflow-hidden rounded-full bg-white/[0.06]">
+                <div
+                  className="h-full rounded-full bg-[#ff1900] transition-[width] duration-150 ease-linear"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <p className="text-center text-[10px] font-medium uppercase tracking-[0.25em] text-white/30">Laden</p>
+            </div>
+          </div>
+
+          {showSkip && !exiting && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                hide();
+              }}
+              className="pointer-events-auto absolute bottom-8 left-1/2 z-20 min-h-[44px] -translate-x-1/2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-[10px] font-medium uppercase tracking-widest text-white/40 transition-colors hover:bg-white/[0.08] hover:text-white/60"
+            >
+              Überspringen
+            </button>
+          )}
+        </div>
+      )}
     </>
   );
 }

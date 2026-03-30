@@ -10,12 +10,14 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
   display: "swap",
   preload: true,
+  adjustFontFallback: true,
 });
 
 const whiteDream = localFont({
   src: "../public/WhiteDreamPERSONALUSEONLY-Regular.otf",
   variable: "--font-whitedream",
   display: "swap",
+  preload: false,
 });
 
 const syne = Syne({
@@ -23,6 +25,8 @@ const syne = Syne({
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-syne",
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
 const SITE_URL = "https://plesnicarsolutions.at";

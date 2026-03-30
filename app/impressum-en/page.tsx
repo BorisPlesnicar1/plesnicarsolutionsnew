@@ -106,8 +106,8 @@ export default function ImpressumEn() {
             <section>
               <h2 className="text-2xl font-bold text-white mb-4">VAT</h2>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Note:</strong> VAT exempt – small business under Section 6 (1)
-                lit. 27 Austrian VAT Act (UStG).
+                <strong className="text-white font-semibold">Note:</strong> No VAT is charged. VAT exempt – small business
+                under Section 6 (1) lit. 27 Austrian VAT Act (UStG).
               </p>
               <p className="text-white/80 text-sm">No VAT ID is required up to the applicable annual turnover threshold.</p>
             </section>

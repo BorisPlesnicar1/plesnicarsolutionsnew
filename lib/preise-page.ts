@@ -1,6 +1,7 @@
 /**
  * Inhalte und Paket-Daten für /preise (DE + EN).
  * Alle Beträge = Orientierungswerte, keine Fixangebote.
+ * USt: Kleinunternehmer – es wird keine Umsatzsteuer verrechnet (§ 6 Abs. 1 Z 27 UStG); siehe `pakete.ustNote`.
  */
 
 import type { Lang } from "@/app/translations";
@@ -53,7 +54,7 @@ export const ONE_PAGE_PAKET = {
         "Wenn Inhalte verwaltbar, Formulare gespeichert oder kleine dynamische Bereiche nötig sind – z. B. CMS-Anbindung oder einfache Datenspeicherung.",
     },
   ] as const satisfies readonly PaketPreisOption[],
-  priceDisclaimer: "zzgl. USt., abhängig von Text, Medien, Funktionen und Schnittstellen",
+  priceDisclaimer: "abhängig von Text, Medien, Funktionen und Schnittstellen",
   features: [
     "Ein responsives Scroll-Layout mit klarer Struktur",
     "Kontakt & rechtliche Seiten (Impressum/Datenschutz) integrierbar",
@@ -85,7 +86,7 @@ export const PREISE_PAKETE: PreisPaket[] = [
           "Mehr Spielraum für Unterseiten und Erweiterungen (z. B. Blog, Formulare, Zusatzmodule) – wie gewohnt klar strukturiert und technisch sauber umgesetzt.",
       },
     ],
-    priceDisclaimer: "zzgl. USt., je nach Seitenzahl und Funktionen",
+    priceDisclaimer: "je nach Seitenzahl und Funktionen",
     features: [
       "Mehrere Unterseiten (z. B. Leistungen, Über uns, Kontakt)",
       "Klares, professionelles Layout – erweiterbar wenn Sie wachsen",
@@ -116,7 +117,7 @@ export const PREISE_PAKETE: PreisPaket[] = [
           "Logo plus Farben, Typografie-Empfehlung und Exporte für Web, Social und Druck – stimmiges Erscheinungsbild aus einer Hand.",
       },
     ],
-    priceDisclaimer: "zzgl. USt., je nach Varianten, Leitfaden und Umfang",
+    priceDisclaimer: "je nach Varianten, Leitfaden und Umfang",
     features: [
       "Logoentwicklung mit Abstimmungsrunden",
       "Farben und Typografie-Empfehlung (Basis)",
@@ -145,7 +146,7 @@ export const PREISE_PAKETE: PreisPaket[] = [
           "Wie Basis, plus mehr Spielraum für kleine Inhaltsanpassungen und priorisierte Anfragen – für Betrieb, der regelmäßig kleine Änderungen braucht.",
       },
     ],
-    priceDisclaimer: "zzgl. USt., Umfang und Reaktionszeit nach Paket",
+    priceDisclaimer: "Umfang und Reaktionszeit nach Paket",
     features: [
       "Updates und Sicherheit (nach vereinbartem Paket)",
       "Backups und grundlegende Überwachung",
@@ -210,6 +211,8 @@ export const preiseCopy = {
       "Alle Angaben sind unverbindliche Richtwerte für typische Projekte. Nach einem kurzen Gespräch erhalten Sie eine klare, schriftliche Einschätzung.",
     introBauNote:
       "Die Paketpreise hier gelten für Web & Grafik (Schwerpunkt). Für Bau, Hausbetreuung und Baustoffe stimmen wir Umfang und Konditionen persönlich mit Ihnen ab – mit Unterstützung durch Ing. Dietmar Plesnicar im Bau-Bereich (siehe Bereich „Bau & Handel“ oben auf dieser Seite).",
+    ustNote:
+      "Es wird keine Umsatzsteuer ausgewiesen oder verrechnet. Umsatzsteuerbefreit – Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG",
     noteTitle: "Orientierung, kein Fixpreis im Warenkorb",
     noteBody:
       "Die genannten Beträge sind Start- bzw. Richtwerte. Der endgültige Preis richtet sich nach Umfang, Funktionalität und gestalterischen Anforderungen – plus etwaiger Drittkosten (Domains, Lizenzen, Plugins).",
@@ -294,7 +297,7 @@ export const ONE_PAGE_PAKET_EN = {
         "When content should be manageable, forms stored, or small dynamic areas are needed – e.g. CMS connection or simple data storage.",
     },
   ] as const satisfies readonly PaketPreisOption[],
-  priceDisclaimer: "plus VAT; depends on copy, media, features, and integrations",
+  priceDisclaimer: "depends on copy, media, features, and integrations",
   features: [
     "Responsive scroll layout with clear structure",
     "Contact & legal pages (imprint/privacy) can be integrated",
@@ -326,7 +329,7 @@ export const PREISE_PAKETE_EN: PreisPaket[] = [
           "More room for pages and extensions (e.g. blog, forms, add-ons) – still clear structure and solid technical delivery.",
       },
     ],
-    priceDisclaimer: "plus VAT; depends on page count and features",
+    priceDisclaimer: "depends on page count and features",
     features: [
       "Multiple subpages (e.g. services, about, contact)",
       "Clear, professional layout – expandable as you grow",
@@ -357,7 +360,7 @@ export const PREISE_PAKETE_EN: PreisPaket[] = [
           "Logo plus colours, typography guidance, and exports for web, social, and print – a coherent look from one source.",
       },
     ],
-    priceDisclaimer: "plus VAT; depends on variants, guidelines, and scope",
+    priceDisclaimer: "depends on variants, guidelines, and scope",
     features: [
       "Logo development with review rounds",
       "Colour and typography recommendations (baseline)",
@@ -386,7 +389,7 @@ export const PREISE_PAKETE_EN: PreisPaket[] = [
           "Like Basic, with more room for small content tweaks and prioritised requests – when you need changes more often.",
       },
     ],
-    priceDisclaimer: "plus VAT; scope and response time depend on package",
+    priceDisclaimer: "scope and response time depend on package",
     features: [
       "Updates and security (per agreed package)",
       "Backups and basic monitoring",
@@ -451,6 +454,8 @@ export const preiseCopyEn = {
       "All figures are non-binding guide values for typical projects. After a short conversation you receive a clear written estimate.",
     introBauNote:
       "The package prices below apply to web & graphics (our focus). For construction, property care, and building materials we agree scope and terms with you personally – with construction support from Ing. Dietmar Plesnicar (see the “Construction & trade” section above on this page).",
+    ustNote:
+      "No VAT is charged or shown. VAT exempt – small business under Section 6 (1) lit. 27 Austrian VAT Act (UStG).",
     noteTitle: "Orientation, not a checkout fixed price",
     noteBody:
       "The amounts shown are starting or guide values. The final price depends on scope, functionality, and design requirements – plus any third-party costs (domains, licences, plugins).",

@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     ];
   },
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: ["lucide-react", "framer-motion"],
   },
   images: {
     localPatterns: [
@@ -33,6 +33,9 @@ const nextConfig: NextConfig = {
   },
   compress: true,
   poweredByHeader: false,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
 };
 
 export default nextConfig;

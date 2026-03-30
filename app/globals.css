@@ -327,3 +327,90 @@ html.no-backdrop-blur * {
     animation: none;
   }
 }
+
+/* „Richtpreise“: gleiche Nav-Optik wie andere Links, nur leichtes Akzent-Glow am Text (Accent #ff1900) */
+.nav-text-glow-preise {
+  text-shadow:
+    0 0 10px rgba(255, 45, 35, 0.42),
+    0 0 22px rgba(255, 35, 25, 0.18);
+  transition: text-shadow 0.2s ease;
+}
+.nav-text-glow-preise:hover {
+  text-shadow:
+    0 0 12px rgba(255, 55, 40, 0.5),
+    0 0 26px rgba(255, 40, 28, 0.26);
+}
+.nav-text-glow-preise--on {
+  text-shadow:
+    0 0 8px rgba(255, 70, 55, 0.55),
+    0 0 18px rgba(255, 45, 30, 0.32),
+    0 0 32px rgba(255, 35, 25, 0.14);
+}
+.nav-text-glow-preise--on:hover {
+  text-shadow:
+    0 0 10px rgba(255, 80, 60, 0.58),
+    0 0 22px rgba(255, 50, 35, 0.36),
+    0 0 36px rgba(255, 40, 28, 0.18);
+}
+/* Mobile: etwas zurückhaltender (größere Fläche) */
+.nav-text-glow-preise--mobile:not(.nav-text-glow-preise--on) {
+  text-shadow:
+    0 0 8px rgba(255, 45, 35, 0.35),
+    0 0 18px rgba(255, 35, 25, 0.14);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-text-glow-preise {
+    transition: none;
+  }
+}
+
+/* LoadingScreen: reines CSS statt Framer (weniger Main-Thread-Last) */
+@keyframes loading-screen-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(120vw);
+  }
+}
+.loading-sweep-bar {
+  animation: loading-screen-sweep 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 25, 0, 0.08) 30%,
+    rgba(255, 25, 0, 0.4) 48%,
+    rgba(255, 45, 0, 0.55) 50%,
+    rgba(255, 25, 0, 0.4) 52%,
+    rgba(255, 25, 0, 0.08) 70%,
+    transparent 100%
+  );
+  box-shadow: 0 0 60px rgba(255, 25, 0, 0.15);
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-sweep-bar {
+    animation: none;
+    transform: translateX(40vw);
+    opacity: 0.4;
+  }
+}
+@keyframes loading-logo-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.loading-screen-logo {
+  animation: loading-logo-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .loading-screen-logo {
+    animation: none;
+    opacity: 1;
+  }
+}

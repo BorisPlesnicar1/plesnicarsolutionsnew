@@ -110,7 +110,8 @@ export default function Impressum() {
             <section>
               <h2 className="text-2xl font-bold text-white mb-4">Umsatzsteuer</h2>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Hinweis:</strong> Umsatzsteuerbefreit – Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG
+                <strong className="text-white font-semibold">Hinweis:</strong> Es wird keine Umsatzsteuer verrechnet.
+                Umsatzsteuerbefreit – Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG.
               </p>
               <p className="text-white/80 text-sm">
                 Bis zu einem Umsatz von 55.000€ pro Jahr ist keine Umsatzsteuer-ID erforderlich.
