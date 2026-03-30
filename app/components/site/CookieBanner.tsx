@@ -12,6 +12,7 @@ type CookieBannerProps = {
 
 export function CookieBanner({ lang, onAllowEssential, onAllowAll }: CookieBannerProps) {
   const c = TRANSLATIONS[lang].cookie;
+  const privacyHref = lang === "en" ? "/datenschutz-en" : "/datenschutz";
   return (
     <div className="fixed inset-x-0 z-50 bottom-24 md:bottom-0">
       <div className="mx-4 mb-4 md:mx-auto md:mb-6 md:max-w-4xl rounded-2xl bg-[#050506]/95 border border-white/[0.12] shadow-2xl shadow-black/60 backdrop-blur-xl">
@@ -24,7 +25,7 @@ export function CookieBanner({ lang, onAllowEssential, onAllowAll }: CookieBanne
               <h2 className="text-sm md:text-base font-semibold text-white mb-1">{c.title}</h2>
               <p className="text-xs md:text-sm text-white/70 leading-relaxed">
                 {c.body}{" "}
-                <Link href="/datenschutz" className="underline underline-offset-2 decoration-white/40 hover:text-white">
+                <Link href={privacyHref} className="underline underline-offset-2 decoration-white/40 hover:text-white">
                   {c.privacyLink}
                 </Link>
                 .

@@ -253,6 +253,18 @@ export const TRANSLATIONS = {
         },
       ],
     },
+    instagram: {
+      label: "Social Media",
+      title: "Aktuelles auf",
+      titleHighlight: "Instagram",
+      subtitle: "Einblicke, Projekte und Neuigkeiten – eingebunden von unserem öffentlichen Profil.",
+      iframeTitle: "Instagram @plesnicarsolutions",
+      openProfile: "Profil auf Instagram öffnen",
+      hint: "Inhalt wird von Instagram (Meta) geladen. Dabei kann eine Verbindung zu instagram.com entstehen.",
+      embedBlockedTitle: "Einwilligung für eingebettete Inhalte",
+      embedBlockedBody:
+        "Das Profil-Widget lädt Inhalte von Instagram (Meta). Bitte stimmen Sie optionalen Diensten zu oder öffnen Sie unser Profil direkt.",
+    },
     kontakt: {
       label: "Kontakt",
       title: "Sprechen wir",
@@ -266,8 +278,9 @@ export const TRANSLATIONS = {
       address: "Hartriegelstraße 12, 3550 Langenlois",
       addressNote: "Boris Plesnicar e.U. · IT auch remote",
       festnetz: "Festnetz",
-      mapConsent: "Karte laden wir erst nach Ihrer Cookie-Einwilligung. Details in der Datenschutzerklärung.",
-      acceptCookies: "Cookies akzeptieren",
+      mapConsent:
+        "Die Karte (Google) laden wir erst nach Ihrer Einwilligung in optionale Drittanbieter-Inhalte. Details in der Datenschutzerklärung.",
+      acceptCookies: "Einwilligen & Karte laden",
     },
     kontaktForm: {
       title: "Nachricht schreiben",
@@ -299,6 +312,8 @@ export const TRANSLATIONS = {
       rights: "Alle Rechte vorbehalten.",
       impressum: "Impressum",
       datenschutz: "Datenschutz",
+      cookieSettings: "Cookie-Einstellungen",
+      cookieSettingsAria: "Cookie-Einstellungen erneut öffnen und Einwilligung widerrufen",
     },
     mobileBar: {
       showContact: "Kontakt anzeigen",
@@ -309,11 +324,12 @@ export const TRANSLATIONS = {
       collapseTitle: "Einklappen",
     },
     cookie: {
-      title: "Datenschutzeinstellungen",
-      body: "Wir verwenden keine werblichen Cookies und kein Website-Analytics. Bilder und das Portfolio liefern wir von unserem eigenen Webspace aus – dafür sind keine zusätzlichen Drittanbieter-Cookies nötig. Technisch notwendig ist die Speicherung Ihrer Einstellungen im lokalen Speicher Ihres Browsers (z. B. Cookie-/Datenschutzauswahl und Sprache). Optional können Sie die Einbindung von Google Maps im Kontaktbereich erlauben; dabei können Daten (z. B. IP-Adresse) an Google übermittelt werden. Sie können nur das Notwendige zulassen oder alles akzeptieren. Details in unserer",
+      title: "Privatsphäre & Einwilligung",
+      body:
+        "Wir setzen kein werbliches Tracking und kein Website-Analytics ein. Für den Betrieb speichern wir im lokalen Speicher Ihres Browsers u. a. Ihre Sprache und den Nachweis dieser Auswahl (soweit erforderlich; Rechtsgrundlage Art. 6 Abs. 1 lit. f DSGVO). Optional – nur mit Ihrer Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO i. V. m. § 165 TKG 2021 – können wir Google Maps (Kontaktseite) und ein Instagram-Embed (Startseite) laden; dabei können Daten an Google bzw. Meta (Instagram) übermittelt werden. Speicherdauer: bis Sie die Website-Daten löschen oder unten „Cookie-Einstellungen“ wählen. Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Ausführlich in unserer",
       privacyLink: "Datenschutzerklärung",
-      essential: "Nur notwendige Cookies",
-      acceptAll: "Alle akzeptieren",
+      essential: "Nur erforderlich",
+      acceptAll: "Erforderliches + optional (Maps & Instagram)",
     },
     heroChips: {
       it: "IT & Digital",
@@ -576,6 +592,18 @@ export const TRANSLATIONS = {
         },
       ],
     },
+    instagram: {
+      label: "Social media",
+      title: "Latest on",
+      titleHighlight: "Instagram",
+      subtitle: "Updates and project glimpses from our public profile.",
+      iframeTitle: "Instagram @plesnicarsolutions",
+      openProfile: "Open profile on Instagram",
+      hint: "Content is loaded by Instagram (Meta). Loading may connect to instagram.com.",
+      embedBlockedTitle: "Consent for embedded content",
+      embedBlockedBody:
+        "The profile widget loads content from Instagram (Meta). Please consent to optional services or open our profile directly.",
+    },
     kontakt: {
       label: "Contact",
       title: "Let's",
@@ -589,8 +617,9 @@ export const TRANSLATIONS = {
       address: "Hartriegelstraße 12, 3550 Langenlois",
       addressNote: "Boris Plesnicar e.U. · IT also remote",
       festnetz: "Landline",
-      mapConsent: "We load the map only after your cookie consent. See our privacy policy for details.",
-      acceptCookies: "Accept cookies",
+      mapConsent:
+        "We only load the map (Google) after you consent to optional third-party content. See our privacy policy for details.",
+      acceptCookies: "Consent & load map",
     },
     kontaktForm: {
       title: "Send a message",
@@ -622,6 +651,8 @@ export const TRANSLATIONS = {
       rights: "All rights reserved.",
       impressum: "Imprint",
       datenschutz: "Privacy",
+      cookieSettings: "Cookie settings",
+      cookieSettingsAria: "Open cookie settings again and withdraw consent",
     },
     mobileBar: {
       showContact: "Show contact",
@@ -632,11 +663,12 @@ export const TRANSLATIONS = {
       collapseTitle: "Collapse",
     },
     cookie: {
-      title: "Privacy settings",
-      body: "We do not use marketing cookies or website analytics. Images and the portfolio are served from our own hosting – no extra third-party cookies are needed for that. We store necessary settings in your browser’s local storage (e.g. privacy choice and language). Optionally you can allow Google Maps on the contact page; data (e.g. IP address) may be sent to Google. You can allow only what is necessary or accept all. Full details in our",
+      title: "Privacy & consent",
+      body:
+        "We do not use marketing tracking or website analytics. We store settings in your browser’s local storage (e.g. language and this choice; legal basis Art. 6 (1) (f) GDPR where necessary). Only with your consent under Art. 6 (1) (a) GDPR and applicable ePrivacy rules may we load Google Maps (contact page) and an Instagram embed (home) – data may be transferred to Google or Meta (Instagram). Retention: until you clear site data or use “Cookie settings” below. You may withdraw consent at any time with future effect. Full details in our",
       privacyLink: "Privacy policy",
-      essential: "Necessary cookies only",
-      acceptAll: "Accept all",
+      essential: "Necessary only",
+      acceptAll: "Necessary + optional (Maps & Instagram)",
     },
     heroChips: {
       it: "IT & Digital",

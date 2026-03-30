@@ -24,6 +24,8 @@ type SiteContextValue = {
   setLang: (l: Lang) => void;
   cookieConsent: CookieConsent | null;
   updateConsent: (comfort: boolean) => void;
+  /** Einwilligung widerrufen / Banner erneut anzeigen (Art. 7 Abs. 3 DSGVO). */
+  resetCookieConsent: () => void;
   showCookieBanner: boolean;
 };
 
@@ -81,6 +83,15 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const resetCookieConsent = useCallback(() => {
+    try {
+      window.localStorage.removeItem("ps_cookie_consent");
+    } catch {
+      // ignore
+    }
+    setCookieConsent(null);
+  }, []);
+
   useEffect(() => {
     const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -104,8 +115,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   const showCookieBanner = cookieReady && cookieConsent === null;
 
   const value = useMemo(
-    () => ({ lang, setLang, cookieConsent, updateConsent, showCookieBanner }),
-    [lang, setLang, cookieConsent, updateConsent, showCookieBanner]
+    () => ({ lang, setLang, cookieConsent, updateConsent, resetCookieConsent, showCookieBanner }),
+    [lang, setLang, cookieConsent, updateConsent, resetCookieConsent, showCookieBanner]
   );
 
   return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>;

@@ -7,8 +7,17 @@ import { WasWirAndersSection } from "@/app/components/site/sections/WasWirAnders
 import { WarumSection } from "@/app/components/site/sections/WarumSection";
 import { FeaturesSection } from "@/app/components/site/sections/FeaturesSection";
 import { ProzessSection } from "@/app/components/site/sections/ProzessSection";
+import { InstagramSection } from "@/app/components/site/sections/InstagramSection";
 
-const HOME_SCROLL_IDS = ["hero", "stats", "was-wir-anders", "warum", "features", "prozess"] as const;
+const HOME_SCROLL_IDS = [
+  "hero",
+  "stats",
+  "was-wir-anders",
+  "warum",
+  "features",
+  "prozess",
+  "instagram",
+] as const;
 
 export function HomePage() {
   return (
@@ -19,6 +28,7 @@ export function HomePage() {
       <WarumSection />
       <FeaturesSection />
       <ProzessSection />
+      <InstagramSection />
     </SiteShell>
   );
 }

@@ -14,6 +14,7 @@ import {
   Mail,
   Menu,
   Phone,
+  Settings,
   X,
 } from "lucide-react";
 import { TRANSLATIONS } from "@/app/translations";
@@ -61,7 +62,7 @@ const EMPTY_SCROLL_SPY_IDS: readonly string[] = [];
 
 export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
   const spyIds = scrollSpyIds ?? EMPTY_SCROLL_SPY_IDS;
-  const { lang, setLang, updateConsent, showCookieBanner } = useSite();
+  const { lang, setLang, updateConsent, resetCookieConsent, showCookieBanner } = useSite();
   const t = TRANSLATIONS[lang];
   const pathname = usePathname();
   const router = useRouter();
@@ -411,6 +412,15 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
               >
                 {t.footer.datenschutz}
               </Link>
+              <button
+                type="button"
+                onClick={() => resetCookieConsent()}
+                className="inline-flex items-center gap-1.5 text-white/60 hover:text-white transition-colors duration-200 font-medium text-sm"
+                aria-label={t.footer.cookieSettingsAria}
+              >
+                <Settings className="w-3.5 h-3.5" aria-hidden />
+                {t.footer.cookieSettings}
+              </button>
             </div>
           </div>
         </div>

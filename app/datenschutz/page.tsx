@@ -77,10 +77,10 @@ export default function Datenschutz() {
               <h3 className="text-xl font-bold text-white mb-4">Bilder, Portfolio und selbst gehostete Inhalte</h3>
               <p className="mb-4">
                 Fotos und Grafiken auf dieser Website (einschließlich Bildern im Portfolio) werden über unsere eigene
-                Domain und unseren Hosting-Anbieter ausgeliefert. Dafür sind <strong>keine gesonderten Cookies oder
-                Einwilligungen</strong> erforderlich – abgesehen von der allgemeinen technischen Verarbeitung beim Aufruf
-                der Seite (siehe Server-Logfiles). Es werden keine externen Bild-CDNs oder Social-Media-Einbettungen für diese
-                Inhalte verwendet, die zusätzlich Tracking setzen würden.
+                Domain und unseren Hosting-Anbieter ausgeliefert. Dafür sind <strong>keine gesonderten Cookies</strong> für
+                diese Inhalte erforderlich – abgesehen von der allgemeinen technischen Verarbeitung beim Aufruf der Seite
+                (siehe Server-Logfiles). Optional eingebettete Social-Media-Inhalte (Instagram) werden erst nach gesonderter
+                Einwilligung geladen (siehe unten).
               </p>
               <p className="mb-4">
                 Soweit auf Fotos Personen erkennbar sein könnten, werden Aufnahmen nur im Rahmen der jeweils erforderlichen
@@ -93,17 +93,23 @@ export default function Datenschutz() {
             <section>
               <h3 className="text-xl font-bold text-white mb-4">Cookies, lokaler Speicher und Einwilligungsbanner</h3>
               <p className="mb-4">
-                Für die Speicherung Ihrer <strong>Cookie-/Datenschutzeinstellung</strong> verwenden wir den{" "}
-                <strong>lokalen Speicher Ihres Browsers</strong> (Local Storage, Schlüssel zur Wiedererkennung Ihrer Auswahl).
-                Dies dient der Umsetzung Ihrer Entscheidung und der Nachweisbarkeit der Einstellung; Rechtsgrundlage ist Art. 6
-                Abs. 1 lit. f DSGVO (technische Umsetzung der Privatsphäre-Einstellungen) bzw. bei optionalen Diensten Art. 6
-                Abs. 1 lit. a DSGVO i. V. m. TKG 2021, soweit eine Einwilligung erforderlich ist.
+                Für die Speicherung Ihrer <strong>Datenschutzeinstellung</strong> sowie der <strong>Sprachwahl</strong>{" "}
+                verwenden wir den <strong>lokalen Speicher Ihres Browsers</strong> (Local Storage). Rechtsgrundlage für die
+                technisch notwendige Speicherung der Spracheinstellung ist Art. 6 Abs. 1 lit. f DSGVO (nutzerfreundlicher Betrieb);
+                für die Speicherung Ihrer Einwilligung in optionale Inhalte ist Art. 6 Abs. 1 lit. a DSGVO i. V. m. § 165 Abs. 3
+                TKG 2021 maßgeblich. Die Speicherdauer entspricht der Dauer der Speicherung in Ihrem Browser, bis Sie die
+                Website-Daten löschen oder über „Cookie-Einstellungen“ im Footer die Auswahl widerrufen.
               </p>
               <p className="mb-4">
-                <strong>Notwendig:</strong> Betrieb und Sicherheit der Website. <strong>Optional (Komfort):</strong> z. B. die
-                Einbindung von <strong>Google Maps</strong> im Kontaktbereich – diese wird erst geladen, wenn Sie der Kategorie
-                zustimmen bzw. „alle akzeptieren“ wählen. Ohne diese Einwilligung findet keine Verbindung zu Google für die Karte
-                statt.
+                <strong>Erforderlich:</strong> Betrieb der Website, Sicherheit, Sprachwahl. <strong>Optional (nur mit
+                Einwilligung):</strong> Einbindung von <strong>Google Maps</strong> (Kontaktseite) und <strong>Instagram</strong>{" "}
+                (Startseite). Ohne Einwilligung werden diese Drittanbieter-Inhalte nicht geladen; es findet dann keine
+                Datenübermittlung an Google bzw. Meta zu diesem Zweck statt.
+              </p>
+              <p className="mb-4">
+                Sie können eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem Sie im Footer
+                „Cookie-Einstellungen“ wählen (Banner erscheint erneut) oder die gespeicherten Daten dieser Website in Ihrem
+                Browser löschen.
               </p>
             </section>
 
@@ -131,11 +137,40 @@ export default function Datenschutz() {
             </section>
 
             <section>
+              <h3 className="text-xl font-bold text-white mb-4">Instagram (eingebettetes Profil)</h3>
+              <p className="mb-4">
+                Auf der Startseite können wir ein eingebettetes Profil von <strong>Instagram</strong> anzeigen. Anbieter
+                ist die <strong>Meta Platforms Ireland Limited</strong> (4 Grand Canal Square, Grand Canal Harbour, Dublin 2,
+                Irland). Beim Laden können personenbezogene Daten (u. a. IP-Adresse, Nutzungsdaten) übermittelt und in
+                Drittländern verarbeitet werden. Die Einbindung erfolgt <strong>nach Ihrer Einwilligung</strong> gemäß Art. 6
+                Abs. 1 lit. a DSGVO i. V. m. § 165 Abs. 3 TKG 2021. Ohne Einwilligung wird der eingebettete Inhalt nicht
+                geladen; Sie können stattdessen einen Link zu unserem öffentlichen Profil nutzen.
+              </p>
+              <ul className="list-disc list-inside mb-4 space-y-2">
+                <li>
+                  <a href="https://privacycenter.instagram.com/policy/" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
+                    Datenschutzrichtlinie von Meta / Instagram
+                  </a>
+                </li>
+              </ul>
+            </section>
+
+            <section>
               <h3 className="text-xl font-bold text-white mb-4">Kontakt mit uns</h3>
               <p className="mb-4">
                 Wenn Sie uns, entweder über unser Kontaktformular auf unserer Webseite, oder per Email kontaktieren,
                 dann werden die von Ihnen an uns übermittelten Daten zwecks Bearbeitung Ihrer Anfrage oder für den Fall von weiteren
                 Anschlussfragen für sechs Monate bei uns gespeichert. Es erfolgt, ohne Ihre Einwilligung, keine Weitergabe Ihrer übermittelten Daten.
+              </p>
+              <p className="mb-4">
+                Der Versand von Nachrichten aus dem Kontaktformular erfolgt über den Dienst <strong>Resend</strong> (Resend Inc.,
+                USA). Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung bzw. Beantwortung Ihrer Anfrage). Mit
+                Resend bestehen geeignete Garantien für Datenübermittlungen in Drittländer (u. a. EU-Standardvertragsklauseln).
+                Informationen:{" "}
+                <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
+                  resend.com/legal/privacy-policy
+                </a>
+                .
               </p>
             </section>
 

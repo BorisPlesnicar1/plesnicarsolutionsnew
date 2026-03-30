@@ -76,20 +76,24 @@ export default function DatenschutzEn() {
               <h3 className="text-xl font-bold text-white mb-4">Images & self-hosted content</h3>
               <p className="mb-4">
                 Photos and graphics (including the portfolio) are served from our own hosting. No extra third-party tracking
-                cookies are required for that content. We do not name business partners or customers in public text where
-                unnecessary; identifiable persons in images are published only with a valid legal basis.
+                cookies are required for that content. Optional embedded social content (Instagram) is loaded only after you
+                consent separately (see below). We do not name business partners or customers in public text where unnecessary;
+                identifiable persons in images are published only with a valid legal basis.
               </p>
             </section>
 
             <section>
               <h3 className="text-xl font-bold text-white mb-4">Local storage & consent banner</h3>
               <p className="mb-4">
-                We store your privacy choice and language preference in your browser&apos;s <strong>local storage</strong> so we
-                can respect your settings. We do <strong>not</strong> use marketing cookies or website analytics at this time.
+                We store your privacy choice and language preference in your browser&apos;s <strong>local storage</strong>. Legal
+                basis for the language setting is Art. 6 (1) (f) GDPR (user-friendly operation); for consent to optional
+                content, Art. 6 (1) (a) GDPR together with applicable ePrivacy rules. Retention until you clear site data or use
+                “Cookie settings” in the footer to withdraw consent.
               </p>
               <p className="mb-4">
-                If you allow optional “comfort” features, we may load <strong>Google Maps</strong> on the contact page. That only
-                happens after you consent; without consent, no connection to Google is made for the map.
+                <strong>Required:</strong> site operation, security, language. <strong>Optional (only with consent):</strong>{" "}
+                <strong>Google Maps</strong> (contact page) and <strong>Instagram</strong> (home). Without consent, no data is
+                sent to Google or Meta for those embeds.
               </p>
             </section>
 
@@ -115,11 +119,41 @@ export default function DatenschutzEn() {
             </section>
 
             <section>
+              <h3 className="text-xl font-bold text-white mb-4">Instagram (embedded profile)</h3>
+              <p className="mb-4">
+                On the home page we may show an embedded Instagram profile. Provider is <strong>Meta Platforms Ireland Limited</strong>{" "}
+                (Ireland). Loading may transfer personal data (e.g. IP address) to Meta and process it in third countries. The
+                embed is shown <strong>only after your consent</strong> under Art. 6 (1) (a) GDPR and applicable ePrivacy rules.
+                Without consent, the embed is not loaded; you can still use a direct link to our public profile.
+              </p>
+              <ul className="list-disc list-inside mb-4 space-y-2">
+                <li>
+                  <a
+                    href="https://privacycenter.instagram.com/policy/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#ff1900] hover:underline"
+                  >
+                    Meta / Instagram privacy policy
+                  </a>
+                </li>
+              </ul>
+            </section>
+
+            <section>
               <h3 className="text-xl font-bold text-white mb-4">Contact form & email</h3>
               <p className="mb-4">
                 If you contact us via the form or email, we process the data you send to handle your request, typically for up to
                 six months, unless longer retention is required by law. We do not share your message with third parties without
                 legal basis or consent.
+              </p>
+              <p className="mb-4">
+                Form delivery uses <strong>Resend</strong> (Resend Inc., USA). Legal basis: Art. 6 (1) (b) GDPR (responding to
+                your enquiry). Appropriate safeguards apply for transfers to the UK/US. See{" "}
+                <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
+                  resend.com/legal/privacy-policy
+                </a>
+                .
               </p>
             </section>
 
