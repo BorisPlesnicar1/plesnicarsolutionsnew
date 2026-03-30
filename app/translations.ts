@@ -72,6 +72,8 @@ export const TRANSLATIONS = {
       ctaOffer: "Angebot anfragen",
       ctaServices: "Leistungen ansehen",
       sub: "Antwort innerhalb von 24 Stunden – auch am Wochenende.",
+      audienceLine:
+        "Für Unternehmen jeder Größe und Privatkunden – dazu Handwerk und Bau in Österreich: persönliche IT- und Digitalprojekte – ergänzend Unterstützung bei Baustoffen und Bau mit erfahrenem Partnernetzwerk.",
     },
     stats: {
       years: 40,
@@ -341,6 +343,42 @@ export const TRANSLATIONS = {
       bau: "Bau & Handel",
       projects: "Referenzen",
     },
+    partnerStrip: {
+      label: "Netzwerk",
+      title: "Bekannte",
+      titleHighlight: "Partner & Marken",
+      subtitle:
+        "Auszug aus unserem Handels- und Baunetzwerk – für nachvollziehbare Qualität und regionale Erreichbarkeit. Logos führen zur Website des jeweiligen Unternehmens.",
+      cta: "Alle Handelspartner",
+    },
+    faq: {
+      label: "FAQ",
+      title: "Häufige",
+      titleHighlight: "Fragen",
+      intro: "Kurz und transparent – ohne Kleingedrucktes.",
+      items: [
+        {
+          q: "Wie läuft ein Projekt typischerweise ab?",
+          a: "Erstkontakt und kurze Einordnung Ihres Themas – bei Web und IT mit klarem Angebot und Meilensteinen; bei Bau, Hausbetreuung und Baustoffen mit persönlicher Abstimmung und Unterstützung durch unser Netzwerk. Sie wissen vor dem Start, was Sie erwarten können.",
+        },
+        {
+          q: "Wie lange dauert eine Website oder ein digitales Projekt?",
+          a: "Das hängt von Umfang, Inhalten und Feedbackzyklen ab: eine schlanke One-Page ist oft in wenigen Wochen live, größere Sites oder Sonderlogik können mehrere Wochen bis Monate brauchen. Realistische Zeitrahmen besprechen wir vor Auftragsstart.",
+        },
+        {
+          q: "Was decken die Richtpreise ab – und was nicht?",
+          a: "Die Beträge auf der Seite „Richtpreise“ sind Orientierungswerte für typische Szenarien, keine Fixpreise aus dem Regal. Nicht enthalten sind ohne gesonderte Vereinbarung z. B. laufende Fremdlizenzen, kostenpflichtige Stock-Medien, umfangreiche Redaktion fremder Texte oder sehr spezielle Schnittstellen – das kalkulieren wir offen nach Umfang.",
+        },
+        {
+          q: "Gibt es versteckte Kosten?",
+          a: "Nein: Was optional oder zusätzlich ist, klären wir vorab oder im Angebot. Drittkosten (Domains, Hosting, Plugins) benennen wir, soweit sie für Ihr Projekt anfallen.",
+        },
+        {
+          q: "Wie schnell erhalten wir eine Antwort?",
+          a: "In der Regel innerhalb von 24 Stunden – auch am Wochenende. Bei dringenden Themen im Bau- oder Betreuungsbereich erreichen Sie uns zusätzlich telefonisch (siehe Kontakt).",
+        },
+      ],
+    },
   },
   en: {
     skipLink: "Skip to content",
@@ -408,6 +446,8 @@ export const TRANSLATIONS = {
       ctaOffer: "Request quote",
       ctaServices: "View services",
       sub: "We reply within 24 hours – including weekends.",
+      audienceLine:
+        "For businesses of every size and private clients – as well as trades and construction in Austria: personal IT and digital projects – plus support with building materials and construction through an experienced partner network.",
     },
     stats: {
       years: 40,
@@ -679,6 +719,42 @@ export const TRANSLATIONS = {
       it: "IT & Digital",
       bau: "Construction & trade",
       projects: "References",
+    },
+    partnerStrip: {
+      label: "Network",
+      title: "Trusted",
+      titleHighlight: "partners & brands",
+      subtitle:
+        "A selection from our trade and construction network – reliable quality and regional reach. Logos link to each company’s website.",
+      cta: "All trade partners",
+    },
+    faq: {
+      label: "FAQ",
+      title: "Common",
+      titleHighlight: "questions",
+      intro: "Short and clear – no fine print.",
+      items: [
+        {
+          q: "How does a typical project run?",
+          a: "Initial contact and scoping – for web and IT with a clear quote and milestones; for construction, property care and materials with personal coordination and our partner network. You know what to expect before work starts.",
+        },
+        {
+          q: "How long does a website or digital project take?",
+          a: "It depends on scope, content and feedback cycles: a lean one-pager can go live in a few weeks; larger sites or custom logic may take several weeks to months. We agree realistic timelines before kick-off.",
+        },
+        {
+          q: "What do guide prices cover – and what not?",
+          a: "Figures on our “Guide prices” page are orientation values for typical scenarios, not off-the-shelf fixed prices. Unless agreed separately, ongoing third-party licences, paid stock media, extensive copywriting or special integrations are quoted transparently by scope.",
+        },
+        {
+          q: "Are there hidden costs?",
+          a: "No. Anything optional or extra is clarified upfront or in the quote. Third-party costs (domains, hosting, plugins) are named where they apply to your project.",
+        },
+        {
+          q: "How fast do you respond?",
+          a: "Usually within 24 hours – including weekends. For urgent construction or care topics you can also reach us by phone (see contact).",
+        },
+      ],
     },
   },
 } as const;

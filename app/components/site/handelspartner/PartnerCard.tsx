@@ -36,13 +36,23 @@ export function PartnerCard({ partner, index }: PartnerCardProps) {
         group-hover:border-[#ff1900]/30
         group-hover:shadow-[0_0_48px_-16px_rgba(255,25,0,0.18)]"
       >
-        <div className="relative h-28 w-full max-w-[220px] shrink-0">
+        <div
+          className={
+            partner.logoOnLightBg
+              ? "relative h-28 w-full max-w-[220px] shrink-0 flex items-center justify-center rounded-xl bg-white px-4 py-3 ring-1 ring-black/10"
+              : "relative h-28 w-full max-w-[220px] shrink-0"
+          }
+        >
           <Image
             src={partner.logoSrc}
             alt={`Logo ${partner.name}`}
             width={partner.logoWidth}
             height={partner.logoHeight}
-            className="object-contain object-center w-full h-full transition-all duration-500 ease-out grayscale opacity-[0.85] group-hover:grayscale-0 group-hover:opacity-100"
+            className={
+              partner.logoOnLightBg
+                ? "object-contain object-center w-full h-full max-h-full transition-all duration-500 ease-out"
+                : "object-contain object-center w-full h-full transition-all duration-500 ease-out grayscale opacity-[0.85] group-hover:grayscale-0 group-hover:opacity-100"
+            }
             sizes="(max-width: 768px) 70vw, 220px"
           />
         </div>

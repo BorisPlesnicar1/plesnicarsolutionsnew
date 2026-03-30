@@ -14,6 +14,8 @@ export type Handelspartner = {
   logoHeight: number;
   /** Optionale Grid-Platzierung (lg 6-Spalten-Layout) */
   gridClass?: string;
+  /** Dunkles Logo (z. B. dunkler Text im PNG) – heller Untergrund für Lesbarkeit auf dark UI */
+  logoOnLightBg?: boolean;
 };
 
 export const HANDELS_PARTNER: Handelspartner[] = [
@@ -61,6 +63,7 @@ export const HANDELS_PARTNER: Handelspartner[] = [
     logoWidth: 280,
     logoHeight: 100,
     gridClass: "lg:col-span-2 lg:col-start-4 lg:row-start-2",
+    logoOnLightBg: true,
   },
 ];
 
