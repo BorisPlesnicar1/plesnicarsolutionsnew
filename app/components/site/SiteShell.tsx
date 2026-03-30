@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -17,8 +18,12 @@ import {
 } from "lucide-react";
 import { TRANSLATIONS } from "@/app/translations";
 import { useSite } from "@/app/contexts/SiteContext";
-import { CookieBanner } from "@/app/components/site/CookieBanner";
 import { useHashScroll, SCROLL_SPY_HEADER_OFFSET } from "@/app/components/site/useHashScroll";
+
+const CookieBanner = dynamic(
+  () => import("@/app/components/site/CookieBanner").then((m) => ({ default: m.CookieBanner })),
+  { ssr: false }
+);
 
 /** Entscheidungsreise: Start → Richtpreise → Leistungen & Projekte → Handelspartner → Über uns; Kontakt = CTA */
 const NAV_DESKTOP = [
@@ -191,7 +196,7 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
                 height={60}
                 className="h-12 sm:h-14 md:h-16 w-auto max-w-[180px] sm:max-w-none"
                 priority
-                unoptimized
+                sizes="(max-width: 640px) 180px, (max-width: 1024px) 200px, 240px"
               />
             </button>
           </div>
@@ -375,6 +380,7 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
                 width={200}
                 height={60}
                 className="h-12 md:h-14 w-auto opacity-80"
+                sizes="(max-width: 768px) 200px, 224px"
               />
             </div>
             <div className="text-center md:text-left flex-1">

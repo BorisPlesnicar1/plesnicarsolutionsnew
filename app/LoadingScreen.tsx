@@ -100,9 +100,17 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
       return Math.min(100, (elapsed / PROGRESS_FILL_MS) * 100);
     };
 
+    /** ~30 fps reicht für den Balken; weniger setState = geringere Main-Thread-Last (TBT). */
+    const UI_INTERVAL_MS = 32;
+    let lastUiMs = 0;
+
     const loop = () => {
       const p = syncProgress();
-      setProgress(p);
+      const now = Date.now();
+      if (now - lastUiMs >= UI_INTERVAL_MS || p >= 100) {
+        lastUiMs = now;
+        setProgress(p);
+      }
       if (p < 100) {
         rafRef.current = requestAnimationFrame(loop);
       }
@@ -111,6 +119,7 @@ export function LoadingScreen({ children }: { children: React.ReactNode }) {
     const onVisibility = () => {
       if (document.visibilityState !== "visible") return;
       const p = syncProgress();
+      lastUiMs = Date.now();
       setProgress(p);
       if (p < 100) {
         cancelAnimationFrame(rafRef.current);
