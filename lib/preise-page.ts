@@ -179,7 +179,7 @@ export const preiseCopy = {
     sub:
       "Orientierungswerte für Web, Branding und Betreuung – persönlich kalkuliert, ohne versteckte Überraschungen. Endpreise besprechen wir nach Ihrem konkreten Umfang.",
     subBridge:
-      "Bauen, sanieren oder Baustoffe planen? Neben unserem Schwerpunkt IT erhalten Sie Unterstützung im Bau: Ing. Dietmar Plesnicar wirkt hier in der offiziellen Rolle „Unterstützung Bau“ mit langjähriger Praxis; zudem verbinden wir Sie mit einem Netzwerk geprüfter Partner – damit Sie bei Haus und Material nicht allein mit Listen, Händlern und Entscheidungen stehen. ",
+      "Bauen, sanieren oder Baustoffe planen? Neben unserem Schwerpunkt IT erhalten Sie Unterstützung im Bau: Ing. Dietmar Plesnicar wirkt hier in der Rolle „Unterstützung Bau“ mit langjähriger Praxis; zudem verbinden wir Sie mit einem Netzwerk geprüfter Partner – damit Sie bei Haus und Material nicht allein mit Listen, Händlern und Entscheidungen stehen. ",
     subBridgeLinkLabel: "Mehr zu Bau & Partnern",
     ctaPrimary: "Unverbindlich anfragen",
     ctaSecondary: "Leistungen ansehen",
@@ -192,7 +192,7 @@ export const preiseCopy = {
     badge: "Bau & Handel",
     title: "Starke Unterstützung beim Bau – und bei Baustoffen",
     text:
-      "Ob Eigenheim, Umbau, Sanierung oder die passende Materialwahl: Ing. Dietmar Plesnicar unterstützt Sie im Bau-Bereich (offizielle Rolle: Unterstützung Bau) mit Jahrzehnten Praxis; wir verbinden Sie zusätzlich mit zuverlässigen österreichischen Partnern. So behalten Sie Qualität, Kosten und Abläufe besser im Griff – statt sich im Dickicht aus Sortimenten und Angeboten zu verlieren.",
+      "Ob Eigenheim, Umbau, Sanierung oder die passende Materialwahl: Ing. Dietmar Plesnicar unterstützt Sie im Bau-Bereich (Unterstützung Bau) mit Jahrzehnten Praxis; wir verbinden Sie zusätzlich mit zuverlässigen österreichischen Partnern. So behalten Sie Qualität, Kosten und Abläufe besser im Griff – statt sich im Dickicht aus Sortimenten und Angeboten zu verlieren.",
     priceNoticeTitle: "Hinweis zu Preisen im Bau & Handel",
     priceNotice:
       "In der Baubranche inklusive Handel hängen Kosten und Ablauf stark vom jeweiligen Projekt ab – oft über viele Schritte und mit vielen Einflussfaktoren. Eine pauschale Preisanzeige würde diesen Umfang verkürzen und für Ihren konkreten Bau- oder Materialbedarf leicht irreführend wirken. Deshalb veröffentlichen wir hier bewusst keine Richt- oder Pauschalpreise für diesen Bereich; wir klären Leistung und Kosten transparent in einem persönlichen Gespräch mit Ihnen.",
@@ -422,7 +422,7 @@ export const preiseCopyEn = {
     sub:
       "Guide figures for web, branding, and ongoing care – quoted personally, no hidden surprises. Final prices we agree based on your actual scope.",
     subBridge:
-      "Building, renovating, or planning building materials? Alongside our IT focus you get construction support: Ing. Dietmar Plesnicar acts in the official “construction support” role with long-standing practice; we also connect you with a vetted partner network – so you are not on your own with lists, suppliers, and decisions. ",
+      "Building, renovating, or planning building materials? Alongside our IT focus you get construction support: Ing. Dietmar Plesnicar acts in a construction support role with long-standing practice; we also connect you with a vetted partner network – so you are not on your own with lists, suppliers, and decisions. ",
     subBridgeLinkLabel: "More on construction & partners",
     ctaPrimary: "Request without obligation",
     ctaSecondary: "View services",
@@ -435,7 +435,7 @@ export const preiseCopyEn = {
     badge: "Construction & trade",
     title: "Strong support for your build – and for building materials",
     text:
-      "Whether it is a home, refurbishment, renovation, or choosing the right materials: Ing. Dietmar Plesnicar supports you in construction (official role: construction support) with decades of practice; we also connect you with reliable Austrian partners. That helps you keep quality, cost, and processes clearer – instead of getting lost in catalogues and quotes.",
+      "Whether it is a home, refurbishment, renovation, or choosing the right materials: Ing. Dietmar Plesnicar supports you in construction (construction support) with decades of practice; we also connect you with reliable Austrian partners. That helps you keep quality, cost, and processes clearer – instead of getting lost in catalogues and quotes.",
     priceNoticeTitle: "Note on construction & trade pricing",
     priceNotice:
       "In construction and trade, cost and workflow depend heavily on each project – often across many stages and variables. A single headline figure would oversimplify that scope and could mislead you about your actual build or materials needs. We therefore do not publish guide or lump-sum prices for this segment on this page; we clarify scope and cost transparently with you in a direct conversation.",

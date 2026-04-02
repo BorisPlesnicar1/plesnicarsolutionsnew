@@ -66,14 +66,11 @@ export const TRANSLATIONS = {
       line2: "Lösungen.",
       line3: "Zuverlässige",
       line4: "Umsetzung.",
-      paragraph:
-        "Schwerpunkt IT: Beratung, Systeme, Web und Grafikdesign. Ergänzend Hausbetreuung und Baustoffe – im Bau-Bereich mit Unterstützung durch Ing. Dietmar Plesnicar.",
-      paragraphBold: " Schnell, sauber, zuverlässig.",
       ctaOffer: "Angebot anfragen",
       ctaServices: "Leistungen ansehen",
       sub: "Antwort innerhalb von 24 Stunden – auch am Wochenende.",
       audienceLine:
-        "Für Unternehmen jeder Größe und Privatkunden – dazu Handwerk und Bau in Österreich: persönliche IT- und Digitalprojekte – ergänzend Unterstützung bei Baustoffen und Bau mit erfahrenem Partnernetzwerk.",
+        "Für Unternehmen jeder Größe und Privatkunden in Österreich: persönliche IT- und Digitalprojekte – ergänzend Unterstützung bei Baustoffen und Bau mit erfahrenem Partnernetzwerk.",
     },
     stats: {
       years: 40,
@@ -176,7 +173,7 @@ export const TRANSLATIONS = {
       heading: "Plesnicar Solutions",
       headingRest:
         "ist ein österreichisches Unternehmen mit Schwerpunkten in IT, Web und Grafik sowie im Handel – inklusive Baustoffen – und bei Unterstützung im Bau und in der Hausbetreuung. Zuverlässige Umsetzung, schnelle Kommunikation und saubere Ergebnisse – digital wie vor Ort.",
-      body: "Als inhabergeführtes Unternehmen bieten wir direkten, persönlichen Service ohne Umwege. Boris Plesnicar (Inhaber) verantwortet IT und Digital: Beratung, PC-Bau, Web, Systeme und Grafikdesign. Ing. Dietmar Plesnicar übernimmt offiziell die Rolle der Unterstützung beim Bau – mit Hausbetreuung, Baustoffen und handelsnahen Themen, gestützt auf über 40 Jahre Erfahrung im Bauwesen. Regional in Österreich, IT auch remote.",
+      body: "Als inhabergeführtes Unternehmen bieten wir direkten, persönlichen Service ohne Umwege. Boris Plesnicar (Inhaber) verantwortet IT und Digital: Beratung, PC-Bau, Web, Systeme und Grafikdesign. Ing. Dietmar Plesnicar übernimmt die Rolle der Unterstützung beim Bau – mit Hausbetreuung, Baustoffen und handelsnahen Themen, gestützt auf über 40 Jahre Erfahrung im Bauwesen. Regional in Österreich, IT auch remote.",
       contactsTeaser: "Dieselben Ansprechpartner wie im Team und auf der Kontaktseite – mit Rollen und Erreichbarkeit.",
       contactsToKontakt: "Kontakt & Formular",
     },
@@ -196,7 +193,7 @@ export const TRANSLATIONS = {
       sigAltDietmar: "Unterschrift von Ing. Dietmar Plesnicar",
       landline: "Festnetz 02734/32048",
       email: "E-Mail",
-      expertiseBoris: ["PC-Bau", "Grafikdesign", "Webdesign", "IT-Support", "Handwerk"],
+      expertiseBoris: ["PC-Bau", "Grafikdesign", "Webdesign", "IT-Support", "Konzeption"],
       expertiseDietmar: ["Unterstützung Bau", "Hausbetreuung", "Baustoffe", "Handel", "Beratung"],
     },
     warum: {
@@ -440,14 +437,11 @@ export const TRANSLATIONS = {
       line2: "solutions.",
       line3: "Reliable",
       line4: "implementation.",
-      paragraph:
-        "IT-first: consulting, systems, web and graphic design. We also offer property care and building materials – with Ing. Dietmar Plesnicar in an official construction support role.",
-      paragraphBold: " Fast, thorough, reliable.",
       ctaOffer: "Request quote",
       ctaServices: "View services",
       sub: "We reply within 24 hours – including weekends.",
       audienceLine:
-        "For businesses of every size and private clients – as well as trades and construction in Austria: personal IT and digital projects – plus support with building materials and construction through an experienced partner network.",
+        "For businesses of every size and private clients in Austria: personal IT and digital projects – plus support with building materials and construction through an experienced partner network.",
     },
     stats: {
       years: 40,
@@ -550,7 +544,7 @@ export const TRANSLATIONS = {
       heading: "Plesnicar Solutions",
       headingRest:
         "is an Austrian company focused on IT, web and graphics as well as trade – including building materials – plus support for construction and property care. Reliable delivery, fast communication and clear results – online and on site.",
-      body: "As an owner-run business we offer direct, personal service with no runaround. Boris Plesnicar (owner) leads IT and digital: consulting, PC builds, web, systems and graphic design. Ing. Dietmar Plesnicar officially provides construction support – property care, building materials and trade-related topics – drawing on over 40 years of experience in the industry. Based in Austria with remote IT options.",
+      body: "As an owner-run business we offer direct, personal service with no runaround. Boris Plesnicar (owner) leads IT and digital: consulting, PC builds, web, systems and graphic design. Ing. Dietmar Plesnicar provides construction support – property care, building materials and trade-related topics – drawing on over 40 years of experience in the industry. Based in Austria with remote IT options.",
       contactsTeaser: "The same contacts as on the team and contact pages – roles and how to reach us match there.",
       contactsToKontakt: "Contact & form",
     },
@@ -570,7 +564,7 @@ export const TRANSLATIONS = {
       sigAltDietmar: "Signature of Ing. Dietmar Plesnicar",
       landline: "Landline 02734/32048",
       email: "Email",
-      expertiseBoris: ["PC builds", "Graphic design", "Web design", "IT support", "Craft"],
+      expertiseBoris: ["PC builds", "Graphic design", "Web design", "IT support", "Concept"],
       expertiseDietmar: ["Construction support", "Property care", "Building materials", "Trade", "Consulting"],
     },
     warum: {

@@ -174,11 +174,8 @@ h1, h2, h3, h4, h5, h6 {
   .hero-intro-active .hero-animate {
     animation: hero-block-rise 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
-  .hero-intro-active .hero-block-p {
-    animation-delay: var(--hero-delay-p, 800ms);
-  }
   .hero-intro-active .hero-block-audience {
-    animation-delay: calc(var(--hero-delay-p, 800ms) + 90ms);
+    animation-delay: var(--hero-delay-p, 800ms);
   }
   .hero-intro-active .hero-block-cta {
     animation-delay: var(--hero-delay-cta, 1000ms);

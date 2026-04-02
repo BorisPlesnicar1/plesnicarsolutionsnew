@@ -185,11 +185,6 @@ export function HeroSection() {
               </span>
             </h1>
 
-            <p className="hero-animate hero-block-p text-base md:text-lg text-white/60 max-w-md mx-auto lg:mx-0 leading-relaxed font-light">
-              {t.hero.paragraph}
-              <span className="text-white font-medium">{t.hero.paragraphBold}</span>
-            </p>
-
             <p className="hero-animate hero-block-audience text-sm md:text-[0.95rem] text-white/58 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light border-l-2 border-[#ff1900]/45 pl-4 py-0.5">
               {t.hero.audienceLine}
             </p>
