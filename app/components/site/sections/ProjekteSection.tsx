@@ -11,6 +11,7 @@ import { SectionKicker } from "@/app/components/site/SectionKicker";
 import { motionViewport, staggerItem, staggerParent } from "@/app/components/site/motion-presets";
 import {
   PROJECTS,
+  formatProjectStandDate,
   getClosestProjectIndexToCenter,
   projectFocusShadow,
   projectHoverShadow,
@@ -37,6 +38,14 @@ export function ProjekteSection() {
     mq.addEventListener("change", listener);
     return () => mq.removeEventListener("change", listener);
   }, []);
+
+  const projectStandText = (project: Project) => {
+    const d = formatProjectStandDate(project.updatedAt, lang);
+    if (!d || !project.updatedAt) return null;
+    return { iso: project.updatedAt, label: t.projekte.projectStand.replace("{date}", d) };
+  };
+
+  const modalStand = selectedProject ? projectStandText(selectedProject) : null;
 
   useEffect(() => {
     const container = projectsScrollRef.current;
@@ -127,6 +136,7 @@ export function ProjekteSection() {
                 <div className="led-ticker-track flex items-stretch gap-5 md:gap-6 shrink-0 pl-4 md:pl-6" style={{ width: "max-content" }}>
                   {[...PROJECTS, ...PROJECTS].map((project, i) => {
                     const sub = PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle ?? "";
+                    const stand = projectStandText(project);
                     const ledAlt = [project.title, sub, t.projekte.imageAltPreview].filter(Boolean).join(" – ");
                     return (
                     <div
@@ -161,6 +171,11 @@ export function ProjekteSection() {
                           <p className="text-white/80 text-xs truncate mt-0.5">
                             {PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle ?? ""}
                           </p>
+                          {stand && (
+                            <p className="text-white/55 text-[10px] mt-1 tabular-nums truncate">
+                              <time dateTime={stand.iso}>{stand.label}</time>
+                            </p>
+                          )}
                         </div>
                         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60" />
                       </div>
@@ -181,6 +196,7 @@ export function ProjekteSection() {
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", scrollPaddingLeft: "1rem", scrollPaddingRight: "1rem" }}
             >
               {PROJECTS.map((project, i) => {
+                const stand = projectStandText(project);
                 const isActive = projectsCarouselHasOverflow && activeProjectIndex === i;
                 const isHovered = hoveredCardIndex === i;
                 const boxShadow = prefersReducedMotion
@@ -275,6 +291,11 @@ export function ProjekteSection() {
                             </span>
                           )}
                         </h3>
+                        {stand && (
+                          <p className="mt-2 text-xs text-white/45 tabular-nums">
+                            <time dateTime={stand.iso}>{stand.label}</time>
+                          </p>
+                        )}
                       </div>
                     </button>
                   </div>
@@ -381,6 +402,11 @@ export function ProjekteSection() {
                   </span>
                 )}
               </h2>
+              {modalStand && (
+                <p className="mt-2 text-sm text-white/45 tabular-nums">
+                  <time dateTime={modalStand.iso}>{modalStand.label}</time>
+                </p>
+              )}
 
               <div className="mt-6 rounded-xl overflow-hidden bg-white/[0.03] border border-white/[0.08]">
                 <div className="relative aspect-video">

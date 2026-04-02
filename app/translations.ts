@@ -167,6 +167,8 @@ export const TRANSLATIONS = {
       bauBefaehigungHinweis:
         "Klarstellung: Für die hier gezeigten Tätigkeiten im Bau- und Handelsbereich wurden von uns keine Montagearbeiten und keine sonstigen Arbeiten ausgeführt, für die nach den einschlägigen Bestimmungen (z. B. Gewerbeordnung) ein Befähigungsnachweis vorgeschrieben ist.",
       fallbackDescription: "Referenzprojekt ohne öffentliche Kurzbeschreibung – Details auf Anfrage.",
+      /** `{date}` = lokalisiertes Datum (z. B. 2. April 2026) */
+      projectStand: "Stand {date}",
     },
     ueberUns: {
       label: "Über uns",
@@ -538,6 +540,7 @@ export const TRANSLATIONS = {
       bauBefaehigungHinweis:
         "Clarification: For the construction and trade activities shown here, we did not perform assembly work or any other activities for which a certificate of competence is required under applicable regulations (e.g. trade law).",
       fallbackDescription: "Reference project without a public short description – details on request.",
+      projectStand: "As of {date}",
     },
     ueberUns: {
       label: "About us",
@@ -794,6 +797,12 @@ export const PROJECT_TRANSLATIONS: Record<
         "Baustoffe und Materialien für Sanierung und Umbau – Lager, Sortiment und Abläufe. Es werden keine Kundennamen genannt.",
       linkLabel: "",
     },
+    "materiallieferung-kundenbaustellen": {
+      subtitle: "Materiallieferung",
+      description:
+        "Lieferung und Anlieferung von Baustoffen und Material auf Kundenbaustellen – koordiniert im Netzwerk. Dokumentarische Impressionen ohne Nennung von Auftraggebern oder konkreten Objekten. Keine Montagearbeiten und keine Tätigkeiten mit Befähigungsnachweispflicht.",
+      linkLabel: "Mehr erfahren",
+    },
   },
   en: {
     "skyline-ios": {
@@ -830,6 +839,12 @@ export const PROJECT_TRANSLATIONS: Record<
       description:
         "Building materials for renovation and refurbishment – stock, range and workflows. No client names are published.",
       linkLabel: "",
+    },
+    "materiallieferung-kundenbaustellen": {
+      subtitle: "Material delivery",
+      description:
+        "Delivery of building materials to customer construction sites – coordinated through our network. Documentary impressions without naming clients or specific projects. No assembly work or activities requiring a certificate of competence.",
+      linkLabel: "Learn more",
     },
   },
 };
