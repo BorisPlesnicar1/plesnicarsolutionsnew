@@ -6,7 +6,7 @@ import { UeberUnsPage } from "./ueber-uns-page";
 const SITE = "https://plesnicarsolutions.at";
 
 const DESC =
-  "Plesnicar Solutions – inhabergeführtes österreichisches Unternehmen für IT, Grafikdesign, Bau und Hausbetreuung. Lernen Sie unser Team kennen.";
+  "Plesnicar Solutions – inhabergeführt in Österreich: IT, Web & Grafik; Handel mit Baustoffen; Unterstützung im Bau und Hausbetreuung. Team & Ansprechpartner.";
 
 export const metadata: Metadata = {
   title: "Über uns",
@@ -14,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/ueber-uns" },
   openGraph: {
     title: "Über uns | Plesnicar Solutions",
-    description: "Unser Unternehmen – Schwerpunkt IT; Ansprechpartner und Unterstützung im Bau.",
+    description:
+      "IT, Web & Grafik; Handel mit Baustoffen; Unterstützung im Bau und Hausbetreuung – unser Team stellt sich vor.",
     url: `${SITE}/ueber-uns`,
   },
 };

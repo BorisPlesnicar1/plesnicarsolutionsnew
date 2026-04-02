@@ -155,10 +155,11 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Nur Transform: kein opacity 0→1, sonst hohe LCP „Element rendering delay“ (PSI). */
 @keyframes hero-img-in {
   from {
-    opacity: 0;
-    transform: translateX(40px) scale(0.96);
+    opacity: 1;
+    transform: translateX(28px) scale(0.97);
   }
   to {
     opacity: 1;
@@ -189,8 +190,8 @@ h1, h2, h3, h4, h5, h6 {
     animation-delay: var(--hero-delay-chips, 1350ms);
   }
   .hero-intro-active .hero-image-wrap {
-    animation: hero-img-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    animation-delay: 180ms;
+    animation: hero-img-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: 0ms;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -175,8 +175,8 @@ export const TRANSLATIONS = {
       label: "Über uns",
       heading: "Plesnicar Solutions",
       headingRest:
-        "ist ein österreichisches Unternehmen mit Schwerpunkt IT – zuverlässige Umsetzung, schnelle Kommunikation und saubere Ergebnisse bei digitalen und gestalterischen Projekten.",
-      body: "Als inhabergeführtes Unternehmen bieten wir direkten, persönlichen Service ohne Umwege. Boris Plesnicar (Inhaber) verantwortet den Schwerpunkt IT: Beratung, PC-Bau, digitale Lösungen und Grafikdesign. Ing. Dietmar Plesnicar ist offiziell in der Rolle der Unterstützung beim Bau für Hausbetreuung, Baustoffe und handelsnahe Themen tätig – mit über 40 Jahren Erfahrung im Bauwesen. Regional in Österreich, IT auch remote.",
+        "ist ein österreichisches Unternehmen mit Schwerpunkten in IT, Web und Grafik sowie im Handel – inklusive Baustoffen – und bei Unterstützung im Bau und in der Hausbetreuung. Zuverlässige Umsetzung, schnelle Kommunikation und saubere Ergebnisse – digital wie vor Ort.",
+      body: "Als inhabergeführtes Unternehmen bieten wir direkten, persönlichen Service ohne Umwege. Boris Plesnicar (Inhaber) verantwortet IT und Digital: Beratung, PC-Bau, Web, Systeme und Grafikdesign. Ing. Dietmar Plesnicar übernimmt offiziell die Rolle der Unterstützung beim Bau – mit Hausbetreuung, Baustoffen und handelsnahen Themen, gestützt auf über 40 Jahre Erfahrung im Bauwesen. Regional in Österreich, IT auch remote.",
       contactsTeaser: "Dieselben Ansprechpartner wie im Team und auf der Kontaktseite – mit Rollen und Erreichbarkeit.",
       contactsToKontakt: "Kontakt & Formular",
     },
@@ -549,8 +549,8 @@ export const TRANSLATIONS = {
       label: "About us",
       heading: "Plesnicar Solutions",
       headingRest:
-        "is an Austrian company with an IT focus – reliable delivery, fast communication and clear results for digital and design work.",
-      body: "As an owner-run business we offer direct, personal service with no runaround. Boris Plesnicar (owner) leads our IT focus: consulting, PC builds, digital solutions and graphic design. Ing. Dietmar Plesnicar officially supports the construction side on property care, building materials and trade-related topics – a civil engineer with over 40 years of industry experience. Based in Austria with remote IT options.",
+        "is an Austrian company focused on IT, web and graphics as well as trade – including building materials – plus support for construction and property care. Reliable delivery, fast communication and clear results – online and on site.",
+      body: "As an owner-run business we offer direct, personal service with no runaround. Boris Plesnicar (owner) leads IT and digital: consulting, PC builds, web, systems and graphic design. Ing. Dietmar Plesnicar officially provides construction support – property care, building materials and trade-related topics – drawing on over 40 years of experience in the industry. Based in Austria with remote IT options.",
       contactsTeaser: "The same contacts as on the team and contact pages – roles and how to reach us match there.",
       contactsToKontakt: "Contact & form",
     },

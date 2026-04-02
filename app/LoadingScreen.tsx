@@ -4,8 +4,8 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
-/** Kürzer = besserer LCP/Speed Index (PSI); Intro nur noch auf der Startseite sichtbar. */
-const MIN_DISPLAY_MS = 950;
+/** Kürzer = besserer LCP/Speed Index (PSI); Overlay blockiert LCP bis zum Schließen. */
+const MIN_DISPLAY_MS = 620;
 const LOADING_CLOSED_EVENT = "ps-loading-closed";
 const PROGRESS_FILL_MS = 650;
 const COMPLETE_PAUSE_MS = 120;
