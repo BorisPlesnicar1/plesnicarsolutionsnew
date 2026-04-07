@@ -145,6 +145,15 @@ export const TRANSLATIONS = {
             "Kompetente Beratung beim Kauf",
           ],
         },
+        {
+          title: "Baustoff-Handel",
+          items: [
+            "Regulierter Handel mit Baustoffen – rechtssicher nach den einschlägigen Vorgaben",
+            "Sortiment und Bezug für Kundenbaustellen, Sanierung und Neubau",
+            "Attraktive, marktnah kalkulierte Preise – transparent und fair",
+            "Beratung zu Materialwahl, Mengen, Lieferung und Logistik",
+          ],
+        },
       ],
     },
     projekte: {
@@ -340,6 +349,7 @@ export const TRANSLATIONS = {
     leistungenChips: {
       it: "IT & Digital",
       bau: "Bau & Handel",
+      baustoff: "Baustoff-Handel",
       projects: "Referenzen",
     },
     partnerStrip: {
@@ -516,6 +526,15 @@ export const TRANSLATIONS = {
             "Sales of matching products and accessories",
             "Custom solutions for your needs",
             "Expert advice when you buy",
+          ],
+        },
+        {
+          title: "Building materials trade",
+          items: [
+            "Regulated trade in building materials – compliant with applicable rules",
+            "Range and sourcing for job sites, renovation and new build",
+            "Competitive, market-aligned pricing – transparent and fair",
+            "Advice on product choice, quantities, delivery and logistics",
           ],
         },
       ],
@@ -715,6 +734,7 @@ export const TRANSLATIONS = {
     leistungenChips: {
       it: "IT & Digital",
       bau: "Construction & trade",
+      baustoff: "Building materials",
       projects: "References",
     },
     partnerStrip: {
