@@ -3,11 +3,14 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
+import { PREISE_OPENING_OFFER, getOpeningOfferBannerCopy } from "@/lib/preise-opening-offer";
 import { getPreiseBundle, type PaketPreisOption } from "@/lib/preise-page";
 import { SectionBackground } from "@/app/components/site/SectionBackground";
 import { MicroKicker, SectionKicker } from "@/app/components/site/SectionKicker";
 import { motionViewportLong, staggerItem, staggerParent } from "@/app/components/site/motion-presets";
 import { PaketPricingToggle } from "@/app/components/site/preise/PaketPricingToggle";
+import { PreisMitEroeffnungsangebot } from "@/app/components/site/preise/PreisMitEroeffnungsangebot";
+import type { Lang } from "@/app/translations";
 import { useSite } from "@/app/contexts/SiteContext";
 
 const paketCardTransition = { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const };
@@ -17,6 +20,7 @@ function PaketCard({
   featured,
   children,
   className = "",
+  lang,
 }: {
   paket: {
     title: string;
@@ -28,6 +32,7 @@ function PaketCard({
   featured?: boolean;
   children?: ReactNode;
   className?: string;
+  lang: Lang;
 }) {
   const ring = featured
     ? "from-white/[0.22] via-[#ff1900]/35 to-white/[0.08] shadow-[0_0_0_1px_rgba(255,25,0,0.12),0_32px_80px_-28px_rgba(255,35,25,0.22),0_24px_64px_-32px_rgba(0,0,0,0.85)]"
@@ -77,9 +82,11 @@ function PaketCard({
           {children ??
             (paket.priceFrom && paket.priceDisclaimer ? (
               <div className="shrink-0">
-                <p className="text-2xl md:text-3xl font-black tabular-nums tracking-tight bg-gradient-to-r from-[#ff7a5c] via-[#ff4428] to-[#ff9a7a] bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(255,45,30,0.2)]">
-                  {paket.priceFrom}
-                </p>
+                <PreisMitEroeffnungsangebot
+                  lang={lang}
+                  priceLabel={paket.priceFrom}
+                  promoClassName="text-2xl md:text-3xl font-black tabular-nums tracking-tight bg-gradient-to-r from-[#ff7a5c] via-[#ff4428] to-[#ff9a7a] bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(255,45,30,0.2)]"
+                />
                 <p className="text-[11px] text-white/35 mt-1.5 max-w-xs leading-snug">{paket.priceDisclaimer}</p>
               </div>
             ) : null)}
@@ -105,6 +112,7 @@ export function PreisePaketeSection() {
   const p = bundle.copy.pakete;
   const onePage = bundle.onePage;
   const onePageOptions = onePage.options as readonly PaketPreisOption[];
+  const openingBanner = PREISE_OPENING_OFFER.active ? getOpeningOfferBannerCopy(lang) : null;
 
   return (
     <section id="pakete" className="relative py-16 md:py-24 px-4 sm:px-6 border-t border-white/5 overflow-hidden bg-[#070709]">
@@ -135,6 +143,17 @@ export function PreisePaketeSection() {
           <motion.p variants={staggerItem} className="mt-5 text-white/50 font-light text-base md:text-lg leading-relaxed">
             {p.intro}
           </motion.p>
+          {openingBanner && (
+            <motion.div
+              variants={staggerItem}
+              className="mt-6 max-w-3xl mx-auto rounded-2xl p-[1px] bg-gradient-to-br from-[#ff1900]/45 via-[#ff1900]/15 to-white/[0.1] shadow-[0_0_56px_-18px_rgba(255,45,30,0.35)]"
+            >
+              <div className="rounded-[15px] border border-white/[0.08] bg-[#0c0c12]/92 supports-[backdrop-filter]:backdrop-blur-xl px-5 py-4 md:px-6 md:py-5 text-left">
+                <p className="text-xs uppercase tracking-[0.22em] text-[#ff8a72] font-semibold mb-1.5">{openingBanner.title}</p>
+                <p className="text-sm md:text-[15px] text-white/78 font-light leading-relaxed">{openingBanner.body}</p>
+              </div>
+            </motion.div>
+          )}
           <motion.p
             variants={staggerItem}
             role="note"
@@ -159,12 +178,13 @@ export function PreisePaketeSection() {
           viewport={motionViewportLong}
           variants={staggerParent}
         >
-          <PaketCard paket={onePage} className="md:row-start-1">
+          <PaketCard paket={onePage} className="md:row-start-1" lang={lang}>
             <div>
               <PaketPricingToggle
                 key={`one-page-${lang}`}
                 options={onePageOptions}
                 ariaGroupLabel={bundle.onePageToggleAriaLabel}
+                lang={lang}
               />
               <p className="text-[11px] text-white/35 mt-4 max-w-md leading-snug">{onePage.priceDisclaimer}</p>
             </div>
@@ -172,18 +192,19 @@ export function PreisePaketeSection() {
 
           {bundle.pakete.map((paket) =>
             paket.options && paket.options.length >= 2 ? (
-              <PaketCard key={paket.id} paket={paket} featured={paket.featured}>
+              <PaketCard key={paket.id} paket={paket} featured={paket.featured} lang={lang}>
                 <div>
                   <PaketPricingToggle
                     key={`${paket.id}-${lang}`}
                     options={paket.options}
                     ariaGroupLabel={paket.toggleAriaLabel ?? paket.title}
+                    lang={lang}
                   />
                   <p className="text-[11px] text-white/35 mt-4 max-w-md leading-snug">{paket.priceDisclaimer}</p>
                 </div>
               </PaketCard>
             ) : (
-              <PaketCard key={paket.id} paket={paket} featured={paket.featured} />
+              <PaketCard key={paket.id} paket={paket} featured={paket.featured} lang={lang} />
             )
           )}
 
@@ -228,9 +249,11 @@ export function PreisePaketeSection() {
                   </ul>
                 </div>
                 <div className="lg:w-[min(100%,280px)] shrink-0 flex flex-col justify-center lg:border-l lg:border-white/[0.1] lg:pl-10 pt-2 lg:pt-0 border-t lg:border-t-0 border-white/[0.08]">
-                  <p className="text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-br from-white via-white to-white/75 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">
-                    {bundle.individuell.priceFrom}
-                  </p>
+                  <PreisMitEroeffnungsangebot
+                    lang={lang}
+                    priceLabel={bundle.individuell.priceFrom ?? ""}
+                    promoClassName="text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-br from-white via-white to-white/75 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]"
+                  />
                   <p className="text-xs text-white/40 mt-2 leading-relaxed">{bundle.individuell.priceDisclaimer}</p>
                 </div>
               </div>

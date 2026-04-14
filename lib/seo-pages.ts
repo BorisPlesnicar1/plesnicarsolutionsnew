@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { appendOpeningOfferMetaNote } from "@/lib/preise-opening-offer";
 
 const SITE = "https://plesnicarsolutions.at";
 
@@ -22,7 +23,8 @@ export function localeFromSearchParams(searchParams: { lang?: string | string[] 
 }
 
 export function getPreiseMetaDescription(lang: "de" | "en"): string {
-  return lang === "en" ? PREISE_DESC_EN : PREISE_DESC_DE;
+  const base = lang === "en" ? PREISE_DESC_EN : PREISE_DESC_DE;
+  return appendOpeningOfferMetaNote(base, lang);
 }
 
 export function getHandelspartnerMetaDescription(lang: "de" | "en"): string {

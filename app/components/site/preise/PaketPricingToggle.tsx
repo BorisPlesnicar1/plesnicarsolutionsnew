@@ -2,14 +2,17 @@
 
 import { useId, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { Lang } from "@/app/translations";
 import type { PaketPreisOption } from "@/lib/preise-page";
+import { PreisMitEroeffnungsangebot } from "@/app/components/site/preise/PreisMitEroeffnungsangebot";
 
 type PaketPricingToggleProps = {
   options: readonly PaketPreisOption[];
   ariaGroupLabel: string;
+  lang: Lang;
 };
 
-export function PaketPricingToggle({ options, ariaGroupLabel }: PaketPricingToggleProps) {
+export function PaketPricingToggle({ options, ariaGroupLabel, lang }: PaketPricingToggleProps) {
   const firstId = options[0]?.id ?? "";
   const [activeId, setActiveId] = useState(firstId);
   const active = options.find((o) => o.id === activeId) ?? options[0];
@@ -67,7 +70,7 @@ export function PaketPricingToggle({ options, ariaGroupLabel }: PaketPricingTogg
         </div>
       </div>
 
-      <div className="min-h-[5.5rem] md:min-h-[5rem]">
+      <div className="min-h-[7.5rem] md:min-h-[6.75rem]">
         {/* sync: schnelle Tab-Wechsel blockieren nicht (kein Warten auf Exit wie bei "wait") */}
         <AnimatePresence mode="sync" initial={false}>
           <motion.div
@@ -78,9 +81,7 @@ export function PaketPricingToggle({ options, ariaGroupLabel }: PaketPricingTogg
             transition={{ duration: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-2"
           >
-            <p className="text-2xl md:text-3xl font-black tabular-nums tracking-tight bg-gradient-to-r from-[#ff7a5c] via-[#ff4d33] to-[#ff8f6b] bg-clip-text text-transparent drop-shadow-[0_0_28px_rgba(255,45,30,0.25)]">
-              {active.priceFrom}
-            </p>
+            <PreisMitEroeffnungsangebot priceLabel={active.priceFrom} lang={lang} />
             <p className="text-sm text-white/50 font-light leading-relaxed max-w-lg">
               {active.explainer}
             </p>

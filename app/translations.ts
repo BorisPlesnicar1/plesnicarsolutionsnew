@@ -46,6 +46,12 @@ export const TRANSLATIONS = {
       lives: "Leben",
       ariaGame: "Mini-Quiz IT und Bau",
     },
+    openingOfferPopup: {
+      kicker: "Nur kurze Zeit",
+      cta: "Zu den Richtpreisen",
+      dismiss: "Schließen",
+      dismissAria: "Hinweis zum Eröffnungsangebot schließen",
+    },
     nav: {
       home: "Start",
       leistungenProjekte: "Leistungen & Projekte",
@@ -429,6 +435,12 @@ export const TRANSLATIONS = {
       points: "Hits",
       lives: "Lives",
       ariaGame: "Mini quiz IT and construction",
+    },
+    openingOfferPopup: {
+      kicker: "Limited time",
+      cta: "View guide prices",
+      dismiss: "Close",
+      dismissAria: "Dismiss opening offer notice",
     },
     nav: {
       home: "Home",
