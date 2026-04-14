@@ -86,6 +86,13 @@ export function HeroSection() {
     return () => cancelAnimationFrame(raf);
   }, [lang]);
 
+  /** Rechts: gleiche Glas-Sprache für beide Themen-Karten + dezentes Hover */
+  const heroTopicGlass =
+    "group absolute z-20 hidden sm:flex flex-col rounded-[1.125rem] border border-white/[0.085] bg-[#0b0b12]/[0.76] p-4 shadow-[0_16px_48px_-16px_rgba(0,0,0,0.72),inset_0_1px_0_rgba(255,255,255,0.045)] ring-1 ring-inset ring-white/[0.035] supports-[backdrop-filter]:backdrop-blur-2xl motion-safe:transition motion-safe:duration-300 motion-safe:hover:border-white/[0.11] motion-safe:hover:bg-[#0c0c14]/[0.82] motion-safe:hover:shadow-[0_22px_56px_-18px_rgba(0,0,0,0.78)]";
+
+  const heroTopicIconWrap =
+    "flex h-8 w-8 shrink-0 items-center justify-center rounded-[11px] border border-white/[0.08] bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] motion-safe:transition motion-safe:duration-300 group-hover:border-white/[0.11] group-hover:bg-white/[0.055]";
+
   let charIndex = 0;
 
   return (
@@ -250,45 +257,69 @@ export function HeroSection() {
             </nav>
           </div>
 
-          <div className="relative flex justify-center lg:justify-end items-center w-full">
-            <div className="hidden md:block absolute bottom-[15%] right-[10%] w-[280px] h-[280px] md:w-[420px] md:h-[420px] lg:w-[480px] lg:h-[480px] rounded-full border-2 border-[#ff1900]/20 z-0" />
-            <div className="hidden md:block absolute bottom-[18%] right-[13%] w-[220px] h-[220px] md:w-[340px] md:h-[340px] lg:w-[380px] lg:h-[380px] rounded-full border border-[#ff1900]/10 z-0" />
-            <div className="hidden md:block absolute bottom-[5%] right-[15%] w-[250px] h-[300px] md:w-[380px] md:h-[450px] lg:w-[420px] lg:h-[500px] bg-[#ff1900]/[0.08] rounded-full blur-[80px] md:blur-[120px] z-0" />
-            <div className="hidden md:block absolute top-[20%] right-[5%] w-4 h-4 md:w-5 md:h-5 bg-[#ff1900] rounded-full z-10 opacity-60" />
-            <div className="hidden md:block absolute top-[35%] right-[-2%] w-2.5 h-2.5 md:w-3 md:h-3 bg-[#ff1900]/40 rounded-full z-10" />
-            <div className="hidden md:block absolute bottom-[30%] right-[0%] w-3 h-3 bg-white/20 rounded-full z-10" />
+          <div className="relative flex justify-center lg:justify-end items-center w-full isolate">
+            {/* Ruhiger „Studio“-Hintergrund: neutrale Tiefe statt roter Zielscheiben / Leuchtpunkte */}
+            <div
+              className="pointer-events-none absolute inset-0 z-0 hidden md:block"
+              style={{
+                background:
+                  "radial-gradient(ellipse 74% 86% at 56% 44%, rgba(12,12,18,0.26) 0%, transparent 64%), radial-gradient(ellipse 52% 48% at 68% 90%, rgba(7,7,9,0.82) 0%, transparent 58%)",
+              }}
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute bottom-[7%] right-[10%] z-0 hidden lg:block h-[min(50%,400px)] w-[min(44%,300px)] rounded-[3rem] opacity-[0.1]"
+              style={{
+                background: "linear-gradient(165deg, rgba(255,35,25,0.2) 0%, transparent 55%)",
+                filter: "blur(48px)",
+              }}
+              aria-hidden
+            />
 
-            <div className="absolute bottom-[20%] md:bottom-[18%] left-[-5%] md:left-[-15%] z-20 hidden sm:flex flex-col px-4 py-3 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl">
-              <div className="flex items-center gap-2 mb-1">
-                <Code2 className="w-4 h-4 text-[#ff1900]" strokeWidth={2.5} />
-                <span className="text-[11px] text-white/80 font-bold">{t.heroPills.itTitle}</span>
+            <div
+              className={`${heroTopicGlass} bottom-[19%] md:bottom-[15.5%] left-[-1%] md:left-[-9%] lg:left-[-6%] w-[min(100%,224px)] md:w-[min(100%,244px)]`}
+            >
+              <div className="flex items-center gap-2.5">
+                <span className={heroTopicIconWrap}>
+                  <Code2 className="h-4 w-4 text-[#ff8068]" strokeWidth={2.2} aria-hidden />
+                </span>
+                <span className="text-[11px] font-semibold tracking-tight text-white/[0.92]">{t.heroPills.itTitle}</span>
               </div>
-              <span className="text-[10px] text-white/50 font-medium">{t.heroPills.itSub}</span>
+              <p className="mt-2.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.itSub}</p>
             </div>
 
-            <div className="absolute bottom-[57%] md:bottom-[49%] left-[-5%] md:left-[-15%] z-0 hidden sm:flex flex-col px-4 py-3 bg-[#0a0a0a]/90 border border-white/[0.1] rounded-xl backdrop-blur-xl shadow-xl max-w-[200px] md:max-w-[220px]">
-              <div className="flex items-center gap-2 mb-1">
-                <Wrench className="w-4 h-4 shrink-0 text-[#ff1900]" strokeWidth={2.5} />
-                <span className="text-[11px] text-white/80 font-bold">{t.heroPills.bauTitle}</span>
+            <div
+              className={`${heroTopicGlass} bottom-[55%] md:bottom-[47%] left-[-1%] md:left-[-9%] lg:left-[-6%] w-[min(100%,224px)] md:w-[min(100%,252px)]`}
+            >
+              <div className="flex items-start gap-2.5">
+                <span className={heroTopicIconWrap}>
+                  <Wrench className="h-4 w-4 text-[#ff8068]" strokeWidth={2.2} aria-hidden />
+                </span>
+                <span className="text-[11px] font-semibold tracking-tight text-white/[0.92] leading-snug">{t.heroPills.bauTitle}</span>
               </div>
-              <span className="text-[10px] text-white/50 font-medium leading-snug">{t.heroPills.bauSub1}</span>
-              <span className="text-[10px] text-white/50 font-medium leading-snug mt-0.5">{t.heroPills.bauSub2}</span>
+              <p className="mt-2.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.bauSub1}</p>
+              <p className="mt-1.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.bauSub2}</p>
             </div>
 
             <div
               ref={heroImageRef}
               className="hero-image-wrap relative z-10 w-[min(100%,300px)] sm:w-[340px] md:w-[450px] lg:w-[500px] xl:w-[560px] min-h-0 md:min-h-[70vh] flex items-center justify-center lg:justify-end"
             >
+              {/* Dezente Kante + Innenkante: etwas mehr „Objekt“, weniger flach */}
+              <div
+                className="pointer-events-none absolute inset-x-[3.5%] bottom-[1.5%] top-[7%] rounded-[2rem] md:rounded-[2.35rem] border border-white/[0.055] bg-gradient-to-b from-white/[0.025] via-transparent to-transparent opacity-[0.88] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                aria-hidden
+              />
               <Image
                 src="/portraits/plesnicart.png?v=2"
                 alt="Boris Plesnicar – Inhaber von Plesnicar Solutions"
                 width={1000}
                 height={1200}
-                className="w-full h-auto max-h-[55vh] md:max-h-[85vh] object-contain object-bottom drop-shadow-[0_0_80px_rgba(255,25,0,0.12)]"
+                className="relative z-[1] w-full h-auto max-h-[55vh] md:max-h-[85vh] object-contain object-bottom contrast-[1.015] drop-shadow-[0_22px_48px_rgba(0,0,0,0.48)] drop-shadow-[0_6px_16px_rgba(0,0,0,0.28)]"
                 priority
                 fetchPriority="high"
                 sizes="(max-width: 640px) 92vw, (max-width: 1024px) 420px, 560px"
-                quality={80}
+                quality={85}
               />
             </div>
           </div>
