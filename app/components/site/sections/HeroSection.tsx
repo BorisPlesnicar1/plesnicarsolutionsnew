@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Code2, Wrench } from "lucide-react";
+import { ArrowRight, Code2, GraduationCap, Wrench } from "lucide-react";
 import { TRANSLATIONS } from "@/app/translations";
 import { useSite } from "@/app/contexts/SiteContext";
 
@@ -289,7 +289,7 @@ export function HeroSection() {
             </div>
 
             <div
-              className={`${heroTopicGlass} bottom-[55%] md:bottom-[47%] left-[-1%] md:left-[-9%] lg:left-[-6%] w-[min(100%,224px)] md:w-[min(100%,252px)]`}
+              className={`${heroTopicGlass} !z-0 bottom-[58%] md:bottom-[56%] right-[-3%] md:right-[-7%] lg:right-[-10%] w-[min(100%,224px)] md:w-[min(100%,252px)] shadow-[0_24px_64px_-20px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.045)]`}
             >
               <div className="flex items-start gap-2.5">
                 <span className={heroTopicIconWrap}>
@@ -299,6 +299,18 @@ export function HeroSection() {
               </div>
               <p className="mt-2.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.bauSub1}</p>
               <p className="mt-1.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.bauSub2}</p>
+            </div>
+
+            <div
+              className={`${heroTopicGlass} top-[3%] md:top-[5%] left-[-1%] md:left-[-9%] lg:left-[-6%] w-[min(100%,224px)] md:w-[min(100%,244px)]`}
+            >
+              <div className="flex items-center gap-2.5">
+                <span className={heroTopicIconWrap}>
+                  <GraduationCap className="h-4 w-4 text-[#ff8068]" strokeWidth={2.2} aria-hidden />
+                </span>
+                <span className="text-[11px] font-semibold tracking-tight text-white/[0.92]">{t.heroPills.eduTitle}</span>
+              </div>
+              <p className="mt-2.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.eduSub}</p>
             </div>
 
             <div

@@ -38,6 +38,7 @@ export function TeamSection() {
               name: "Boris Plesnicar",
               role: t.team.borisRole,
               education: t.team.borisEdu,
+              credential: t.team.borisCredential,
               image: "/portraits/boris.jpg",
               isOwner: true,
               expertise: t.team.expertiseBoris,
@@ -51,6 +52,7 @@ export function TeamSection() {
               name: "Ing. Dietmar Plesnicar",
               role: t.team.dietmarRole,
               education: t.team.dietmarEdu,
+              credential: null,
               image: "/portraits/dietmar.png",
               isOwner: false,
               expertise: t.team.expertiseDietmar,
@@ -96,6 +98,14 @@ export function TeamSection() {
                       </span>
                     )}
                   </div>
+                  {person.credential && (
+                    <div className="mb-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] supports-[backdrop-filter]:backdrop-blur-md px-2.5 py-1 text-[10px] font-semibold tracking-[0.08em] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                        <span className="w-1 h-1 rounded-full bg-[#ff6b52]" aria-hidden />
+                        {person.credential}
+                      </span>
+                    </div>
+                  )}
                   <p className={`text-sm mb-1 ${person.isOwner ? "text-[#ff1900] font-semibold" : "text-white/55 font-medium"}`}>{person.role}</p>
                   <p className="text-xs text-white/45 font-light">{person.education}</p>
                 </div>

@@ -44,7 +44,13 @@ export function KontaktSection() {
           <div className="space-y-4 min-w-0">
             <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
               <p className="text-white font-bold text-base mb-1">{t.kontakt.boris}</p>
-              <p className="text-white/55 text-sm mb-4">{t.kontakt.borisRole}</p>
+              <p className="text-white/55 text-sm mb-2">{t.kontakt.borisRole}</p>
+              <div className="mb-4">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] supports-[backdrop-filter]:backdrop-blur-md px-2.5 py-1 text-[10px] font-semibold tracking-[0.08em] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+                  <span className="w-1 h-1 rounded-full bg-[#ff6b52]" aria-hidden />
+                  {t.kontakt.borisEdu}
+                </span>
+              </div>
               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
                 <a
                   href="tel:+436644678382"

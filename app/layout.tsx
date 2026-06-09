@@ -105,6 +105,21 @@ const jsonLd = {
           "@type": "Person",
           name: "Boris Plesnicar",
           jobTitle: "Inhaber – Schwerpunkt IT, Web & Grafikdesign",
+          alumniOf: {
+            "@type": "EducationalOrganization",
+            name: "HTL Krems",
+            url: "https://www.htlkrems.ac.at/",
+          },
+          hasCredential: {
+            "@type": "EducationalOccupationalCredential",
+            name: "HTL IT Matura",
+            credentialCategory: "Reife- und Diplomprüfung (HTL)",
+            educationalLevel: "Sekundarstufe II (ISCED 3)",
+            recognizedBy: {
+              "@type": "EducationalOrganization",
+              name: "HTL Krems",
+            },
+          },
         },
         {
           "@type": "Person",
