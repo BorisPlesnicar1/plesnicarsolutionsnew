@@ -223,6 +223,15 @@ h1, h2, h3, h4, h5, h6 {
   filter: drop-shadow(0 4px 24px rgba(255, 35, 0, 0.28));
 }
 
+@media (max-width: 767px) {
+  .hero-line-gradient .hero-char {
+    filter: none;
+  }
+  .hero-copy-col h1 {
+    padding-right: 0.125rem;
+  }
+}
+
 /* Live-Status-Punkt (Verfügbarkeits-Badge) */
 @keyframes hero-status-ping {
   0% { transform: scale(1); opacity: 0.55; }

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Code2, GraduationCap, Wrench } from "lucide-react";
+import { ArrowRight, GraduationCap } from "lucide-react";
 import { TRANSLATIONS } from "@/app/translations";
 import { useSite } from "@/app/contexts/SiteContext";
 
@@ -98,7 +98,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className={`relative overflow-visible pt-20 pb-10 md:pt-28 md:pb-16 px-4 sm:px-6 lg:min-h-[100vh] lg:flex lg:items-center ${introActive ? "hero-intro-active" : ""}`}
+      className={`relative overflow-x-clip pt-[4.75rem] pb-8 sm:pt-24 sm:pb-10 md:pt-28 md:pb-16 px-4 sm:px-6 lg:min-h-[100vh] lg:flex lg:items-center ${introActive ? "hero-intro-active" : ""}`}
       style={
         {
           "--hero-delay-p": `${delayP}ms`,
@@ -142,15 +142,15 @@ export function HeroSection() {
         }}
       />
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:pr-10 xl:pr-16 max-w-[100vw] w-full overflow-visible">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-[minmax(0,1fr)_auto] gap-8 md:gap-10 lg:gap-12 xl:gap-0 items-start lg:items-center">
+      <div className="relative z-10 container mx-auto px-0 lg:pr-10 xl:pr-16 max-w-[100vw] w-full min-w-0">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-[minmax(0,1fr)_minmax(220px,36%)] lg:grid-cols-[minmax(0,1fr)_auto] gap-6 sm:gap-8 md:gap-6 lg:gap-10 xl:gap-12 items-center">
           <div
             key={lang}
             ref={heroTextRef}
-            className="hero-copy-col flex w-full flex-col items-center lg:items-start text-center lg:text-left space-y-5 md:space-y-6 lg:pr-10 xl:pr-14 pb-4 md:pb-6 lg:pb-0 max-w-xl lg:max-w-2xl mx-auto lg:mx-0 overflow-visible [font-family:var(--font-syne)]"
+            className="hero-copy-col flex w-full min-w-0 flex-col items-start text-left gap-4 sm:gap-4 md:gap-5 lg:gap-5 lg:pr-8 xl:pr-14 pb-2 sm:pb-4 md:pb-0 max-w-full md:max-w-none lg:max-w-xl xl:max-w-2xl md:self-center [font-family:var(--font-syne)]"
           >
-            <h1 className="text-[1.75rem] leading-[1.22] sm:text-4xl sm:leading-[1.24] md:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold tracking-tight text-balance w-full">
-              <span className="hero-line block overflow-visible">
+            <h1 className="w-full min-w-0 text-[clamp(1.625rem,7.4vw,2rem)] leading-[1.3] sm:text-4xl sm:leading-[1.28] md:text-[2.35rem] md:leading-[1.24] lg:text-[3.25rem] lg:leading-[1.2] xl:text-[3.75rem] font-extrabold tracking-tight text-balance">
+              <span className="hero-line block">
                 {lines[0].split("").map((c, i) => {
                   const d = charIndex++ * 38;
                   return (
@@ -160,7 +160,7 @@ export function HeroSection() {
                   );
                 })}
               </span>
-              <span className="hero-line block mt-1 overflow-visible">
+              <span className="hero-line block mt-1.5 sm:mt-2">
                 {lines[1].split("").map((c, i) => {
                   const d = charIndex++ * 38;
                   return (
@@ -170,7 +170,7 @@ export function HeroSection() {
                   );
                 })}
               </span>
-              <span className="hero-line hero-line-gradient block mt-2 overflow-visible">
+              <span className="hero-line hero-line-gradient block mt-2 sm:mt-2.5">
                 {lines[2].split("").map((c, i) => {
                   const d = charIndex++ * 38;
                   return (
@@ -180,7 +180,7 @@ export function HeroSection() {
                   );
                 })}
               </span>
-              <span className="hero-line hero-line-gradient block mt-1 overflow-visible">
+              <span className="hero-line hero-line-gradient block mt-1.5 sm:mt-2">
                 {lines[3].split("").map((c, i) => {
                   const d = charIndex++ * 38;
                   return (
@@ -192,46 +192,46 @@ export function HeroSection() {
               </span>
             </h1>
 
-            <div className="hero-animate hero-block-audience w-full">
-              <p className="text-[13px] md:text-sm text-white/45 font-medium leading-relaxed text-balance">
+            <div className="hero-animate hero-block-audience w-full min-w-0">
+              <p className="text-[13px] sm:text-sm lg:text-[0.95rem] text-white/45 font-medium leading-relaxed max-w-lg">
                 {t.hero.audienceIntro}
               </p>
-              <ul className="mt-4 space-y-4 w-full">
-                <li className="space-y-1">
+              <ul className="mt-3 grid grid-cols-1 min-[420px]:grid-cols-2 gap-x-5 gap-y-3 sm:gap-x-6 sm:gap-y-3.5 lg:gap-x-10 lg:mt-4 max-w-2xl">
+                <li className="min-w-0 space-y-0.5 lg:space-y-1">
                   <Link
                     href="/leistungen#leistung-it"
                     className="inline-block text-sm font-bold text-[#ff8068] hover:text-[#ff9a80] underline decoration-[#ff1900]/35 underline-offset-[5px] hover:decoration-[#ff8068]/70 transition-colors"
                   >
-                    {t.hero.audienceItLabel}
+                    {t.hero.audienceItLabel}:
                   </Link>
-                  <p className="text-[13px] sm:text-sm text-white/52 leading-relaxed max-w-md mx-auto lg:mx-0">
+                  <p className="text-[13px] sm:text-sm text-white/52 leading-snug sm:leading-relaxed">
                     {t.hero.audienceItItems}
                   </p>
                 </li>
-                <li className="space-y-1">
+                <li className="min-w-0 space-y-0.5 lg:space-y-1">
                   <Link
                     href="/leistungen#leistung-bau"
                     className="inline-block text-sm font-bold text-amber-300/90 hover:text-amber-200 underline decoration-amber-400/30 underline-offset-[5px] hover:decoration-amber-300/60 transition-colors"
                   >
-                    {t.hero.audienceBauLabel}
+                    {t.hero.audienceBauLabel}:
                   </Link>
-                  <p className="text-[13px] sm:text-sm text-white/52 leading-relaxed max-w-md mx-auto lg:mx-0">
+                  <p className="text-[13px] sm:text-sm text-white/52 leading-snug sm:leading-relaxed">
                     {t.hero.audienceBauItems}
                   </p>
                 </li>
               </ul>
             </div>
 
-            <div className="hero-animate hero-block-cta flex w-full flex-col sm:flex-row gap-3 sm:gap-3.5 justify-center lg:justify-start pt-0.5">
+            <div className="hero-animate hero-block-cta flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center lg:flex-nowrap justify-start pt-0.5 sm:pt-1">
               <motion.div
-                className="w-full sm:flex-1 sm:min-w-0 lg:flex-none lg:w-auto"
+                className="w-full sm:w-auto sm:shrink-0"
                 whileHover={prefersReducedMotion ? undefined : { scale: 1.03 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 320, damping: 22 }}
               >
                 <Link
                   href="/kontakt"
-                  className="group relative overflow-hidden w-full px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] text-white text-[15px] sm:text-base font-bold shadow-[0_18px_40px_-12px_rgba(255,25,0,0.55)] flex items-center justify-center gap-2.5 rounded-2xl ring-1 ring-inset ring-white/15"
+                  className="group relative overflow-hidden w-full sm:w-auto px-8 lg:px-10 py-3.5 lg:py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] text-white text-[15px] sm:text-base font-bold shadow-[0_18px_40px_-12px_rgba(255,25,0,0.55)] flex items-center justify-center gap-2.5 rounded-2xl ring-1 ring-inset ring-white/15 whitespace-nowrap"
                 >
                   <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/25 to-transparent opacity-60" aria-hidden />
                   <span className="relative">{t.hero.ctaOffer}</span>
@@ -239,25 +239,25 @@ export function HeroSection() {
                 </Link>
               </motion.div>
               <motion.div
-                className="w-full sm:flex-1 sm:min-w-0 lg:flex-none lg:w-auto"
+                className="w-full sm:w-auto sm:shrink-0"
                 whileHover={prefersReducedMotion ? undefined : { scale: 1.02, y: -4 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
               >
                 <Link
                   href="/leistungen"
-                  className="block w-full px-8 sm:px-10 py-3.5 sm:py-4 bg-white/[0.03] border border-white/[0.1] text-white text-[15px] sm:text-base font-semibold rounded-2xl backdrop-blur-sm text-center hover:bg-white/[0.06] hover:border-white/[0.18] transition-colors"
+                  className="block w-full sm:w-auto px-8 lg:px-10 py-3.5 lg:py-4 bg-white/[0.03] border border-white/[0.1] text-white text-[15px] sm:text-base font-semibold rounded-2xl backdrop-blur-sm text-center hover:bg-white/[0.06] hover:border-white/[0.18] transition-colors whitespace-nowrap"
                 >
                   {t.hero.ctaServices}
                 </Link>
               </motion.div>
             </div>
 
-            <p className="hero-animate hero-block-sub text-white/42 text-xs sm:text-[13px] w-full">
-              {t.hero.ctaMicro}
-            </p>
-
-            <div className="hero-animate hero-block-chips flex justify-center lg:justify-start w-full pt-0.5">
+            <div className="hero-animate flex w-full flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 lg:gap-x-5">
+              <p className="hero-block-sub text-white/42 text-xs sm:text-[13px] leading-relaxed">
+                {t.hero.ctaMicro}
+              </p>
+              <div className="hero-block-chips flex justify-start">
               <Link
                 href="/leistungen#projekte"
                 className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 hover:text-white/75 underline decoration-white/15 underline-offset-[5px] hover:decoration-white/35 transition-colors"
@@ -266,9 +266,10 @@ export function HeroSection() {
                 <ArrowRight className="w-3.5 h-3.5 opacity-70" strokeWidth={2.25} aria-hidden />
               </Link>
             </div>
+            </div>
           </div>
 
-          <div className="relative flex justify-center lg:justify-end items-center w-full isolate">
+          <div className="relative flex justify-center md:justify-end items-end md:items-center w-full min-w-0 isolate md:-mt-2 lg:mt-0">
             {/* Bühne: weicher Spotlight-Halo + langsam rotierender Lichtring für Tiefe */}
             <div
               className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 hidden md:block aspect-square w-[min(118%,640px)] rounded-full opacity-70"
@@ -308,31 +309,6 @@ export function HeroSection() {
             />
 
             <div
-              className={`${heroTopicGlass} bottom-[19%] md:bottom-[15.5%] left-[-1%] md:left-[-9%] lg:left-[-6%] w-[min(100%,224px)] md:w-[min(100%,244px)]`}
-            >
-              <div className="flex items-center gap-2.5">
-                <span className={heroTopicIconWrap}>
-                  <Code2 className="h-4 w-4 text-[#ff8068]" strokeWidth={2.2} aria-hidden />
-                </span>
-                <span className="text-[11px] font-semibold tracking-tight text-white/[0.92]">{t.heroPills.itTitle}</span>
-              </div>
-              <p className="mt-2.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.itSub}</p>
-            </div>
-
-            <div
-              className={`${heroTopicGlass} !z-0 bottom-[58%] md:bottom-[56%] right-[-3%] md:right-[-7%] lg:right-[-10%] w-[min(100%,224px)] md:w-[min(100%,252px)] shadow-[0_24px_64px_-20px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.045)]`}
-            >
-              <div className="flex items-start gap-2.5">
-                <span className={heroTopicIconWrap}>
-                  <Wrench className="h-4 w-4 text-[#ff8068]" strokeWidth={2.2} aria-hidden />
-                </span>
-                <span className="text-[11px] font-semibold tracking-tight text-white/[0.92] leading-snug">{t.heroPills.bauTitle}</span>
-              </div>
-              <p className="mt-2.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.bauSub1}</p>
-              <p className="mt-1.5 pl-[2.625rem] text-[10px] font-medium leading-relaxed tracking-[0.01em] text-white/54">{t.heroPills.bauSub2}</p>
-            </div>
-
-            <div
               className={`${heroTopicGlass} top-[3%] md:top-[5%] left-[-1%] md:left-[-9%] lg:left-[-6%] w-[min(100%,224px)] md:w-[min(100%,244px)]`}
             >
               <div className="flex items-center gap-2.5">
@@ -346,7 +322,7 @@ export function HeroSection() {
 
             <div
               ref={heroImageRef}
-              className="hero-image-wrap relative z-10 w-[min(100%,300px)] sm:w-[340px] md:w-[450px] lg:w-[500px] xl:w-[560px] min-h-0 md:min-h-[70vh] flex items-center justify-center lg:justify-end"
+              className="hero-image-wrap relative z-10 w-[min(100%,300px)] sm:w-[300px] md:w-[min(100%,260px)] lg:w-[460px] xl:w-[540px] min-h-0 flex items-end md:items-center justify-center md:justify-end"
             >
               {/* Dezente Kante + Innenkante: etwas mehr „Objekt“, weniger flach */}
               <div
@@ -358,7 +334,7 @@ export function HeroSection() {
                 alt="Boris Plesnicar – Inhaber von Plesnicar Solutions"
                 width={1000}
                 height={1200}
-                className="relative z-[1] w-full h-auto max-h-[55vh] md:max-h-[85vh] object-contain object-bottom contrast-[1.015] drop-shadow-[0_22px_48px_rgba(0,0,0,0.48)] drop-shadow-[0_6px_16px_rgba(0,0,0,0.28)]"
+                className="relative z-[1] w-full h-auto max-h-[min(52vh,420px)] sm:max-h-[min(56vh,460px)] md:max-h-[min(72vh,560px)] lg:max-h-[85vh] object-contain object-bottom contrast-[1.015] drop-shadow-[0_22px_48px_rgba(0,0,0,0.48)] drop-shadow-[0_6px_16px_rgba(0,0,0,0.28)]"
                 priority
                 fetchPriority="high"
                 sizes="(max-width: 640px) 92vw, (max-width: 1024px) 420px, 560px"
