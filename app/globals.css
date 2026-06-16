@@ -213,9 +213,40 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Rot pro Buchstabe (Animation sichtbar + eindeutig rot) */
+/* Rot pro Buchstabe – Verlauf + dezentes Glühen für „Premium“-Effekt */
 .hero-line-gradient .hero-char {
-  color: #ff2d00;
+  background-image: linear-gradient(100deg, #ff4d24 0%, #ff1900 48%, #ff7a4d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 24px rgba(255, 35, 0, 0.28));
+}
+
+/* Live-Status-Punkt (Verfügbarkeits-Badge) */
+@keyframes hero-status-ping {
+  0% { transform: scale(1); opacity: 0.55; }
+  70%, 100% { transform: scale(2.4); opacity: 0; }
+}
+.hero-status-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: #34d399;
+  animation: hero-status-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Bühne hinter Boris: langsam rotierender Lichtring */
+@keyframes hero-ring-spin {
+  to { transform: rotate(360deg); }
+}
+.hero-stage-ring {
+  animation: hero-ring-spin 28s linear infinite;
+}
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .hero-stage-ring { animation: none; }
+  .hero-status-dot::after { animation: none; }
 }
 
 /* All sections visible immediately; scroll-margin = Abstand zum fixierten Header bei Ankern (#leistungen, …) */

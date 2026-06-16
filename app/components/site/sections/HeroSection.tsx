@@ -40,9 +40,9 @@ export function HeroSection() {
   const totalChars = lines.join("").length;
   const lastCharMs = Math.max(0, totalChars - 1) * 38;
   const delayP = Math.min(2000, lastCharMs + 240);
-  const delayCta = delayP + 140;
-  const delaySub = delayCta + 400;
-  const delayChips = delaySub + 100;
+  const delayCta = delayP + 160;
+  const delaySub = delayCta + 220;
+  const delayChips = delaySub + 280;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -88,7 +88,7 @@ export function HeroSection() {
 
   /** Rechts: gleiche Glas-Sprache für beide Themen-Karten + dezentes Hover */
   const heroTopicGlass =
-    "group absolute z-20 hidden sm:flex flex-col rounded-[1.125rem] border border-white/[0.085] bg-[#0b0b12]/[0.76] p-4 shadow-[0_16px_48px_-16px_rgba(0,0,0,0.72),inset_0_1px_0_rgba(255,255,255,0.045)] ring-1 ring-inset ring-white/[0.035] supports-[backdrop-filter]:backdrop-blur-2xl motion-safe:transition motion-safe:duration-300 motion-safe:hover:border-white/[0.11] motion-safe:hover:bg-[#0c0c14]/[0.82] motion-safe:hover:shadow-[0_22px_56px_-18px_rgba(0,0,0,0.78)]";
+    "group absolute z-20 hidden lg:flex flex-col rounded-[1.125rem] border border-white/[0.085] bg-[#0b0b12]/[0.76] p-4 shadow-[0_16px_48px_-16px_rgba(0,0,0,0.72),inset_0_1px_0_rgba(255,255,255,0.045)] ring-1 ring-inset ring-white/[0.035] supports-[backdrop-filter]:backdrop-blur-2xl motion-safe:transition motion-safe:duration-300 motion-safe:hover:border-white/[0.11] motion-safe:hover:bg-[#0c0c14]/[0.82] motion-safe:hover:shadow-[0_22px_56px_-18px_rgba(0,0,0,0.78)]";
 
   const heroTopicIconWrap =
     "flex h-8 w-8 shrink-0 items-center justify-center rounded-[11px] border border-white/[0.08] bg-white/[0.035] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] motion-safe:transition motion-safe:duration-300 group-hover:border-white/[0.11] group-hover:bg-white/[0.055]";
@@ -98,7 +98,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className={`relative overflow-visible pt-20 pb-10 md:pt-28 md:pb-16 px-4 sm:px-6 min-h-0 md:min-h-[100vh] flex items-center ${introActive ? "hero-intro-active" : ""}`}
+      className={`relative overflow-visible pt-20 pb-10 md:pt-28 md:pb-16 px-4 sm:px-6 lg:min-h-[100vh] lg:flex lg:items-center ${introActive ? "hero-intro-active" : ""}`}
       style={
         {
           "--hero-delay-p": `${delayP}ms`,
@@ -142,14 +142,14 @@ export function HeroSection() {
         }}
       />
 
-      <div className="relative z-10 container mx-auto px-0 sm:px-6 pr-4 sm:pr-6 lg:pr-10 xl:pr-16 max-w-[100vw] w-full overflow-visible">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_auto] gap-10 md:gap-12 lg:gap-0 items-center">
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:pr-10 xl:pr-16 max-w-[100vw] w-full overflow-visible">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-[minmax(0,1fr)_auto] gap-8 md:gap-10 lg:gap-12 xl:gap-0 items-start lg:items-center">
           <div
             key={lang}
             ref={heroTextRef}
-            className="hero-copy-col text-center lg:text-left space-y-5 md:space-y-7 lg:pr-10 xl:pr-14 pb-8 md:pb-10 max-w-2xl overflow-visible [font-family:var(--font-syne)]"
+            className="hero-copy-col flex w-full flex-col items-center lg:items-start text-center lg:text-left space-y-5 md:space-y-6 lg:pr-10 xl:pr-14 pb-4 md:pb-6 lg:pb-0 max-w-xl lg:max-w-2xl mx-auto lg:mx-0 overflow-visible [font-family:var(--font-syne)]"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold leading-[1.28] tracking-tight break-words pb-1 w-full overflow-visible">
+            <h1 className="text-[1.75rem] leading-[1.22] sm:text-4xl sm:leading-[1.24] md:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold tracking-tight text-balance w-full">
               <span className="hero-line block overflow-visible">
                 {lines[0].split("").map((c, i) => {
                   const d = charIndex++ * 38;
@@ -192,72 +192,103 @@ export function HeroSection() {
               </span>
             </h1>
 
-            <p className="hero-animate hero-block-audience text-sm md:text-[0.95rem] text-white/58 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light border-l-2 border-[#ff1900]/45 pl-4 py-0.5">
-              {t.hero.audienceLine}
-            </p>
+            <div className="hero-animate hero-block-audience w-full">
+              <p className="text-[13px] md:text-sm text-white/45 font-medium leading-relaxed text-balance">
+                {t.hero.audienceIntro}
+              </p>
+              <ul className="mt-4 space-y-4 w-full">
+                <li className="space-y-1">
+                  <Link
+                    href="/leistungen#leistung-it"
+                    className="inline-block text-sm font-bold text-[#ff8068] hover:text-[#ff9a80] underline decoration-[#ff1900]/35 underline-offset-[5px] hover:decoration-[#ff8068]/70 transition-colors"
+                  >
+                    {t.hero.audienceItLabel}
+                  </Link>
+                  <p className="text-[13px] sm:text-sm text-white/52 leading-relaxed max-w-md mx-auto lg:mx-0">
+                    {t.hero.audienceItItems}
+                  </p>
+                </li>
+                <li className="space-y-1">
+                  <Link
+                    href="/leistungen#leistung-bau"
+                    className="inline-block text-sm font-bold text-amber-300/90 hover:text-amber-200 underline decoration-amber-400/30 underline-offset-[5px] hover:decoration-amber-300/60 transition-colors"
+                  >
+                    {t.hero.audienceBauLabel}
+                  </Link>
+                  <p className="text-[13px] sm:text-sm text-white/52 leading-relaxed max-w-md mx-auto lg:mx-0">
+                    {t.hero.audienceBauItems}
+                  </p>
+                </li>
+              </ul>
+            </div>
 
-            <div className="hero-animate hero-block-cta flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-1">
+            <div className="hero-animate hero-block-cta flex w-full flex-col sm:flex-row gap-3 sm:gap-3.5 justify-center lg:justify-start pt-0.5">
               <motion.div
+                className="w-full sm:flex-1 sm:min-w-0 lg:flex-none lg:w-auto"
                 whileHover={prefersReducedMotion ? undefined : { scale: 1.03 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 320, damping: 22 }}
               >
                 <Link
                   href="/kontakt"
-                  className="group px-10 py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] text-white text-base font-bold shadow-2xl shadow-[#ff1900]/30 flex items-center justify-center gap-2.5 rounded-2xl"
+                  className="group relative overflow-hidden w-full px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-[#ff1900] to-[#ff2d00] text-white text-[15px] sm:text-base font-bold shadow-[0_18px_40px_-12px_rgba(255,25,0,0.55)] flex items-center justify-center gap-2.5 rounded-2xl ring-1 ring-inset ring-white/15"
                 >
-                  {t.hero.ctaOffer}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" strokeWidth={2.5} />
+                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/25 to-transparent opacity-60" aria-hidden />
+                  <span className="relative">{t.hero.ctaOffer}</span>
+                  <ArrowRight className="relative w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" strokeWidth={2.5} />
                 </Link>
               </motion.div>
               <motion.div
+                className="w-full sm:flex-1 sm:min-w-0 lg:flex-none lg:w-auto"
                 whileHover={prefersReducedMotion ? undefined : { scale: 1.02, y: -4 }}
                 whileTap={prefersReducedMotion ? undefined : { scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
               >
                 <Link
                   href="/leistungen"
-                  className="block px-10 py-4 bg-white/[0.03] border border-white/[0.1] text-white text-base font-semibold rounded-2xl backdrop-blur-sm text-center"
+                  className="block w-full px-8 sm:px-10 py-3.5 sm:py-4 bg-white/[0.03] border border-white/[0.1] text-white text-[15px] sm:text-base font-semibold rounded-2xl backdrop-blur-sm text-center hover:bg-white/[0.06] hover:border-white/[0.18] transition-colors"
                 >
                   {t.hero.ctaServices}
                 </Link>
               </motion.div>
             </div>
 
-            <p className="hero-animate hero-block-sub text-white/50 text-sm mt-2 text-center lg:text-left">{t.hero.sub}</p>
+            <p className="hero-animate hero-block-sub text-white/42 text-xs sm:text-[13px] w-full">
+              {t.hero.ctaMicro}
+            </p>
 
-            <nav
-              className="hero-animate hero-block-chips flex flex-wrap justify-center lg:justify-start items-center gap-x-3 gap-y-1 pt-2 text-[11px] font-semibold"
-              aria-label={lang === "en" ? "Topics" : "Themen"}
-            >
-              <Link
-                href="/leistungen#leistung-it"
-                className="text-white/65 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
-              >
-                {t.heroChips.it}
-              </Link>
-              <span className="text-white/20 select-none" aria-hidden>
-                ·
-              </span>
-              <Link
-                href="/leistungen#leistung-bau"
-                className="text-amber-200/75 border-b border-transparent hover:border-amber-400/50 hover:text-amber-100 pb-0.5 transition-colors"
-              >
-                {t.heroChips.bau}
-              </Link>
-              <span className="text-white/20 select-none" aria-hidden>
-                ·
-              </span>
+            <div className="hero-animate hero-block-chips flex justify-center lg:justify-start w-full pt-0.5">
               <Link
                 href="/leistungen#projekte"
-                className="text-white/65 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
+                className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 hover:text-white/75 underline decoration-white/15 underline-offset-[5px] hover:decoration-white/35 transition-colors"
               >
-                {t.heroChips.projects}
+                {t.hero.exploreProjects}
+                <ArrowRight className="w-3.5 h-3.5 opacity-70" strokeWidth={2.25} aria-hidden />
               </Link>
-            </nav>
+            </div>
           </div>
 
           <div className="relative flex justify-center lg:justify-end items-center w-full isolate">
+            {/* Bühne: weicher Spotlight-Halo + langsam rotierender Lichtring für Tiefe */}
+            <div
+              className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 hidden md:block aspect-square w-[min(118%,640px)] rounded-full opacity-70"
+              style={{
+                background:
+                  "radial-gradient(circle at 50% 42%, rgba(255,60,30,0.16) 0%, rgba(255,40,0,0.06) 34%, transparent 62%)",
+                filter: "blur(8px)",
+              }}
+              aria-hidden
+            />
+            <div
+              className="hero-stage-ring pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 hidden lg:block aspect-square w-[min(108%,560px)] rounded-full opacity-[0.55]"
+              style={{
+                background:
+                  "conic-gradient(from 0deg, transparent 0deg, rgba(255,60,30,0.32) 40deg, transparent 120deg, transparent 220deg, rgba(255,120,80,0.18) 280deg, transparent 340deg)",
+                WebkitMask: "radial-gradient(circle, transparent 67%, #000 68.5%, #000 71%, transparent 72%)",
+                mask: "radial-gradient(circle, transparent 67%, #000 68.5%, #000 71%, transparent 72%)",
+              }}
+              aria-hidden
+            />
             {/* Ruhiger „Studio“-Hintergrund: neutrale Tiefe statt roter Zielscheiben / Leuchtpunkte */}
             <div
               className="pointer-events-none absolute inset-0 z-0 hidden md:block"
