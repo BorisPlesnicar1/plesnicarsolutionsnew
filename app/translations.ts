@@ -76,7 +76,7 @@ export const TRANSLATIONS = {
       ctaServices: "Leistungen ansehen",
       ctaMicro: "Unverbindlich · Antwort in 24h · Auch am Wochenende",
       sub: "Antwort innerhalb von 24 Stunden – auch am Wochenende.",
-      audienceIntro: "Zwei Schwerpunkte – persönlich in Niederösterreich.",
+      audienceIntro: "Webentwicklung, Grafikdesign, IT, Hausbetreuung, Baustoffhandel und Energieberatung & Energievermittlung – aus einer Hand.",
       audienceItLabel: "IT",
       audienceItItems: "Webentwicklung · Grafikdesign · PC-Bau",
       audienceBauLabel: "Bau",
@@ -166,6 +166,21 @@ export const TRANSLATIONS = {
             "Attraktive, marktnah kalkulierte Preise – transparent und fair",
             "Beratung zu Materialwahl, Mengen, Lieferung und Logistik",
           ],
+        },
+        {
+          title: "Energieberatung & Energievermittlung",
+          description:
+            "Wir unterstützen Privat- und Geschäftskunden dabei, passende Strom- und Gastarife zu finden und Energiekosten transparent zu optimieren. Plesnicar Solutions vermittelt Energieverträge und ist selbst kein Energieversorgungsunternehmen.",
+          items: [
+            "Strom- und Gastarife vergleichen",
+            "Energiekosten optimieren",
+            "Beratung für Privat- und Geschäftskunden",
+            "Vermittlung von Energieverträgen über unser Partnerportal",
+          ],
+          ctaLabel: "Zum Energieportal",
+          ctaHref: "https://portal.connect-energy.at/lp/r58wRY",
+          disclaimer:
+            "Hinweis: Plesnicar Solutions ist als Vermittler tätig und kein Energieversorgungsunternehmen.",
         },
       ],
     },
@@ -365,6 +380,7 @@ export const TRANSLATIONS = {
       it: "IT & Digital",
       bau: "Bau & Handel",
       baustoff: "Baustoff-Handel",
+      energie: "Energie",
       projects: "Referenzen",
     },
     partnerStrip: {
@@ -474,7 +490,7 @@ export const TRANSLATIONS = {
       ctaServices: "View services",
       ctaMicro: "No obligation · Reply within 24h · Weekends too",
       sub: "We reply within 24 hours – including weekends.",
-      audienceIntro: "Two focus areas – delivered personally from Lower Austria.",
+      audienceIntro: "Web development, graphic design, IT, property care, building materials and energy consulting & brokerage – all from one partner.",
       audienceItLabel: "IT",
       audienceItItems: "Web development · Graphic design · PC builds",
       audienceBauLabel: "Construction",
@@ -564,6 +580,21 @@ export const TRANSLATIONS = {
             "Competitive, market-aligned pricing – transparent and fair",
             "Advice on product choice, quantities, delivery and logistics",
           ],
+        },
+        {
+          title: "Energy consulting & brokerage",
+          description:
+            "We help private and business customers find suitable electricity and gas tariffs and optimise energy costs transparently. Plesnicar Solutions brokers energy contracts and is not an energy supplier itself.",
+          items: [
+            "Compare electricity and gas tariffs",
+            "Optimise energy costs",
+            "Advice for private and business customers",
+            "Brokerage of energy contracts via our partner portal",
+          ],
+          ctaLabel: "To energy portal",
+          ctaHref: "https://portal.connect-energy.at/lp/r58wRY",
+          disclaimer:
+            "Note: Plesnicar Solutions acts as a broker and is not an energy supplier.",
         },
       ],
     },
@@ -765,6 +796,7 @@ export const TRANSLATIONS = {
       it: "IT & Digital",
       bau: "Construction & trade",
       baustoff: "Building materials",
+      energie: "Energy",
       projects: "References",
     },
     partnerStrip: {

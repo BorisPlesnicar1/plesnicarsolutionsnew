@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Boxes, Code2, Palette, ShoppingCart, Wrench } from "lucide-react";
+import { ArrowRight, Boxes, Code2, Palette, ShoppingCart, Wrench, Zap } from "lucide-react";
 import { TRANSLATIONS } from "@/app/translations";
 import { useSite } from "@/app/contexts/SiteContext";
 import { SectionBackground } from "@/app/components/site/SectionBackground";
@@ -63,6 +63,15 @@ export function LeistungenSection() {
               ·
             </span>
             <Link
+              href="/leistungen#leistung-energie"
+              className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
+            >
+              {t.leistungenChips.energie}
+            </Link>
+            <span className="text-white/20 select-none" aria-hidden>
+              ·
+            </span>
+            <Link
               href="/leistungen#projekte"
               className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
             >
@@ -73,14 +82,19 @@ export function LeistungenSection() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {[
-            { ...t.leistungen.services[0], icon: Code2, wide: true as const, scrollId: "leistung-it" as const },
-            { ...t.leistungen.services[1], icon: Palette, wide: false as const, scrollId: undefined },
-            { ...t.leistungen.services[2], icon: Wrench, wide: false as const, scrollId: "leistung-bau" as const },
-            { ...t.leistungen.services[3], icon: ShoppingCart, wide: false as const, scrollId: undefined },
-            { ...t.leistungen.services[4], icon: Boxes, wide: false as const, scrollId: "leistung-baustoff" as const },
+            { ...t.leistungen.services[0], icon: Code2, wide: true as const, featured: true as const, span: "md:col-span-2 lg:col-span-2", scrollId: "leistung-it" as const },
+            { ...t.leistungen.services[1], icon: Palette, wide: false as const, featured: false as const, span: "", scrollId: undefined },
+            { ...t.leistungen.services[2], icon: Wrench, wide: false as const, featured: false as const, span: "", scrollId: "leistung-bau" as const },
+            { ...t.leistungen.services[3], icon: ShoppingCart, wide: false as const, featured: false as const, span: "", scrollId: undefined },
+            { ...t.leistungen.services[4], icon: Boxes, wide: false as const, featured: false as const, span: "", scrollId: "leistung-baustoff" as const },
+            { ...t.leistungen.services[5], icon: Zap, wide: true as const, featured: false as const, span: "md:col-span-2 lg:col-span-3", scrollId: "leistung-energie" as const },
           ].map((service, i) => {
             const IconComponent = service.icon;
             const { scrollId, ...card } = service;
+            const description = "description" in card ? card.description : undefined;
+            const ctaLabel = "ctaLabel" in card ? card.ctaLabel : undefined;
+            const ctaHref = "ctaHref" in card ? card.ctaHref : undefined;
+            const disclaimer = "disclaimer" in card ? card.disclaimer : undefined;
             return (
               <motion.div
                 key={scrollId ?? `leistung-${i}`}
@@ -89,13 +103,15 @@ export function LeistungenSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={motionViewport}
                 transition={{ duration: 0.45, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                className={`group relative scroll-mt-28 rounded-2xl border transition-all duration-300 bg-[#0a0a0a]/95 border-white/[0.1] shadow-xl motion-reduce:transition-none ${
-                  card.wide
-                    ? "lg:col-span-2 p-8 md:p-10 md:hover:border-[#ff1900]/40"
-                    : "p-7 md:p-8 md:hover:border-white/[0.2]"
-                } ${card.wide ? "border-[#ff1900]/20" : ""} md:hover:-translate-y-1 md:hover:shadow-xl md:hover:shadow-[#ff1900]/10`}
+                className={`group relative scroll-mt-28 rounded-2xl border transition-all duration-300 bg-[#0a0a0a]/95 shadow-xl motion-reduce:transition-none ${card.span} ${
+                  card.wide ? "p-8 md:p-10" : "p-7 md:p-8"
+                } ${
+                  card.featured
+                    ? "border-[#ff1900]/20 md:hover:border-[#ff1900]/40"
+                    : "border-white/[0.1] md:hover:border-white/[0.2]"
+                } md:hover:-translate-y-1 md:hover:shadow-xl md:hover:shadow-[#ff1900]/10`}
               >
-                {card.wide && <div className="absolute top-0 left-8 w-16 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />}
+                {card.featured && <div className="absolute top-0 left-8 w-16 h-0.5 bg-gradient-to-r from-[#ff1900] to-transparent rounded-full" />}
                 <div className={`flex ${card.wide ? "items-start gap-6 md:gap-8" : "flex-col gap-5"}`}>
                   <div
                     className={`flex-shrink-0 rounded-xl bg-gradient-to-br from-[#ff1900]/15 to-[#ff1900]/5 border border-[#ff1900]/15 flex items-center justify-center transition-all duration-500 group-hover:scale-105 ${
@@ -112,6 +128,9 @@ export function LeistungenSection() {
                     >
                       {card.title}
                     </h3>
+                    {description && (
+                      <p className="text-sm text-white/60 font-light leading-relaxed mb-4 -mt-1 max-w-3xl">{description}</p>
+                    )}
                     <ul className={card.wide ? "grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3" : "space-y-3"}>
                       {card.items.map((item, idx) => (
                         <li key={idx} className="flex items-start gap-3 text-white/70 group-hover:text-white/90 transition-colors duration-400 min-w-0">
@@ -120,6 +139,20 @@ export function LeistungenSection() {
                         </li>
                       ))}
                     </ul>
+                    {ctaLabel && ctaHref && (
+                      <a
+                        href={ctaHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/cta mt-6 inline-flex w-full sm:w-auto items-center justify-center gap-2 flex-wrap text-center min-h-[44px] px-6 py-3 rounded-xl bg-gradient-to-r from-[#ff1900] to-[#ff2d00] text-white text-sm font-bold shadow-lg shadow-[#ff1900]/25 ring-1 ring-inset ring-white/15 hover:from-[#e61700] hover:to-[#ff1900] transition-colors"
+                      >
+                        <span className="break-words">{ctaLabel}</span>
+                        <ArrowRight className="w-4 h-4 shrink-0 group-hover/cta:translate-x-0.5 transition-transform" strokeWidth={2.5} />
+                      </a>
+                    )}
+                    {disclaimer && (
+                      <p className="text-[11px] text-white/35 mt-3 leading-snug">{disclaimer}</p>
+                    )}
                   </div>
                 </div>
               </motion.div>
