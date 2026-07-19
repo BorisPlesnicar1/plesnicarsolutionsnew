@@ -17,11 +17,6 @@ const OpeningOfferHomePopup = dynamic(
   { ssr: false }
 );
 
-const DeployDebugPopup = dynamic(
-  () => import("@/app/components/site/DeployDebugPopup").then((m) => ({ default: m.DeployDebugPopup })),
-  { ssr: false }
-);
-
 const HOME_SCROLL_IDS = [
   "hero",
   "stats",
@@ -37,7 +32,6 @@ const HOME_SCROLL_IDS = [
 export function HomePage() {
   return (
     <SiteShell scrollSpyIds={HOME_SCROLL_IDS}>
-      <DeployDebugPopup />
       <OpeningOfferHomePopup />
       <HeroSection />
       <StatsSection />
