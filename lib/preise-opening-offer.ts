@@ -12,6 +12,9 @@ export const PREISE_OPENING_OFFER = {
   rabattProzent: 40,
 } as const;
 
+/** Österreichischer Regelsteuersatz (Einzelunternehmen mit UID – Preise netto). */
+export const AUSTRIA_VAT_RATE = 20;
+
 export type OpeningOfferPriceUi =
   | { mode: "inactive" }
   | { mode: "plain"; label: string }
@@ -28,6 +31,10 @@ function formatEnInteger(n: number): string {
 function discountedAmount(amount: number): number {
   const f = 1 - PREISE_OPENING_OFFER.rabattProzent / 100;
   return Math.round(amount * f);
+}
+
+function grossAmount(netAmount: number): number {
+  return Math.round(netAmount * (1 + AUSTRIA_VAT_RATE / 100));
 }
 
 function parseDePriceFrom(s: string): { amount: number; afterNumber: string } | null {
@@ -77,6 +84,29 @@ export function getOpeningOfferPriceUi(priceFrom: string): OpeningOfferPriceUi {
   }
 
   return { mode: "plain", label: priceFrom };
+}
+
+/**
+ * Bruttopreis-Label (inkl. USt) für den effektiv gezahlten Preis.
+ * Basis = Nettopreis; bei aktiver Aktion wird zuerst rabattiert, dann USt aufgeschlagen.
+ * Gibt `null` zurück, wenn der Preis nicht parsebar ist (z. B. „Preis auf Anfrage“).
+ */
+export function getGrossPriceLabel(priceFrom: string, lang: PreiseOpeningOfferLang): string | null {
+  const vatPct = AUSTRIA_VAT_RATE;
+
+  const de = parseDePriceFrom(priceFrom);
+  if (de) {
+    const net = PREISE_OPENING_OFFER.active ? discountedAmount(de.amount) : de.amount;
+    return `inkl. ${vatPct} % USt: ab ${formatDeInteger(grossAmount(net))}${de.afterNumber}`;
+  }
+
+  const en = parseEnPriceFrom(priceFrom);
+  if (en) {
+    const net = PREISE_OPENING_OFFER.active ? discountedAmount(en.amount) : en.amount;
+    return `incl. ${vatPct}% VAT: from €${formatEnInteger(grossAmount(net))}${en.rest}`;
+  }
+
+  return null;
 }
 
 export function appendOpeningOfferMetaNote(description: string, lang: "de" | "en"): string {

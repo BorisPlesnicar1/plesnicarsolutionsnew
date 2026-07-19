@@ -1,7 +1,9 @@
 "use client";
 
 import type { Lang } from "@/app/translations";
-import { getOpeningOfferPriceLabelCopy, getOpeningOfferPriceUi } from "@/lib/preise-opening-offer";
+import { getGrossPriceLabel, getOpeningOfferPriceLabelCopy, getOpeningOfferPriceUi } from "@/lib/preise-opening-offer";
+
+const grossNoteClass = "text-[11px] font-medium tabular-nums text-white/40 leading-snug";
 
 const priceGradientClass =
   "text-2xl md:text-3xl font-black tabular-nums tracking-tight bg-gradient-to-r from-[#ff7a5c] via-[#ff4d33] to-[#ff8f6b] bg-clip-text text-transparent drop-shadow-[0_0_28px_rgba(255,45,30,0.25)]";
@@ -16,9 +18,15 @@ type PreisMitEroeffnungsangebotProps = {
 export function PreisMitEroeffnungsangebot({ priceLabel, lang, promoClassName = priceGradientClass }: PreisMitEroeffnungsangebotProps) {
   const ui = getOpeningOfferPriceUi(priceLabel);
   const labels = getOpeningOfferPriceLabelCopy(lang);
+  const grossLabel = getGrossPriceLabel(priceLabel, lang);
 
   if (ui.mode === "inactive" || ui.mode === "plain") {
-    return <p className={promoClassName}>{ui.mode === "plain" ? ui.label : priceLabel}</p>;
+    return (
+      <div className="space-y-1">
+        <p className={promoClassName}>{ui.mode === "plain" ? ui.label : priceLabel}</p>
+        {grossLabel && <p className={grossNoteClass}>{grossLabel}</p>}
+      </div>
+    );
   }
 
   const sr =
@@ -41,6 +49,7 @@ export function PreisMitEroeffnungsangebot({ priceLabel, lang, promoClassName = 
         </span>
         <span className={promoClassName}>{ui.promoLabel}</span>
       </p>
+      {grossLabel && <p className={grossNoteClass}>{grossLabel}</p>}
       <span className="sr-only">{sr}</span>
     </div>
   );

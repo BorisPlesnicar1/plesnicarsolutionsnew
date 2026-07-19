@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 export const metadata: Metadata = {
   title: "Impressum",
   description:
-    "Impressum von Plesnicar Solutions (Boris Plesnicar e.U.) – Pflichtangaben gemäß § 5 ECG (Österreich) und Kontaktdaten.",
+    "Impressum von Plesnicar Solutions (Boris Plesnicar) – Offenlegung gemäß § 5 (1) ECG, § 25 MedienG, § 63 GewO und § 14 UGB.",
   alternates: {
     canonical: "/impressum",
     languages: { de: "/impressum", en: "/impressum-en" },
@@ -49,38 +49,42 @@ export default function Impressum() {
         </Link>
 
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-10 md:p-16 space-y-8">
-          <h1 className="text-4xl md:text-5xl font-black mb-4">
+          <h1 className="text-4xl md:text-5xl font-black mb-3">
             <span className="text-[#ff1900]">Impressum</span>
           </h1>
+          <p className="text-white/60 text-sm mb-8">
+            Informationen und Offenlegung gemäß § 5 (1) ECG, § 25 MedienG, § 63 GewO und § 14 UGB
+          </p>
 
           <div className="space-y-8 text-white/90 font-light leading-relaxed">
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Angaben gemäß § 5 ECG (E-Commerce-Gesetz)</h2>
-              <p className="mb-4 text-white/80 text-sm">
-                Diese Website wird von einem in <strong>Österreich</strong> niedergelassenen Unternehmen betrieben. Für
-                geschäftliche Online-Auftritte gelten die Informationspflichten des{" "}
-                <strong>§ 5 ECG</strong>. Entsprechende Pflichten aus dem deutschen TMG können für Besucher aus Deutschland
-                inhaltlich vergleichbar sein; maßgeblich für unser Impressum ist das österreichische Recht.
+              <h2 className="text-2xl font-bold text-white mb-4">Webseitenbetreiber</h2>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Boris Plesnicar</strong>
+              </p>
+              <p className="mb-4">Plesnicar Solutions</p>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Anschrift:</strong> Hartriegelstraße 12, 3550 Langenlois, Österreich
               </p>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Boris Plesnicar e.U.</strong>
+                <strong className="text-white font-semibold">UID-Nr.:</strong> ATU83447003
               </p>
               <p className="mb-2">
-                Plesnicar Solutions
-              </p>
-              <p className="mb-2">
-                Hartriegelstraße 12
-              </p>
-              <p className="mb-2">
-                3550 Langenlois
+                <strong className="text-white font-semibold">Gewerbeaufsichtsbehörde:</strong> Bezirkshauptmannschaft Krems
               </p>
               <p>
-                Österreich
+                <strong className="text-white font-semibold">Mitgliedschaften:</strong> Wirtschaftskammer Österreich (WKO)
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Kontakt</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">Kontaktdaten</h2>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Telefon:</strong>{" "}
+                <a href="tel:+43273432048" className="text-[#ff1900] hover:underline">
+                  02734/32048
+                </a>
+              </p>
               <p className="mb-2">
                 <strong className="text-white font-semibold">E-Mail:</strong>{" "}
                 <a href="mailto:plesnicaroffice@gmail.com" className="text-[#ff1900] hover:underline">
@@ -88,18 +92,12 @@ export default function Impressum() {
                 </a>
               </p>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Festnetz:</strong>{" "}
-                <a href="tel:+43273432048" className="text-[#ff1900] hover:underline">
-                  02734/32048
-                </a>
-              </p>
-              <p className="mb-2">
-                <strong className="text-white font-semibold">Mobil (Schwerpunkt IT & Grafik):</strong>{" "}
+                <strong className="text-white font-semibold">Mobil (Schwerpunkt IT &amp; Grafik):</strong>{" "}
                 <a href="tel:+436644678382" className="text-[#ff1900] hover:underline">
                   +43 664 4678382
                 </a>
               </p>
-              <p className="mb-2">
+              <p>
                 <strong className="text-white font-semibold">Mobil (Unterstützung Bau):</strong>{" "}
                 <a href="tel:+436763206308" className="text-[#ff1900] hover:underline">
                   +43 676 3206308
@@ -108,69 +106,59 @@ export default function Impressum() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Umsatzsteuer</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">Berufsrechtliche Angaben</h2>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Hinweis:</strong> Es wird keine Umsatzsteuer verrechnet.
-                Umsatzsteuerbefreit – Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG.
+                <strong className="text-white font-semibold">Berufsbezeichnung:</strong> IT-Dienstleister
               </p>
-              <p className="text-white/80 text-sm">
-                Bis zu einem Umsatz von 55.000€ pro Jahr ist keine Umsatzsteuer-ID erforderlich.
+              <p>
+                <strong className="text-white font-semibold">Anwendbare Rechtsvorschrift:</strong> Gewerbeordnung (GewO), abrufbar unter{" "}
+                <a href="https://www.ris.bka.gv.at" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
+                  www.ris.bka.gv.at
+                </a>
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Aufsichtsbehörde</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">Online-Streitbeilegung</h2>
               <p>
-                Bezirkshauptmannschaft Krems
+                Verbraucher, welche in Österreich oder in einem sonstigen Vertragsstaat der ODR-VO niedergelassen sind,
+                haben die Möglichkeit, Probleme bezüglich dem entgeltlichen Kauf von Waren oder Dienstleistungen im Rahmen
+                einer Online-Streitbeilegung (nach OS, AStG) zu lösen. Die Europäische Kommission stellt eine Plattform
+                hierfür bereit:{" "}
+                <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
+                  https://ec.europa.eu/consumers/odr
+                </a>
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Medieninhaber und Inhalte (Mediengesetz)</h2>
-              <p className="mb-4 text-white/80 text-sm">
-                Soweit einschlägig gelten die Vorgaben des österreichischen Mediengesetzes (MedienG) zu Medieninhaberschaft
-                und redaktionell-medialen Inhalten. Verantwortlich für den redaktionellen Inhalt dieser Website:
-              </p>
-              <p className="mb-2">
-                Boris Plesnicar
-              </p>
-              <p className="mb-2">
-                Hartriegelstraße 12
-              </p>
+              <h2 className="text-2xl font-bold text-white mb-4">Urheberrecht</h2>
               <p>
-                3550 Langenlois, Österreich
+                Die Inhalte dieser Webseite unterliegen, soweit dies rechtlich möglich ist, diversen Schutzrechten
+                (z. B. dem Urheberrecht). Jegliche Verwendung/Verbreitung von bereitgestelltem Material, welche
+                urheberrechtlich untersagt ist, bedarf schriftlicher Zustimmung des Webseitenbetreibers.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-white mb-4">Haftungsausschluss</h2>
-              
               <div className="space-y-4 mt-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Haftung für Inhalte</h3>
-                  <p>
-                    Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Haftung für Links</h3>
-                  <p>
-                    Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Urheberrecht</h3>
-                  <p>
-                    Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem{" "}
-                    <strong>österreichischen Urheberrecht</strong> (UrhG). Vervielfältigung, Bearbeitung, Verbreitung und
-                    jede Art der Verwertung außerhalb der gesetzlichen Grenzen bedürfen der schriftlichen Zustimmung des
-                    jeweiligen Rechteinhabers.
-                  </p>
-                </div>
+                <p>
+                  Trotz sorgfältiger inhaltlicher Kontrolle übernimmt der Webseitenbetreiber dieser Webseite keine Haftung
+                  für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber
+                  verantwortlich. Sollten Sie dennoch auf ausgehende Links aufmerksam werden, welche auf eine Webseite mit
+                  rechtswidriger Tätigkeit/Information verweisen, ersuchen wir um dementsprechenden Hinweis, um diese nach
+                  § 17 Abs. 2 ECG umgehend zu entfernen.
+                </p>
+                <p>
+                  Die Urheberrechte Dritter werden vom Betreiber dieser Webseite mit größter Sorgfalt beachtet. Sollten Sie
+                  trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis.
+                  Bei Bekanntwerden derartiger Rechtsverletzungen werden wir den betroffenen Inhalt umgehend entfernen.
+                </p>
               </div>
             </section>
+
+            <p className="text-white/40 text-xs pt-2">Quelle: fairesrecht.at</p>
           </div>
         </div>
       </main>

@@ -1,7 +1,7 @@
 /**
  * Inhalte und Paket-Daten für /preise (DE + EN).
  * Alle Beträge = Orientierungswerte, keine Fixangebote.
- * USt: Kleinunternehmer – es wird keine Umsatzsteuer verrechnet (§ 6 Abs. 1 Z 27 UStG); siehe `pakete.ustNote`.
+ * USt: Einzelunternehmen Boris Plesnicar e.U. – UID ATU83447003; Nettopreise zzgl. 20 % gesetzlicher USt (Bruttopreis wird je Preis zusätzlich angezeigt); siehe `pakete.ustNote`.
  */
 
 import type { Lang } from "@/app/translations";
@@ -212,7 +212,7 @@ export const preiseCopy = {
     introBauNote:
       "Die Paketpreise hier gelten für Web & Grafik (Schwerpunkt). Für Bau, Hausbetreuung und Baustoffe stimmen wir Umfang und Konditionen persönlich mit Ihnen ab – mit Unterstützung durch Ing. Dietmar Plesnicar im Bau-Bereich (siehe Bereich „Bau & Handel“ oben auf dieser Seite).",
     ustNote:
-      "Es wird keine Umsatzsteuer ausgewiesen oder verrechnet. Umsatzsteuerbefreit – Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG",
+      "Alle angegebenen Beträge sind Nettopreise und verstehen sich zzgl. 20 % gesetzlicher USt – der Bruttopreis (inkl. USt) ist jeweils unter dem Preis angegeben. Einzelunternehmen Boris Plesnicar e.U. (Plesnicar Solutions) · UID: ATU83447003.",
     noteTitle: "Orientierung, kein Fixpreis im Warenkorb",
     noteBody:
       "Die genannten Beträge sind Start- bzw. Richtwerte. Der endgültige Preis richtet sich nach Umfang, Funktionalität und gestalterischen Anforderungen – plus etwaiger Drittkosten (Domains, Lizenzen, Plugins).",
@@ -455,7 +455,7 @@ export const preiseCopyEn = {
     introBauNote:
       "The package prices below apply to web & graphics (our focus). For construction, property care, and building materials we agree scope and terms with you personally – with construction support from Ing. Dietmar Plesnicar (see the “Construction & trade” section above on this page).",
     ustNote:
-      "No VAT is charged or shown. VAT exempt – small business under Section 6 (1) lit. 27 Austrian VAT Act (UStG).",
+      "All amounts shown are net prices and are subject to 20% statutory VAT – the gross price (incl. VAT) is shown below each price. Sole proprietorship Boris Plesnicar e.U. (Plesnicar Solutions) · VAT ID (UID): ATU83447003.",
     noteTitle: "Orientation, not a checkout fixed price",
     noteBody:
       "The amounts shown are starting or guide values. The final price depends on scope, functionality, and design requirements – plus any third-party costs (domains, licences, plugins).",

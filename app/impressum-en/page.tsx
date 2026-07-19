@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 export const metadata: Metadata = {
   title: "Imprint (English)",
   description:
-    "Legal disclosure (Imprint) for Plesnicar Solutions (Boris Plesnicar e.U.) – Austria. English information; German version is authoritative where required by law.",
+    "Legal disclosure (Imprint) for Plesnicar Solutions (Boris Plesnicar) – Austria. English information; German version is authoritative where required by law.",
   alternates: {
     canonical: "/impressum-en",
     languages: { de: "/impressum", en: "/impressum-en" },
@@ -54,29 +54,43 @@ export default function ImpressumEn() {
         </p>
 
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-10 md:p-16 space-y-8">
-          <h1 className="text-4xl md:text-5xl font-black mb-4">
+          <h1 className="text-4xl md:text-5xl font-black mb-3">
             <span className="text-[#ff1900]">Imprint</span>
           </h1>
+          <p className="text-white/60 text-sm mb-8">
+            Information and disclosure under Section 5 (1) ECG, Section 25 MedienG, Section 63 GewO and Section 14 UGB
+            (Austria)
+          </p>
 
           <div className="space-y-8 text-white/90 font-light leading-relaxed">
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Information under Section 5 ECG (Austria)</h2>
-              <p className="mb-4 text-white/80 text-sm">
-                This website is operated by a business established in <strong>Austria</strong>. Mandatory online disclosure
-                requirements follow Austrian law (ECG). Visitors from Germany may see comparable duties under the German TMG;
-                Austrian law governs this imprint.
+              <h2 className="text-2xl font-bold text-white mb-4">Website operator</h2>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Boris Plesnicar</strong>
+              </p>
+              <p className="mb-4">Plesnicar Solutions</p>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Address:</strong> Hartriegelstraße 12, 3550 Langenlois, Austria
               </p>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Boris Plesnicar e.U.</strong>
+                <strong className="text-white font-semibold">VAT ID (UID):</strong> ATU83447003
               </p>
-              <p className="mb-2">Plesnicar Solutions</p>
-              <p className="mb-2">Hartriegelstraße 12</p>
-              <p className="mb-2">3550 Langenlois</p>
-              <p>Austria</p>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Trade supervisory authority:</strong> Bezirkshauptmannschaft Krems (District Administration Krems)
+              </p>
+              <p>
+                <strong className="text-white font-semibold">Memberships:</strong> Austrian Federal Economic Chamber (WKO)
+              </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-white mb-4">Contact</h2>
+              <p className="mb-2">
+                <strong className="text-white font-semibold">Phone:</strong>{" "}
+                <a href="tel:+43273432048" className="text-[#ff1900] hover:underline">
+                  02734/32048
+                </a>
+              </p>
               <p className="mb-2">
                 <strong className="text-white font-semibold">Email:</strong>{" "}
                 <a href="mailto:plesnicaroffice@gmail.com" className="text-[#ff1900] hover:underline">
@@ -84,18 +98,12 @@ export default function ImpressumEn() {
                 </a>
               </p>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Landline:</strong>{" "}
-                <a href="tel:+43273432048" className="text-[#ff1900] hover:underline">
-                  02734/32048
-                </a>
-              </p>
-              <p className="mb-2">
-                <strong className="text-white font-semibold">Mobile (IT & design – primary focus):</strong>{" "}
+                <strong className="text-white font-semibold">Mobile (IT &amp; design – primary focus):</strong>{" "}
                 <a href="tel:+436644678382" className="text-[#ff1900] hover:underline">
                   +43 664 4678382
                 </a>
               </p>
-              <p className="mb-2">
+              <p>
                 <strong className="text-white font-semibold">Mobile (construction support):</strong>{" "}
                 <a href="tel:+436763206308" className="text-[#ff1900] hover:underline">
                   +43 676 3206308
@@ -104,55 +112,57 @@ export default function ImpressumEn() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">VAT</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">Professional information</h2>
               <p className="mb-2">
-                <strong className="text-white font-semibold">Note:</strong> No VAT is charged. VAT exempt – small business
-                under Section 6 (1) lit. 27 Austrian VAT Act (UStG).
+                <strong className="text-white font-semibold">Professional title:</strong> IT service provider
               </p>
-              <p className="text-white/80 text-sm">No VAT ID is required up to the applicable annual turnover threshold.</p>
+              <p>
+                <strong className="text-white font-semibold">Applicable legislation:</strong> Austrian Trade Act (GewO), available at{" "}
+                <a href="https://www.ris.bka.gv.at" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
+                  www.ris.bka.gv.at
+                </a>
+              </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Supervisory authority</h2>
-              <p>Bezirkshauptmannschaft Krems (District Administration Krems)</p>
+              <h2 className="text-2xl font-bold text-white mb-4">Online dispute resolution</h2>
+              <p>
+                Consumers established in Austria or in another contracting state of the ODR Regulation may resolve disputes
+                relating to the paid purchase of goods or services through online dispute resolution. The European
+                Commission provides a platform for this purpose:{" "}
+                <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-[#ff1900] hover:underline">
+                  https://ec.europa.eu/consumers/odr
+                </a>
+              </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white mb-4">Media owner & editorial content</h2>
-              <p className="mb-4 text-white/80 text-sm">
-                Where the Austrian Media Act (MedienG) applies, the following person is responsible for editorial content:
+              <h2 className="text-2xl font-bold text-white mb-4">Copyright</h2>
+              <p>
+                The contents of this website are, to the extent legally possible, subject to various protective rights
+                (e.g. copyright). Any use or distribution of the material provided that is prohibited under copyright law
+                requires the written consent of the website operator.
               </p>
-              <p className="mb-2">Boris Plesnicar</p>
-              <p className="mb-2">Hartriegelstraße 12</p>
-              <p>3550 Langenlois, Austria</p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-white mb-4">Disclaimer</h2>
               <div className="space-y-4 mt-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Content</h3>
-                  <p>
-                    We prepare our pages carefully but cannot guarantee completeness, accuracy or timeliness. As a service
-                    provider we are responsible for our own content on these pages under general law.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Links</h3>
-                  <p>
-                    Our site may link to third-party websites we do not control. We are not responsible for their content;
-                    the respective operator is responsible.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Copyright</h3>
-                  <p>
-                    Content created by us is protected under <strong>Austrian copyright law</strong>. Use beyond statutory
-                    limits requires written consent from the rights holder.
-                  </p>
-                </div>
+                <p>
+                  Despite careful review of content, the website operator accepts no liability for the content of external
+                  links. The respective operators are solely responsible for the content of the linked pages. Should you
+                  become aware of any outgoing links that point to a website with unlawful activity or information, we ask
+                  that you notify us accordingly so that we can remove them promptly in accordance with Section 17 (2) ECG.
+                </p>
+                <p>
+                  Third-party copyrights are observed with the utmost care by the operator of this website. Should you
+                  nevertheless become aware of a copyright infringement, please let us know. Upon becoming aware of such
+                  infringements, we will remove the affected content promptly.
+                </p>
               </div>
             </section>
+
+            <p className="text-white/40 text-xs pt-2">Source: fairesrecht.at</p>
           </div>
         </div>
       </main>
