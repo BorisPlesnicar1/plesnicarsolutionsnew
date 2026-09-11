@@ -13,7 +13,7 @@ export function PreiseHero() {
   const { lang } = useSite();
   const { copy } = getPreiseBundle(lang);
   const c = copy.hero;
-  const bauHashHref = lang === "en" ? "/preise?lang=en#preise-bau" : "/preise#preise-bau";
+  const bauHashHref = lang === "en" ? "/bau?lang=en" : "/bau";
 
   return (
     <section id="preise-hero" className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-28 px-4 sm:px-6">
@@ -254,7 +254,7 @@ export function PreiseHero() {
                   />
                 </Link>
                 <Link
-                  href="/leistungen"
+                  href="#leistung-it"
                   className="inline-flex items-center justify-center px-8 py-3.5 rounded-2xl border border-white/[0.1] bg-white/[0.03] text-white/90 text-sm font-semibold hover:bg-white/[0.06] hover:border-white/[0.14] transition-colors"
                 >
                   {c.ctaSecondary}

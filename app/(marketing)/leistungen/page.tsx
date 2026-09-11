@@ -1,39 +1,25 @@
 import type { Metadata } from "next";
-import { JsonLd } from "@/app/components/JsonLd";
-import { pageJsonLdGraph } from "@/lib/jsonld";
-import { LeistungenPage } from "./leistungen-page";
-
-const SITE = "https://plesnicarsolutions.at";
-
-const DESC =
-  "IT, Grafikdesign, Bau, Hausbetreuung & Handel – unsere Leistungen und ausgewählte Projekte von Plesnicar Solutions aus Österreich.";
+import { Suspense } from "react";
+import { LegacyRedirect } from "@/app/components/site/LegacyRedirect";
 
 export const metadata: Metadata = {
-  title: "Leistungen & Projekte",
-  description: DESC,
-  alternates: { canonical: "/leistungen" },
-  openGraph: {
-    title: "Leistungen & Projekte | Plesnicar Solutions",
-    description: "Unsere Dienstleistungen und Referenzprojekte aus IT, Digital und Bau.",
-    url: `${SITE}/leistungen`,
-  },
+  robots: { index: false, follow: true },
+  alternates: { canonical: "/it" },
 };
-
-const leistungenJsonLd = pageJsonLdGraph({
-  path: "/leistungen",
-  name: "Leistungen & Projekte",
-  description: DESC,
-  breadcrumbs: [
-    { name: "Start", path: "/" },
-    { name: "Leistungen & Projekte", path: "/leistungen" },
-  ],
-});
 
 export default function Page() {
   return (
-    <>
-      <JsonLd data={leistungenJsonLd} />
-      <LeistungenPage />
-    </>
+    <Suspense fallback={null}>
+      <LegacyRedirect
+        rules={[
+          { hash: "leistung-bau", to: "/bau" },
+          { hash: "leistung-baustoff", to: "/bau" },
+          { hash: "leistung-energie", to: "/bau" },
+          { hash: "leistung-it", to: "/it" },
+          { hash: "projekte", to: "/referenzen" },
+        ]}
+        fallback="/it"
+      />
+    </Suspense>
   );
 }

@@ -43,7 +43,7 @@ export default function NotFound() {
         <Link href="/" className={linkClass}>
           {t.home}
         </Link>
-        <Link href="/leistungen" className={linkClass}>
+        <Link href="/it" className={linkClass}>
           {t.leistungen}
         </Link>
         <Link href="/kontakt" className={linkClass}>

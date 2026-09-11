@@ -3,26 +3,26 @@
 import { useEffect } from "react";
 import { SiteShell } from "@/app/components/site/SiteShell";
 import { PreiseHero } from "@/app/components/site/preise/PreiseHero";
-import { PreiseBauPartnerSection } from "@/app/components/site/preise/PreiseBauPartnerSection";
+import { LeistungenSection } from "@/app/components/site/sections/LeistungenSection";
+import { ProjekteSection } from "@/app/components/site/sections/ProjekteSection";
 import { PreisePaketeSection } from "@/app/components/site/preise/PreisePaketeSection";
 import { PreiseHinweisSection } from "@/app/components/site/preise/PreiseHinweisSection";
 import { PreiseTrustCtaSection } from "@/app/components/site/preise/PreiseTrustCtaSection";
 import { useLangQuerySync } from "@/app/components/site/useLangQuerySync";
 import { useSite } from "@/app/contexts/SiteContext";
-import { getPreiseDocumentTitle } from "@/lib/preise-page";
-import { getPreiseMetaDescription } from "@/lib/seo-pages";
+import { getItMetaDescription } from "@/lib/seo-pages";
 
-const SCROLL_IDS = ["preise-hero", "preise-bau", "pakete", "hinweis", "vertrauen", "preise-cta"] as const;
+const SCROLL_IDS = ["preise-hero", "leistungen", "projekte", "pakete", "hinweis", "vertrauen", "preise-cta"] as const;
 
-export function PreisePage() {
+export function ItPage() {
   const { lang } = useSite();
   useLangQuerySync();
 
   useEffect(() => {
-    document.title = getPreiseDocumentTitle(lang);
+    document.title = lang === "en" ? "IT & web | Plesnicar Solutions" : "IT & Web | Plesnicar Solutions";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
-      meta.setAttribute("content", getPreiseMetaDescription(lang === "en" ? "en" : "de"));
+      meta.setAttribute("content", getItMetaDescription(lang === "en" ? "en" : "de"));
     }
   }, [lang]);
 
@@ -30,7 +30,8 @@ export function PreisePage() {
     <SiteShell scrollSpyIds={SCROLL_IDS}>
       <div className="pt-0">
         <PreiseHero />
-        <PreiseBauPartnerSection />
+        <LeistungenSection domain="it" />
+        <ProjekteSection domain="it" />
         <PreisePaketeSection />
         <PreiseHinweisSection />
         <PreiseTrustCtaSection />

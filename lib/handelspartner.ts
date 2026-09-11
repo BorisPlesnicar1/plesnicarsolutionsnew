@@ -112,7 +112,7 @@ export const handelspartnerCopy = {
     title: "Sie planen ein Projekt?",
     text: "Lassen Sie uns gemeinsam die passende Lösung entwickeln – von der ersten Idee bis zur Umsetzung.",
     button: "Projekt anfragen",
-    secondaryHref: "/preise",
+    secondaryHref: "/bau",
     secondaryLabel: "Richtpreise ansehen",
   },
 } as const;
@@ -162,7 +162,7 @@ export const handelspartnerCopyEn = {
     title: "Planning a project?",
     text: "Let us shape the right approach together – from the first idea through to delivery.",
     button: "Start a project enquiry",
-    secondaryHref: "/preise",
+    secondaryHref: "/bau",
     secondaryLabel: "View guide prices",
   },
 } as const;

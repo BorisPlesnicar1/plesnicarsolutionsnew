@@ -9,7 +9,9 @@ import { SectionBackground } from "@/app/components/site/SectionBackground";
 import { SectionKicker } from "@/app/components/site/SectionKicker";
 import { motionViewport, staggerItem, staggerParent } from "@/app/components/site/motion-presets";
 
-export function LeistungenSection() {
+type LeistungenDomain = "it" | "bau" | "all";
+
+export function LeistungenSection({ domain = "all" }: { domain?: LeistungenDomain } = {}) {
   const { lang } = useSite();
   const t = TRANSLATIONS[lang];
 
@@ -30,65 +32,71 @@ export function LeistungenSection() {
             {t.leistungen.title}{" "}
             <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.leistungen.titleHighlight}</span>
           </motion.h2>
-          <motion.nav
-            variants={staggerItem}
-            className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 pt-6 text-xs font-semibold"
-            aria-label={lang === "en" ? "Topics" : "Themen"}
-          >
-            <Link
-              href="/leistungen#leistung-it"
-              className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
+          {domain === "all" && (
+            <motion.nav
+              variants={staggerItem}
+              className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 pt-6 text-xs font-semibold"
+              aria-label={lang === "en" ? "Topics" : "Themen"}
             >
-              {t.leistungenChips.it}
-            </Link>
-            <span className="text-white/20 select-none" aria-hidden>
-              ·
-            </span>
-            <Link
-              href="/leistungen#leistung-bau"
-              className="text-amber-200/80 border-b border-transparent hover:border-amber-400/50 hover:text-amber-100 pb-0.5 transition-colors"
-            >
-              {t.leistungenChips.bau}
-            </Link>
-            <span className="text-white/20 select-none" aria-hidden>
-              ·
-            </span>
-            <Link
-              href="/leistungen#leistung-baustoff"
-              className="text-amber-200/80 border-b border-transparent hover:border-amber-400/50 hover:text-amber-100 pb-0.5 transition-colors"
-            >
-              {t.leistungenChips.baustoff}
-            </Link>
-            <span className="text-white/20 select-none" aria-hidden>
-              ·
-            </span>
-            <Link
-              href="/leistungen#leistung-energie"
-              className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
-            >
-              {t.leistungenChips.energie}
-            </Link>
-            <span className="text-white/20 select-none" aria-hidden>
-              ·
-            </span>
-            <Link
-              href="/leistungen#projekte"
-              className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
-            >
-              {t.leistungenChips.projects}
-            </Link>
-          </motion.nav>
+              <Link
+                href="#leistung-it"
+                className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
+              >
+                {t.leistungenChips.it}
+              </Link>
+              <span className="text-white/20 select-none" aria-hidden>
+                ·
+              </span>
+              <Link
+                href="#leistung-bau"
+                className="text-amber-200/80 border-b border-transparent hover:border-amber-400/50 hover:text-amber-100 pb-0.5 transition-colors"
+              >
+                {t.leistungenChips.bau}
+              </Link>
+              <span className="text-white/20 select-none" aria-hidden>
+                ·
+              </span>
+              <Link
+                href="#leistung-baustoff"
+                className="text-amber-200/80 border-b border-transparent hover:border-amber-400/50 hover:text-amber-100 pb-0.5 transition-colors"
+              >
+                {t.leistungenChips.baustoff}
+              </Link>
+              <span className="text-white/20 select-none" aria-hidden>
+                ·
+              </span>
+              <Link
+                href="#leistung-energie"
+                className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
+              >
+                {t.leistungenChips.energie}
+              </Link>
+              <span className="text-white/20 select-none" aria-hidden>
+                ·
+              </span>
+              <Link
+                href="/referenzen"
+                className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
+              >
+                {t.leistungenChips.projects}
+              </Link>
+            </motion.nav>
+          )}
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-          {[
-            { ...t.leistungen.services[0], icon: Code2, wide: true as const, featured: true as const, span: "md:col-span-2 lg:col-span-2", scrollId: "leistung-it" as const },
-            { ...t.leistungen.services[1], icon: Palette, wide: false as const, featured: false as const, span: "", scrollId: undefined },
-            { ...t.leistungen.services[2], icon: Wrench, wide: false as const, featured: false as const, span: "", scrollId: "leistung-bau" as const },
-            { ...t.leistungen.services[3], icon: ShoppingCart, wide: false as const, featured: false as const, span: "", scrollId: undefined },
-            { ...t.leistungen.services[4], icon: Boxes, wide: false as const, featured: false as const, span: "", scrollId: "leistung-baustoff" as const },
-            { ...t.leistungen.services[5], icon: Zap, wide: true as const, featured: false as const, span: "md:col-span-2 lg:col-span-3", scrollId: "leistung-energie" as const },
-          ].map((service, i) => {
+          {(
+            [
+              { ...t.leistungen.services[0], icon: Code2, wide: true as const, featured: true as const, span: "md:col-span-2 lg:col-span-2", scrollId: "leistung-it" as const, cat: "it" as const },
+              { ...t.leistungen.services[1], icon: Palette, wide: false as const, featured: false as const, span: "", scrollId: undefined, cat: "it" as const },
+              { ...t.leistungen.services[2], icon: Wrench, wide: false as const, featured: false as const, span: "", scrollId: "leistung-bau" as const, cat: "bau" as const },
+              { ...t.leistungen.services[3], icon: ShoppingCart, wide: false as const, featured: false as const, span: "", scrollId: undefined, cat: "bau" as const },
+              { ...t.leistungen.services[4], icon: Boxes, wide: false as const, featured: false as const, span: "", scrollId: "leistung-baustoff" as const, cat: "bau" as const },
+              { ...t.leistungen.services[5], icon: Zap, wide: true as const, featured: false as const, span: "md:col-span-2 lg:col-span-3", scrollId: "leistung-energie" as const, cat: "bau" as const },
+            ] as const
+          )
+            .filter((service) => domain === "all" || service.cat === domain)
+            .map((service, i) => {
             const IconComponent = service.icon;
             const { scrollId, ...card } = service;
             const description = "description" in card ? card.description : undefined;

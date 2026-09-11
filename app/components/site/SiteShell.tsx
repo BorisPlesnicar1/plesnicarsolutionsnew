@@ -26,23 +26,23 @@ const CookieBanner = dynamic(
   { ssr: false }
 );
 
-/** Entscheidungsreise: Start → Richtpreise → Leistungen & Projekte → Handelspartner → Über uns; Kontakt = CTA */
+/** Entscheidungsreise: Start → IT → Bau → Referenzen → Über uns; Kontakt = CTA */
 const NAV_DESKTOP = [
   { href: "/", labelKey: "home" as const, match: (p: string) => p === "/" },
   {
-    href: "/preise",
-    labelKey: "richtpreise" as const,
-    match: (p: string) => p === "/preise" || p.startsWith("/preise/"),
+    href: "/it",
+    labelKey: "it" as const,
+    match: (p: string) => p === "/it" || p.startsWith("/it/"),
   },
   {
-    href: "/leistungen",
-    labelKey: "leistungenProjekte" as const,
-    match: (p: string) => p === "/leistungen" || p.startsWith("/leistungen/"),
+    href: "/bau",
+    labelKey: "bau" as const,
+    match: (p: string) => p === "/bau" || p.startsWith("/bau/"),
   },
   {
-    href: "/handelspartner",
-    labelKey: "handelspartner" as const,
-    match: (p: string) => p === "/handelspartner" || p.startsWith("/handelspartner/"),
+    href: "/referenzen",
+    labelKey: "referenzen" as const,
+    match: (p: string) => p === "/referenzen" || p.startsWith("/referenzen/"),
   },
   { href: "/ueber-uns", labelKey: "ueberUns" as const, match: (p: string) => p === "/ueber-uns" || p.startsWith("/ueber-uns/") },
 ] as const;
@@ -205,7 +205,6 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
             {NAV_DESKTOP.map((item) => {
               const active = item.match(pathname);
               const label = t.nav[item.labelKey];
-              const isPreise = item.href === "/preise";
               return (
                 <Link
                   key={item.href}
@@ -216,7 +215,7 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
                     active
                       ? "text-white font-semibold bg-[#ff1900]/15 border-[color:var(--accent)]"
                       : "text-white/60 border-transparent font-medium hover:text-white hover:bg-white/5"
-                  } ${isPreise ? `nav-text-glow-preise${active ? " nav-text-glow-preise--on" : ""}` : ""}`}
+                  }`}
                 >
                   {label}
                 </Link>
@@ -308,7 +307,6 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
               {NAV_DESKTOP.map((item) => {
                 const active = item.match(pathname);
                 const label = t.nav[item.labelKey];
-                const isPreise = item.href === "/preise";
                 return (
                   <Link
                     key={item.href}
@@ -319,7 +317,7 @@ export function SiteShell({ children, scrollSpyIds }: SiteShellProps) {
                       active
                         ? "text-white font-semibold bg-[#ff1900]/20 border-[color:var(--accent)]"
                         : "text-white/70 font-medium border-transparent hover:text-white hover:bg-white/5"
-                    } ${isPreise ? `nav-text-glow-preise nav-text-glow-preise--mobile${active ? " nav-text-glow-preise--on" : ""}` : ""}`}
+                    }`}
                   >
                     {label}
                   </Link>

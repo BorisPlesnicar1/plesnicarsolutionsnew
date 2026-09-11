@@ -1,34 +1,16 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { JsonLd } from "@/app/components/JsonLd";
-import { pageJsonLdGraph } from "@/lib/jsonld";
-import { PreisePage } from "./preise-page";
-import { buildPreiseMetadata, getPreiseMetaDescription, localeFromSearchParams } from "@/lib/seo-pages";
+import { LegacyRedirect } from "@/app/components/site/LegacyRedirect";
 
-type Search = Promise<{ lang?: string | string[] }>;
-
-export async function generateMetadata(props: { searchParams: Search }): Promise<Metadata> {
-  const sp = await props.searchParams;
-  return buildPreiseMetadata(localeFromSearchParams(sp));
-}
-
-const preiseJsonLd = pageJsonLdGraph({
-  path: "/preise",
-  name: "Richtpreise",
-  description: getPreiseMetaDescription("de"),
-  breadcrumbs: [
-    { name: "Start", path: "/" },
-    { name: "Richtpreise", path: "/preise" },
-  ],
-});
+export const metadata: Metadata = {
+  robots: { index: false, follow: true },
+  alternates: { canonical: "/it" },
+};
 
 export default function Page() {
   return (
-    <>
-      <JsonLd data={preiseJsonLd} />
-      <Suspense fallback={null}>
-        <PreisePage />
-      </Suspense>
-    </>
+    <Suspense fallback={null}>
+      <LegacyRedirect rules={[{ hash: "preise-bau", to: "/bau" }]} fallback="/it" />
+    </Suspense>
   );
 }

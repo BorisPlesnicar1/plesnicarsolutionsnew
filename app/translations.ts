@@ -54,6 +54,9 @@ export const TRANSLATIONS = {
     },
     nav: {
       home: "Start",
+      it: "IT",
+      bau: "Bau",
+      referenzen: "Referenzen",
       leistungenProjekte: "Leistungen & Projekte",
       leistungen: "Leistungen",
       projekte: "Projekte",
@@ -469,6 +472,9 @@ export const TRANSLATIONS = {
     },
     nav: {
       home: "Home",
+      it: "IT",
+      bau: "Construction",
+      referenzen: "References",
       leistungenProjekte: "Services & projects",
       leistungen: "Services",
       projekte: "Projects",

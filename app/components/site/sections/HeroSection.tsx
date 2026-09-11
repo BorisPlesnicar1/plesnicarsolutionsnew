@@ -199,7 +199,7 @@ export function HeroSection() {
               <ul className="mt-3 grid grid-cols-1 min-[420px]:grid-cols-2 gap-x-5 gap-y-3 sm:gap-x-6 sm:gap-y-3.5 lg:gap-x-10 lg:mt-4 max-w-2xl">
                 <li className="min-w-0 space-y-0.5 lg:space-y-1">
                   <Link
-                    href="/leistungen#leistung-it"
+                    href="/it"
                     className="inline-block text-sm font-bold text-[#ff8068] hover:text-[#ff9a80] underline decoration-[#ff1900]/35 underline-offset-[5px] hover:decoration-[#ff8068]/70 transition-colors"
                   >
                     {t.hero.audienceItLabel}:
@@ -210,7 +210,7 @@ export function HeroSection() {
                 </li>
                 <li className="min-w-0 space-y-0.5 lg:space-y-1">
                   <Link
-                    href="/leistungen#leistung-bau"
+                    href="/bau"
                     className="inline-block text-sm font-bold text-amber-300/90 hover:text-amber-200 underline decoration-amber-400/30 underline-offset-[5px] hover:decoration-amber-300/60 transition-colors"
                   >
                     {t.hero.audienceBauLabel}:
@@ -245,7 +245,7 @@ export function HeroSection() {
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
               >
                 <Link
-                  href="/leistungen"
+                  href="/it"
                   className="block w-full sm:w-auto px-8 lg:px-10 py-3.5 lg:py-4 bg-white/[0.03] border border-white/[0.1] text-white text-[15px] sm:text-base font-semibold rounded-2xl backdrop-blur-sm text-center hover:bg-white/[0.06] hover:border-white/[0.18] transition-colors whitespace-nowrap"
                 >
                   {t.hero.ctaServices}
@@ -259,7 +259,7 @@ export function HeroSection() {
               </p>
               <div className="hero-block-chips flex justify-start">
               <Link
-                href="/leistungen#projekte"
+                href="/referenzen"
                 className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/45 hover:text-white/75 underline decoration-white/15 underline-offset-[5px] hover:decoration-white/35 transition-colors"
               >
                 {t.hero.exploreProjects}

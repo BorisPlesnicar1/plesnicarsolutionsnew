@@ -11,7 +11,7 @@ import { useSite } from "@/app/contexts/SiteContext";
 
 const trustIcons = [UserCircle, MapPin, Laptop, Home] as const;
 
-export function PreiseTrustCtaSection() {
+export function PreiseTrustCtaSection({ variant = "full" }: { variant?: "full" | "cta" } = {}) {
   const { lang } = useSite();
   const { copy } = getPreiseBundle(lang);
   const v = copy.vertrauen;
@@ -19,6 +19,7 @@ export function PreiseTrustCtaSection() {
 
   return (
     <>
+      {variant === "full" && (
       <section id="vertrauen" className="relative py-16 md:py-24 px-4 sm:px-6 border-t border-white/5 overflow-hidden bg-[#070709]">
         <SectionBackground />
         <div
@@ -71,6 +72,7 @@ export function PreiseTrustCtaSection() {
           </div>
         </div>
       </section>
+      )}
 
       <section
         id="preise-cta"

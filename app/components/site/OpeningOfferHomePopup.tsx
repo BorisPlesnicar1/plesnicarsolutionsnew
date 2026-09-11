@@ -16,7 +16,7 @@ export function OpeningOfferHomePopup() {
   const { lang } = useSite();
   const t = TRANSLATIONS[lang].openingOfferPopup;
   const copy = getOpeningOfferHomePopupCopy(lang);
-  const preiseHref = lang === "en" ? "/preise?lang=en" : "/preise";
+  const preiseHref = lang === "en" ? "/it?lang=en" : "/it";
   const titleId = useId();
   const descId = useId();
 

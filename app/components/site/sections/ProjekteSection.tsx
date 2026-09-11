@@ -18,9 +18,12 @@ import {
   type Project,
 } from "@/lib/projects";
 
-export function ProjekteSection() {
+type ProjekteDomain = "it" | "bau" | "all";
+
+export function ProjekteSection({ domain = "all" }: { domain?: ProjekteDomain } = {}) {
   const { lang } = useSite();
   const t = TRANSLATIONS[lang];
+  const projects = domain === "all" ? PROJECTS : PROJECTS.filter((p) => p.category === domain);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectModalImageIndex, setProjectModalImageIndex] = useState(0);
@@ -84,7 +87,7 @@ export function ProjekteSection() {
       window.removeEventListener("resize", update);
       ro?.disconnect();
     };
-  }, [lang, PROJECTS.length]);
+  }, [lang, projects.length]);
 
   return (
     <>
@@ -111,22 +114,26 @@ export function ProjekteSection() {
           </motion.div>
 
           <p className="text-center text-white/40 text-sm mb-2 md:mb-3">{t.projekte.scrollHint}</p>
-          <p className="text-center text-[11px] font-medium text-white/50 mb-4 md:mb-5 max-w-lg mx-auto leading-relaxed">
-            <span className="text-[#ff6b52] font-semibold">IT</span>
-            <span className="text-white/25 mx-2" aria-hidden>
-              ·
-            </span>
-            <span>{t.projekte.categoryIt}</span>
-            <span className="text-white/25 mx-2.5" aria-hidden>
-              |
-            </span>
-            <span className="text-amber-400 font-semibold">Bau</span>
-            <span className="text-white/25 mx-2" aria-hidden>
-              ·
-            </span>
-            <span>{t.projekte.categoryBau}</span>
-          </p>
-          <p className="text-center text-white/35 text-xs mb-4 md:mb-5 max-w-md mx-auto">{t.projekte.itBauHint}</p>
+          {domain === "all" && (
+            <>
+              <p className="text-center text-[11px] font-medium text-white/50 mb-4 md:mb-5 max-w-lg mx-auto leading-relaxed">
+                <span className="text-[#ff6b52] font-semibold">IT</span>
+                <span className="text-white/25 mx-2" aria-hidden>
+                  ·
+                </span>
+                <span>{t.projekte.categoryIt}</span>
+                <span className="text-white/25 mx-2.5" aria-hidden>
+                  |
+                </span>
+                <span className="text-amber-400 font-semibold">Bau</span>
+                <span className="text-white/25 mx-2" aria-hidden>
+                  ·
+                </span>
+                <span>{t.projekte.categoryBau}</span>
+              </p>
+              <p className="text-center text-white/35 text-xs mb-4 md:mb-5 max-w-md mx-auto">{t.projekte.itBauHint}</p>
+            </>
+          )}
 
           {/* LED-Streifen: kein backdrop-blur / kein 3D-Tilt — deutlich günstiger beim ersten Paint */}
           <div className="relative w-full mb-10 md:mb-14 overflow-hidden" aria-hidden>
@@ -134,7 +141,7 @@ export function ProjekteSection() {
             <div className="py-5 md:py-6 border-y border-[#ff1900]/20 bg-[#080808]">
               <div className="flex items-center overflow-hidden">
                 <div className="led-ticker-track flex items-stretch gap-5 md:gap-6 shrink-0 pl-4 md:pl-6" style={{ width: "max-content" }}>
-                  {[...PROJECTS, ...PROJECTS].map((project, i) => {
+                  {[...projects, ...projects].map((project, i) => {
                     const sub = PROJECT_TRANSLATIONS[lang][project.id]?.subtitle ?? project.subtitle ?? "";
                     const stand = projectStandText(project);
                     const ledAlt = [project.title, sub, t.projekte.imageAltPreview].filter(Boolean).join(" – ");
@@ -195,7 +202,7 @@ export function ProjekteSection() {
               className="flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden pb-4 pt-1 px-4 sm:px-0 scroll-smooth snap-x snap-mandatory hide-scrollbar"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none", scrollPaddingLeft: "1rem", scrollPaddingRight: "1rem" }}
             >
-              {PROJECTS.map((project, i) => {
+              {projects.map((project, i) => {
                 const stand = projectStandText(project);
                 const isActive = projectsCarouselHasOverflow && activeProjectIndex === i;
                 const isHovered = hoveredCardIndex === i;
@@ -302,9 +309,9 @@ export function ProjekteSection() {
                 );
               })}
             </div>
-            {PROJECTS.length > 1 && projectsCarouselHasOverflow && (
+            {projects.length > 1 && projectsCarouselHasOverflow && (
               <div className="flex justify-center gap-2 mt-5 md:mt-6">
-                {PROJECTS.map((_, i) => (
+                {projects.map((_, i) => (
                   <button
                     key={i}
                     type="button"
@@ -328,7 +335,7 @@ export function ProjekteSection() {
                 ))}
               </div>
             )}
-            {PROJECTS.length > 1 && projectsCarouselHasOverflow && (
+            {projects.length > 1 && projectsCarouselHasOverflow && (
               <div className="flex md:absolute md:top-1/2 md:-translate-y-1/2 md:left-0 md:right-0 md:pointer-events-none justify-center md:justify-between gap-3 mt-4 md:mt-0 md:px-0">
                 <button
                   type="button"
