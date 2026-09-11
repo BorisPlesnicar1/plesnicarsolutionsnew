@@ -10,7 +10,7 @@ import { useLangQuerySync } from "@/app/components/site/useLangQuerySync";
 import { useSite } from "@/app/contexts/SiteContext";
 import { getBauMetaDescription } from "@/lib/seo-pages";
 
-const SCROLL_IDS = ["preise-bau", "leistungen", "projekte", "preise-cta"] as const;
+const SCROLL_IDS = ["leistungen", "preise-bau", "projekte", "preise-cta"] as const;
 
 export function BauPage() {
   const { lang } = useSite();
@@ -28,8 +28,8 @@ export function BauPage() {
   return (
     <SiteShell scrollSpyIds={SCROLL_IDS}>
       <div className="pt-20 md:pt-24">
-        <PreiseBauPartnerSection />
         <LeistungenSection domain="bau" />
+        <PreiseBauPartnerSection />
         <ProjekteSection domain="bau" />
         <PreiseTrustCtaSection variant="cta" />
       </div>

@@ -12,7 +12,7 @@ import { useLangQuerySync } from "@/app/components/site/useLangQuerySync";
 import { useSite } from "@/app/contexts/SiteContext";
 import { getItMetaDescription } from "@/lib/seo-pages";
 
-const SCROLL_IDS = ["preise-hero", "leistungen", "projekte", "pakete", "hinweis", "vertrauen", "preise-cta"] as const;
+const SCROLL_IDS = ["preise-hero", "leistungen", "pakete", "hinweis", "projekte", "vertrauen", "preise-cta"] as const;
 
 export function ItPage() {
   const { lang } = useSite();
@@ -31,9 +31,9 @@ export function ItPage() {
       <div className="pt-0">
         <PreiseHero />
         <LeistungenSection domain="it" />
-        <ProjekteSection domain="it" />
         <PreisePaketeSection />
         <PreiseHinweisSection />
+        <ProjekteSection domain="it" />
         <PreiseTrustCtaSection />
       </div>
     </SiteShell>
