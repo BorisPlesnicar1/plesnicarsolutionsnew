@@ -8,6 +8,11 @@ const PREISE_DESC_DE =
 const PREISE_DESC_EN =
   "Transparent guide prices from Austria: focus on web & design (one-page from €999, business sites from €1,900, branding from €699, care from €49/month). Construction & materials: support by arrangement.";
 
+const IT_DESC_DE =
+  "IT & Web bei Plesnicar Solutions: Websites, Branding, Wartung sowie Büro- und Gaming-PCs in klaren Budgetklassen – Richtwerte und persönliche Konfiguration aus Österreich.";
+const IT_DESC_EN =
+  "IT & web with Plesnicar Solutions: websites, branding, care, plus office and gaming PCs in clear budget tiers – guide prices and personal configuration from Austria.";
+
 const HANDELS_DESC_DE =
   "Ausgewählte Partner aus Bau, Handel und Industrie – Baumit, L&G Bau, Lagerhaus, Leitl, Lasselsberger. Netzwerk für Qualität und Lieferketten bei Plesnicar Solutions, Österreich.";
 const HANDELS_DESC_EN =
@@ -37,9 +42,9 @@ export function getPreiseMetaDescription(lang: "de" | "en"): string {
   return appendOpeningOfferMetaNote(base, lang);
 }
 
-/** IT-Seite trägt die veröffentlichten Web-/Design-Richtpreise. */
+/** IT-Seite: Web-Richtpreise + PC-Bau. */
 export function getItMetaDescription(lang: "de" | "en"): string {
-  const base = lang === "en" ? PREISE_DESC_EN : PREISE_DESC_DE;
+  const base = lang === "en" ? IT_DESC_EN : IT_DESC_DE;
   return appendOpeningOfferMetaNote(base, lang);
 }
 
@@ -126,7 +131,7 @@ export function buildItMetadata(lang: "de" | "en"): Metadata {
   const canonicalUrl = `${SITE}${canonicalPath}`;
 
   const title = lang === "en" ? "IT & web" : "IT & Web";
-  const description = lang === "en" ? PREISE_DESC_EN : PREISE_DESC_DE;
+  const description = lang === "en" ? IT_DESC_EN : IT_DESC_DE;
   const ogTitle = `${title} | Plesnicar Solutions`;
 
   return {

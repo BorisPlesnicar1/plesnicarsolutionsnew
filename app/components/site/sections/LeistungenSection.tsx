@@ -32,6 +32,29 @@ export function LeistungenSection({ domain = "all" }: { domain?: LeistungenDomai
             {t.leistungen.title}{" "}
             <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.leistungen.titleHighlight}</span>
           </motion.h2>
+          {domain === "it" && (
+            <motion.nav
+              variants={staggerItem}
+              className="flex flex-wrap justify-center items-center gap-x-4 gap-y-1 pt-6 text-xs font-semibold"
+              aria-label={t.leistungenChips.onThisPage}
+            >
+              <Link
+                href="#pc-bau"
+                className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
+              >
+                {t.leistungenChips.pcBau}
+              </Link>
+              <span className="text-white/20 select-none" aria-hidden>
+                ·
+              </span>
+              <Link
+                href="#pakete"
+                className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
+              >
+                {t.leistungenChips.webPreise}
+              </Link>
+            </motion.nav>
+          )}
           {domain === "all" && (
             <motion.nav
               variants={staggerItem}

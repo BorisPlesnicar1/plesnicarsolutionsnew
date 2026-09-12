@@ -385,6 +385,9 @@ export const TRANSLATIONS = {
       baustoff: "Baustoff-Handel",
       energie: "Energie",
       projects: "Referenzen",
+      pcBau: "Büro- & Gaming-PCs",
+      webPreise: "Web-Richtpreise",
+      onThisPage: "Auf dieser Seite",
     },
     partnerStrip: {
       label: "Netzwerk",
@@ -804,6 +807,9 @@ export const TRANSLATIONS = {
       baustoff: "Building materials",
       energie: "Energy",
       projects: "References",
+      pcBau: "Office & gaming PCs",
+      webPreise: "Web guide prices",
+      onThisPage: "On this page",
     },
     partnerStrip: {
       label: "Network",

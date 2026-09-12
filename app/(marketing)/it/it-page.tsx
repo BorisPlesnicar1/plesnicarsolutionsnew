@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { SiteShell } from "@/app/components/site/SiteShell";
 import { PreiseHero } from "@/app/components/site/preise/PreiseHero";
 import { LeistungenSection } from "@/app/components/site/sections/LeistungenSection";
+import { PcBauSection } from "@/app/components/site/it/PcBauSection";
 import { ProjekteSection } from "@/app/components/site/sections/ProjekteSection";
 import { PreisePaketeSection } from "@/app/components/site/preise/PreisePaketeSection";
 import { PreiseHinweisSection } from "@/app/components/site/preise/PreiseHinweisSection";
@@ -12,7 +13,7 @@ import { useLangQuerySync } from "@/app/components/site/useLangQuerySync";
 import { useSite } from "@/app/contexts/SiteContext";
 import { getItMetaDescription } from "@/lib/seo-pages";
 
-const SCROLL_IDS = ["preise-hero", "leistungen", "pakete", "hinweis", "projekte", "vertrauen", "preise-cta"] as const;
+const SCROLL_IDS = ["preise-hero", "leistungen", "pc-bau", "pakete", "hinweis", "projekte", "vertrauen", "preise-cta"] as const;
 
 export function ItPage() {
   const { lang } = useSite();
@@ -31,6 +32,7 @@ export function ItPage() {
       <div className="pt-0">
         <PreiseHero />
         <LeistungenSection domain="it" />
+        <PcBauSection />
         <PreisePaketeSection />
         <PreiseHinweisSection />
         <ProjekteSection domain="it" />
