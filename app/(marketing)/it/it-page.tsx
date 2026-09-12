@@ -6,14 +6,14 @@ import { PreiseHero } from "@/app/components/site/preise/PreiseHero";
 import { LeistungenSection } from "@/app/components/site/sections/LeistungenSection";
 import { PcBauSection } from "@/app/components/site/it/PcBauSection";
 import { ProjekteSection } from "@/app/components/site/sections/ProjekteSection";
-import { PreisePaketeSection } from "@/app/components/site/preise/PreisePaketeSection";
+import { WebsitePreiseSection } from "@/app/components/site/preise/WebsitePreiseSection";
 import { PreiseHinweisSection } from "@/app/components/site/preise/PreiseHinweisSection";
 import { PreiseTrustCtaSection } from "@/app/components/site/preise/PreiseTrustCtaSection";
 import { useLangQuerySync } from "@/app/components/site/useLangQuerySync";
 import { useSite } from "@/app/contexts/SiteContext";
 import { getItMetaDescription } from "@/lib/seo-pages";
 
-const SCROLL_IDS = ["preise-hero", "leistungen", "pc-bau", "pakete", "hinweis", "projekte", "vertrauen", "preise-cta"] as const;
+const SCROLL_IDS = ["preise-hero", "leistungen", "pc-bau", "website-preise", "hinweis", "projekte", "vertrauen", "preise-cta"] as const;
 
 export function ItPage() {
   const { lang } = useSite();
@@ -33,7 +33,7 @@ export function ItPage() {
         <PreiseHero />
         <LeistungenSection domain="it" />
         <PcBauSection />
-        <PreisePaketeSection />
+        <WebsitePreiseSection />
         <PreiseHinweisSection />
         <ProjekteSection domain="it" />
         <PreiseTrustCtaSection />

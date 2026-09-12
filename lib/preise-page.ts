@@ -204,9 +204,13 @@ export const preiseCopy = {
     cta: "Zu unseren Handelspartnern",
   },
   pakete: {
-    sectionLabel: "Pakete & Richtpreise",
-    title: "Was kostet",
-    titleHighlight: "was?",
+    sectionLabel: "Richtpreise",
+    /** Wird ohne Trenner an `titleHighlight` gehängt → "Website-Preise". */
+    title: "Website-",
+    titleHighlight: "Preise",
+    tabWebsite: "Website",
+    tabBranding: "Branding & Betreuung",
+    tabAria: "Preiskategorie wählen",
     intro:
       "Alle Angaben sind unverbindliche Richtwerte für typische Projekte. Nach einem kurzen Gespräch erhalten Sie eine klare, schriftliche Einschätzung.",
     introBauNote:
@@ -447,9 +451,13 @@ export const preiseCopyEn = {
     cta: "Our trade partners",
   },
   pakete: {
-    sectionLabel: "Packages & guide prices",
-    title: "What does",
-    titleHighlight: "it cost?",
+    sectionLabel: "Guide prices",
+    /** Wird ohne Trenner an `titleHighlight` gehängt → Leerzeichen am Ende ist gewollt. */
+    title: "Website ",
+    titleHighlight: "prices",
+    tabWebsite: "Website",
+    tabBranding: "Branding & care",
+    tabAria: "Choose price category",
     intro:
       "All figures are non-binding guide values for typical projects. After a short conversation you receive a clear written estimate.",
     introBauNote:

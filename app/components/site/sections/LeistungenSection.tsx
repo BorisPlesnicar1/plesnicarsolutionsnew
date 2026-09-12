@@ -48,7 +48,7 @@ export function LeistungenSection({ domain = "all" }: { domain?: LeistungenDomai
                 ·
               </span>
               <Link
-                href="#pakete"
+                href="#website-preise"
                 className="text-white/70 border-b border-transparent hover:border-[#ff1900]/55 hover:text-white pb-0.5 transition-colors"
               >
                 {t.leistungenChips.webPreise}

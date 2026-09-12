@@ -321,6 +321,11 @@ export const TRANSLATIONS = {
       address: "Hartriegelstraße 12, 3550 Langenlois",
       addressNote: "Boris Plesnicar e.U. · IT auch remote",
       festnetz: "Festnetz",
+      mainLabel: "Haupterreichbarkeit",
+      mainNote:
+        "Festnetz und E-Mail sind unsere Haupterreichbarkeiten – darüber erreichen Sie uns am zuverlässigsten. Die Mobilnummern unten sind für direkte Rückfragen an den jeweiligen Ansprechpartner gedacht.",
+      ansprechpartner: "Direkte Ansprechpartner",
+      mobil: "Mobil",
       mapConsent:
         "Die Karte (Google) laden wir erst nach Ihrer Einwilligung in optionale Drittanbieter-Inhalte. Details in der Datenschutzerklärung.",
       acceptCookies: "Einwilligen & Karte laden",
@@ -386,7 +391,7 @@ export const TRANSLATIONS = {
       energie: "Energie",
       projects: "Referenzen",
       pcBau: "Büro- & Gaming-PCs",
-      webPreise: "Web-Richtpreise",
+      webPreise: "Website-Preise",
       onThisPage: "Auf dieser Seite",
     },
     partnerStrip: {
@@ -743,6 +748,11 @@ export const TRANSLATIONS = {
       address: "Hartriegelstraße 12, 3550 Langenlois",
       addressNote: "Boris Plesnicar e.U. · IT also remote",
       festnetz: "Landline",
+      mainLabel: "Main contact",
+      mainNote:
+        "Landline and email are our main contact channels – that is where you reach us most reliably. The mobile numbers below are for direct questions to the respective contact.",
+      ansprechpartner: "Direct contacts",
+      mobil: "Mobile",
       mapConsent:
         "We only load the map (Google) after you consent to optional third-party content. See our privacy policy for details.",
       acceptCookies: "Consent & load map",
@@ -808,7 +818,7 @@ export const TRANSLATIONS = {
       energie: "Energy",
       projects: "References",
       pcBau: "Office & gaming PCs",
-      webPreise: "Web guide prices",
+      webPreise: "Website prices",
       onThisPage: "On this page",
     },
     partnerStrip: {

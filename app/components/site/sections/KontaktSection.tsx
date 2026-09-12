@@ -1,24 +1,49 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Instagram, Mail, Phone } from "lucide-react";
+import { ArrowRight, Instagram, Mail, MapPin, Phone, Smartphone } from "lucide-react";
 import { TRANSLATIONS } from "@/app/translations";
 import { useSite } from "@/app/contexts/SiteContext";
 import { SectionBackground } from "@/app/components/site/SectionBackground";
-import { SectionKicker } from "@/app/components/site/SectionKicker";
+import { MicroKicker, SectionKicker } from "@/app/components/site/SectionKicker";
 import { ContactForm } from "@/app/components/site/ContactForm";
 import { staggerItem, staggerParent } from "@/app/components/site/motion-presets";
+
+const FESTNETZ_NUMBER = "02734/32048";
+const FESTNETZ_HREF = "tel:+43273432048";
+const EMAIL_ADDRESS = "plesnicaroffice@gmail.com";
+
+/** Nachrangige Direktdurchwahl je Ansprechpartner – Haupterreichbarkeit bleibt Festnetz & E-Mail. */
+const ANSPRECHPARTNER = [
+  { id: "boris", mobil: "+43 664 4678382", href: "tel:+436644678382" },
+  { id: "dietmar", mobil: "+43 676 3206308", href: "tel:+436763206308" },
+] as const;
 
 export function KontaktSection() {
   const { lang, cookieConsent, updateConsent } = useSite();
   const t = TRANSLATIONS[lang];
 
+  const cardClass =
+    "rounded-[1.35rem] border border-white/[0.08] bg-gradient-to-b from-[#101014]/92 via-[#0a0a0e]/95 to-[#070709]/98 supports-[backdrop-filter]:backdrop-blur-xl shadow-[0_24px_64px_-32px_rgba(0,0,0,0.75)]";
+
   return (
-    <section id="kontakt" className="py-16 sm:py-20 md:py-28 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden bg-[#070709]">
+    <section
+      id="kontakt"
+      className="relative border-t border-white/5 overflow-hidden bg-[#070709] px-4 py-16 sm:px-6 sm:py-20 md:py-28"
+    >
       <SectionBackground />
-      <div className="container mx-auto max-w-5xl relative z-10">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-90"
+        style={{
+          background:
+            "radial-gradient(ellipse 75% 45% at 50% -5%, rgba(255,45,35,0.07) 0%, transparent 50%), radial-gradient(ellipse 50% 40% at 95% 70%, rgba(255,25,0,0.04) 0%, transparent 45%)",
+        }}
+        aria-hidden
+      />
+
+      <div className="container relative z-10 mx-auto max-w-5xl">
         <motion.div
-          className="text-center mb-12 md:mb-16"
+          className="mb-10 text-center md:mb-12"
           initial="initial"
           animate="animate"
           variants={staggerParent}
@@ -26,91 +51,127 @@ export function KontaktSection() {
           <motion.div variants={staggerItem} className="mb-4 flex justify-center">
             <SectionKicker align="center">{t.kontakt.label}</SectionKicker>
           </motion.div>
-          <motion.h2 variants={staggerItem} className="text-3xl md:text-4xl font-black tracking-tight text-white mb-3">
+          <motion.h2
+            variants={staggerItem}
+            className="mb-3 text-3xl font-black tracking-tight text-white md:text-4xl"
+          >
             {t.kontakt.title}{" "}
-            <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">{t.kontakt.titleHighlight}</span>
+            <span className="bg-gradient-to-r from-[#ff1900] to-[#ff3d00] bg-clip-text text-transparent">
+              {t.kontakt.titleHighlight}
+            </span>
           </motion.h2>
-          <motion.p variants={staggerItem} className="text-white/50 font-light text-sm md:text-base max-w-lg mx-auto">
+          <motion.p
+            variants={staggerItem}
+            className="mx-auto max-w-lg text-sm font-light text-white/50 md:text-base"
+          >
             {t.kontakt.subtitle}
           </motion.p>
         </motion.div>
 
+        {/* Haupterreichbarkeit: Festnetz + E-Mail bewusst vor allen anderen Wegen */}
         <motion.div
-          className="grid md:grid-cols-2 gap-6 md:gap-8 items-start"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="rounded-[1.4rem] p-[1px] bg-gradient-to-br from-white/[0.22] via-[#ff1900]/35 to-white/[0.08] shadow-[0_0_0_1px_rgba(255,25,0,0.1),0_32px_80px_-28px_rgba(255,35,25,0.2)]"
+        >
+          <div className="rounded-[1.35rem] border border-[#ff1900]/12 bg-gradient-to-b from-[#14141c]/95 via-[#0a0a0f]/95 to-[#070709]/98 p-5 supports-[backdrop-filter]:backdrop-blur-xl md:p-7">
+            <MicroKicker tone="red" className="mt-0">
+              {t.kontakt.mainLabel}
+            </MicroKicker>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <a
+                href={FESTNETZ_HREF}
+                className="group flex min-h-[76px] items-center gap-3.5 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3.5 transition-colors hover:border-[#ff1900]/30 hover:bg-white/[0.07]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff1900] to-[#ff2d00] shadow-lg shadow-[#ff1900]/25">
+                  <Phone className="h-5 w-5 text-white" strokeWidth={2.5} aria-hidden />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[11px] font-semibold uppercase tracking-[0.1em] text-[#ff6b52]">
+                    {t.kontakt.festnetz}
+                  </span>
+                  <span className="block text-lg font-bold tabular-nums tracking-tight text-white">
+                    {FESTNETZ_NUMBER}
+                  </span>
+                </span>
+              </a>
+
+              <a
+                href={`mailto:${EMAIL_ADDRESS}`}
+                className="group flex min-h-[76px] items-center gap-3.5 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3.5 transition-colors hover:border-[#ff1900]/30 hover:bg-white/[0.07]"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff1900] to-[#ff2d00] shadow-lg shadow-[#ff1900]/25">
+                  <Mail className="h-5 w-5 text-white" strokeWidth={2.5} aria-hidden />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[11px] font-semibold uppercase tracking-[0.1em] text-[#ff6b52]">
+                    {t.team.email}
+                  </span>
+                  <span className="block break-all text-[15px] font-bold leading-snug text-white">
+                    {EMAIL_ADDRESS}
+                  </span>
+                </span>
+              </a>
+            </div>
+
+            <p className="mt-4 text-sm font-light leading-relaxed text-white/55">{t.kontakt.mainNote}</p>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mt-6 grid items-start gap-5 md:gap-6 lg:grid-cols-[1.05fr_0.95fr]"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="space-y-4 min-w-0">
-            <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
-              <p className="text-white font-bold text-base mb-1">{t.kontakt.boris}</p>
-              <p className="text-white/55 text-sm mb-2">{t.kontakt.borisRole}</p>
-              <div className="mb-4">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] supports-[backdrop-filter]:backdrop-blur-md px-2.5 py-1 text-[10px] font-semibold tracking-[0.08em] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
-                  <span className="w-1 h-1 rounded-full bg-[#ff6b52]" aria-hidden />
-                  {t.kontakt.borisEdu}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
-                <a
-                  href="tel:+436644678382"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors shadow-lg shadow-[#ff1900]/25 w-full sm:w-auto min-w-0"
-                >
-                  <Phone className="w-4 h-4" strokeWidth={2.5} />
-                  +43 664 4678382
-                </a>
-                <a
-                  href="tel:+43273432048"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors w-full sm:w-auto min-w-0"
-                >
-                  <Phone className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                  {t.team.landline}
-                </a>
-                <a
-                  href="mailto:plesnicaroffice@gmail.com"
-                  title="plesnicaroffice@gmail.com"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors w-full sm:w-auto min-w-0"
-                >
-                  <Mail className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                  {t.team.email}
-                </a>
-              </div>
-            </div>
-            <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300">
-              <p className="text-white font-bold text-base mb-1">{t.kontakt.dietmar}</p>
-              <p className="text-white/55 text-sm mb-4">{t.kontakt.dietmarRole}</p>
-              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
-                <a
-                  href="tel:+436763206308"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#ff1900] hover:bg-[#e61700] text-white font-semibold text-sm transition-colors shadow-lg shadow-[#ff1900]/25 w-full sm:w-auto min-w-0"
-                >
-                  <Phone className="w-4 h-4" strokeWidth={2.5} />
-                  +43 676 3206308
-                </a>
-                <a
-                  href="tel:+43273432048"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors w-full sm:w-auto min-w-0"
-                >
-                  <Phone className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                  {t.team.landline}
-                </a>
-                <a
-                  href="mailto:plesnicaroffice@gmail.com"
-                  title="plesnicaroffice@gmail.com"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.1] text-white font-medium text-sm transition-colors w-full sm:w-auto min-w-0"
-                >
-                  <Mail className="w-4 h-4 text-[#ff1900]" strokeWidth={2} />
-                  {t.team.email}
-                </a>
-              </div>
-            </div>
+          <div className="min-w-0">
             <ContactForm lang={lang} />
           </div>
 
-          <div className="space-y-4 min-w-0">
-            <div className="p-5 md:p-6 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl border-[#ff1900]/15">
-              <h3 className="text-white font-bold text-base mb-3">{t.kontakt.standort}</h3>
-              <div className="w-full h-48 md:h-52 rounded-xl overflow-hidden border border-white/[0.08] bg-white/[0.02]">
+          <div className="min-w-0 space-y-5 md:space-y-6">
+            <div className={`${cardClass} p-5 md:p-6`}>
+              <h3 className="text-base font-bold text-white">{t.kontakt.ansprechpartner}</h3>
+              <ul className="mt-4 divide-y divide-white/[0.06]">
+                {ANSPRECHPARTNER.map((person) => {
+                  const isBoris = person.id === "boris";
+                  return (
+                    <li key={person.id} className="py-4 first:pt-0 last:pb-0">
+                      <p className="text-sm font-bold text-white">
+                        {isBoris ? t.kontakt.boris : t.kontakt.dietmar}
+                      </p>
+                      <p className="mt-0.5 text-xs font-light leading-relaxed text-white/50">
+                        {isBoris ? t.kontakt.borisRole : t.kontakt.dietmarRole}
+                      </p>
+                      {isBoris && (
+                        <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-white/[0.1] bg-white/[0.04] px-2.5 py-1 text-[10px] font-semibold tracking-[0.08em] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] supports-[backdrop-filter]:backdrop-blur-md">
+                          <span className="h-1 w-1 rounded-full bg-[#ff6b52]" aria-hidden />
+                          {t.kontakt.borisEdu}
+                        </span>
+                      )}
+                      <a
+                        href={person.href}
+                        className="mt-3 inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-white/[0.1] bg-white/[0.03] px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-white/[0.08]"
+                      >
+                        <Smartphone className="h-4 w-4 text-[#ff6b52]" strokeWidth={2} aria-hidden />
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/45">
+                          {t.kontakt.mobil}
+                        </span>
+                        <span className="tabular-nums">{person.mobil}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div className={`${cardClass} p-5 md:p-6`}>
+              <h3 className="flex items-center gap-2 text-base font-bold text-white">
+                <MapPin className="h-4 w-4 text-[#ff6b52]" strokeWidth={2.25} aria-hidden />
+                {t.kontakt.standort}
+              </h3>
+              <div className="mt-4 h-48 w-full overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02] md:h-52">
                 {cookieConsent?.comfort ? (
                   <iframe
                     src="https://www.google.com/maps?q=Hartriegelstraße+12,+3550+Langenlois,+Österreich&output=embed"
@@ -120,42 +181,37 @@ export function KontaktSection() {
                     allowFullScreen
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
-                    className="w-full h-full"
+                    className="h-full w-full"
                     title="Plesnicar Solutions Standort"
                   />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center gap-3 px-4 text-center">
-                    <p className="text-white/65 text-xs md:text-sm font-light">{t.kontakt.mapConsent}</p>
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-3 px-4 text-center">
+                    <p className="text-xs font-light text-white/65 md:text-sm">{t.kontakt.mapConsent}</p>
                     <button
                       type="button"
                       onClick={() => updateConsent(true)}
-                      className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#ff1900] hover:bg-[#e61700] text-white text-sm font-semibold transition-colors"
+                      className="inline-flex items-center gap-2 rounded-lg bg-[#ff1900] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#e61700]"
                     >
                       {t.kontakt.acceptCookies}
-                      <ArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
+                      <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
                     </button>
                   </div>
                 )}
               </div>
-              <p className="text-white/65 font-light text-sm mt-3">{t.kontakt.address}</p>
-              <p className="text-white/50 text-xs mt-0.5">{t.kontakt.addressNote}</p>
-              <p className="text-white/65 font-light text-sm mt-3">
-                <strong className="text-white font-semibold">{t.kontakt.festnetz}:</strong>{" "}
-                <a href="tel:+43273432048" className="text-[#ff1900] hover:underline">
-                  02734/32048
-                </a>
-              </p>
+              <p className="mt-3 text-sm font-light text-white/65">{t.kontakt.address}</p>
+              <p className="mt-0.5 text-xs text-white/50">{t.kontakt.addressNote}</p>
             </div>
+
             <a
               href="https://www.instagram.com/plesnicarsolutions/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 p-4 rounded-2xl bg-[#0a0a0a]/90 border border-white/[0.1] backdrop-blur-xl shadow-xl hover:border-white/[0.18] transition-all duration-300"
+              className={`${cardClass} flex items-center gap-3 p-4 transition-colors hover:border-white/[0.16]`}
             >
-              <div className="w-10 h-10 rounded-xl bg-[#ff1900]/20 border border-[#ff1900]/30 flex items-center justify-center">
-                <Instagram className="w-5 h-5 text-[#ff1900]" strokeWidth={2} />
-              </div>
-              <span className="font-semibold text-white text-sm">@plesnicarsolutions</span>
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#ff1900]/30 bg-[#ff1900]/20">
+                <Instagram className="h-5 w-5 text-[#ff1900]" strokeWidth={2} aria-hidden />
+              </span>
+              <span className="text-sm font-semibold text-white">@plesnicarsolutions</span>
             </a>
           </div>
         </motion.div>
