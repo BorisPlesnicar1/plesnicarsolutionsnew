@@ -554,8 +554,3 @@ export function getPreiseBundle(lang: Lang): PreiseBundle {
     onePageToggleAriaLabel: "Varianten One-Page-Website",
   };
 }
-
-/** Browser tab title (client updates when language changes). */
-export function getPreiseDocumentTitle(lang: Lang): string {
-  return lang === "en" ? "Guide prices | Plesnicar Solutions" : "Richtpreise | Plesnicar Solutions";
-}

@@ -93,7 +93,7 @@ const pcBauCopyDe: PcBauCopy = {
   priceNote:
     "Alle Beträge sind unverbindliche Richtwerte für typische Konfigurationen. Komponentenpreise schwanken; Endpreis nach Abstimmung und Verfügbarkeit.",
   ustNote:
-    "Nettopreise zzgl. 20 % gesetzlicher USt. Einzelunternehmen Boris Plesnicar e.U. · UID: ATU83447003.",
+    "Alle angegebenen Beträge sind Nettopreise und verstehen sich zzgl. 20 % gesetzlicher USt – der Bruttopreis (inkl. USt) ist jeweils unter dem Preis angegeben. Einzelunternehmen Boris Plesnicar e.U. (Plesnicar Solutions) · UID: ATU83447003.",
   tabBuero: "Büro-PC",
   tabGaming: "Gaming-PC",
   tabAria: "PC-Kategorie wählen",
@@ -200,7 +200,7 @@ const pcBauCopyEn: PcBauCopy = {
   priceNote:
     "All amounts are non-binding guide values for typical builds. Component prices move; the final price follows after we agree scope and availability.",
   ustNote:
-    "Net prices plus 20% statutory VAT. Sole proprietorship Boris Plesnicar e.U. · VAT ID: ATU83447003.",
+    "All amounts shown are net prices and are subject to 20% statutory VAT – the gross price (incl. VAT) is shown below each price. Sole proprietorship Boris Plesnicar e.U. (Plesnicar Solutions) · VAT ID (UID): ATU83447003.",
   tabBuero: "Office PC",
   tabGaming: "Gaming PC",
   tabAria: "Choose PC category",

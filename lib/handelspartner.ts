@@ -113,7 +113,7 @@ export const handelspartnerCopy = {
     text: "Lassen Sie uns gemeinsam die passende Lösung entwickeln – von der ersten Idee bis zur Umsetzung.",
     button: "Projekt anfragen",
     secondaryHref: "/bau",
-    secondaryLabel: "Richtpreise ansehen",
+    secondaryLabel: "Zu Bau & Baustoffen",
   },
 } as const;
 
@@ -163,7 +163,7 @@ export const handelspartnerCopyEn = {
     text: "Let us shape the right approach together – from the first idea through to delivery.",
     button: "Start a project enquiry",
     secondaryHref: "/bau",
-    secondaryLabel: "View guide prices",
+    secondaryLabel: "Construction & materials",
   },
 } as const;
 

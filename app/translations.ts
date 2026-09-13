@@ -15,7 +15,6 @@ export const TRANSLATIONS = {
     ariaMobileNav: "Seitenmenü",
     ariaLang: "Sprache der Website",
     ariaKontaktCta: "Kontakt aufnehmen",
-    ariaPreiseSecondary: "Zu den Richtpreisen",
     footerNavPages: "Alle Seiten",
     notFound: {
       title: "Seite nicht gefunden",
@@ -48,7 +47,7 @@ export const TRANSLATIONS = {
     },
     openingOfferPopup: {
       kicker: "Nur kurze Zeit",
-      cta: "Zu den Richtpreisen",
+      cta: "Zu den Website-Preisen",
       dismiss: "Schließen",
       dismissAria: "Hinweis zum Eröffnungsangebot schließen",
     },
@@ -61,8 +60,6 @@ export const TRANSLATIONS = {
       leistungen: "Leistungen",
       projekte: "Projekte",
       ueberUns: "Über uns",
-      /** Hervorgehobener Nav-Punkt für /preise */
-      richtpreise: "Richtpreise",
       handelspartner: "Handelspartner",
       team: "Team",
       vorteile: "Vorteile",
@@ -302,6 +299,9 @@ export const TRANSLATIONS = {
       subtitle: "Einblicke, Projekte und Neuigkeiten – eingebunden von unserem öffentlichen Profil.",
       iframeTitle: "Instagram @plesnicarsolutions",
       openProfile: "Profil auf Instagram öffnen",
+      follow: "Folgen",
+      profileRole: "Offizielles Profil",
+      liveBadge: "Direkt aus unserem Feed",
       hint: "Inhalt wird von Instagram (Meta) geladen. Dabei kann eine Verbindung zu instagram.com entstehen.",
       embedBlockedTitle: "Einwilligung für eingebettete Inhalte",
       embedBlockedBody:
@@ -418,7 +418,7 @@ export const TRANSLATIONS = {
         },
         {
           q: "Was decken die Richtpreise ab – und was nicht?",
-          a: "Die Beträge auf der Seite „Richtpreise“ sind Orientierungswerte für typische Szenarien, keine Fixpreise aus dem Regal. Nicht enthalten sind ohne gesonderte Vereinbarung z. B. laufende Fremdlizenzen, kostenpflichtige Stock-Medien, umfangreiche Redaktion fremder Texte oder sehr spezielle Schnittstellen – das kalkulieren wir offen nach Umfang.",
+          a: "Die Beträge bei den Website-Preisen auf der IT-Seite sind Orientierungswerte für typische Szenarien, keine Fixpreise aus dem Regal. Nicht enthalten sind ohne gesonderte Vereinbarung z. B. laufende Fremdlizenzen, kostenpflichtige Stock-Medien, umfangreiche Redaktion fremder Texte oder sehr spezielle Schnittstellen – das kalkulieren wir offen nach Umfang.",
         },
         {
           q: "Gibt es versteckte Kosten?",
@@ -441,7 +441,6 @@ export const TRANSLATIONS = {
     ariaMobileNav: "Site menu",
     ariaLang: "Website language",
     ariaKontaktCta: "Contact us",
-    ariaPreiseSecondary: "Guide prices",
     footerNavPages: "All pages",
     notFound: {
       title: "Page not found",
@@ -474,7 +473,7 @@ export const TRANSLATIONS = {
     },
     openingOfferPopup: {
       kicker: "Limited time",
-      cta: "View guide prices",
+      cta: "View website prices",
       dismiss: "Close",
       dismissAria: "Dismiss opening offer notice",
     },
@@ -487,7 +486,6 @@ export const TRANSLATIONS = {
       leistungen: "Services",
       projekte: "Projects",
       ueberUns: "About us",
-      richtpreise: "Pricing",
       handelspartner: "Partners",
       team: "Team",
       vorteile: "Benefits",
@@ -729,6 +727,9 @@ export const TRANSLATIONS = {
       subtitle: "Updates and project glimpses from our public profile.",
       iframeTitle: "Instagram @plesnicarsolutions",
       openProfile: "Open profile on Instagram",
+      follow: "Follow",
+      profileRole: "Official profile",
+      liveBadge: "Straight from our feed",
       hint: "Content is loaded by Instagram (Meta). Loading may connect to instagram.com.",
       embedBlockedTitle: "Consent for embedded content",
       embedBlockedBody:
@@ -845,7 +846,7 @@ export const TRANSLATIONS = {
         },
         {
           q: "What do guide prices cover – and what not?",
-          a: "Figures on our “Guide prices” page are orientation values for typical scenarios, not off-the-shelf fixed prices. Unless agreed separately, ongoing third-party licences, paid stock media, extensive copywriting or special integrations are quoted transparently by scope.",
+          a: "Figures listed with the website prices on our IT page are orientation values for typical scenarios, not off-the-shelf fixed prices. Unless agreed separately, ongoing third-party licences, paid stock media, extensive copywriting or special integrations are quoted transparently by scope.",
         },
         {
           q: "Are there hidden costs?",

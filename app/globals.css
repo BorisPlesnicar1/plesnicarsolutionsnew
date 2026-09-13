@@ -372,42 +372,6 @@ html.no-backdrop-blur * {
   }
 }
 
-/* „Richtpreise“: gleiche Nav-Optik wie andere Links, nur leichtes Akzent-Glow am Text (Accent #ff1900) */
-.nav-text-glow-preise {
-  text-shadow:
-    0 0 10px rgba(255, 45, 35, 0.42),
-    0 0 22px rgba(255, 35, 25, 0.18);
-  transition: text-shadow 0.2s ease;
-}
-.nav-text-glow-preise:hover {
-  text-shadow:
-    0 0 12px rgba(255, 55, 40, 0.5),
-    0 0 26px rgba(255, 40, 28, 0.26);
-}
-.nav-text-glow-preise--on {
-  text-shadow:
-    0 0 8px rgba(255, 70, 55, 0.55),
-    0 0 18px rgba(255, 45, 30, 0.32),
-    0 0 32px rgba(255, 35, 25, 0.14);
-}
-.nav-text-glow-preise--on:hover {
-  text-shadow:
-    0 0 10px rgba(255, 80, 60, 0.58),
-    0 0 22px rgba(255, 50, 35, 0.36),
-    0 0 36px rgba(255, 40, 28, 0.18);
-}
-/* Mobile: etwas zurückhaltender (größere Fläche) */
-.nav-text-glow-preise--mobile:not(.nav-text-glow-preise--on) {
-  text-shadow:
-    0 0 8px rgba(255, 45, 35, 0.35),
-    0 0 18px rgba(255, 35, 25, 0.14);
-}
-@media (prefers-reduced-motion: reduce) {
-  .nav-text-glow-preise {
-    transition: none;
-  }
-}
-
 /* LoadingScreen: reines CSS statt Framer (weniger Main-Thread-Last) */
 @keyframes loading-screen-sweep {
   from {

@@ -89,20 +89,26 @@ export function getOpeningOfferPriceUi(priceFrom: string): OpeningOfferPriceUi {
 /**
  * Bruttopreis-Label (inkl. USt) für den effektiv gezahlten Preis.
  * Basis = Nettopreis; bei aktiver Aktion wird zuerst rabattiert, dann USt aufgeschlagen.
+ * `applyOpeningOffer: false` für Bereiche ohne Aktion (z. B. PC-Bau – Rabatt gilt nur für Web-Pakete).
  * Gibt `null` zurück, wenn der Preis nicht parsebar ist (z. B. „Preis auf Anfrage“).
  */
-export function getGrossPriceLabel(priceFrom: string, lang: PreiseOpeningOfferLang): string | null {
+export function getGrossPriceLabel(
+  priceFrom: string,
+  lang: PreiseOpeningOfferLang,
+  { applyOpeningOffer = true }: { applyOpeningOffer?: boolean } = {}
+): string | null {
   const vatPct = AUSTRIA_VAT_RATE;
+  const discountActive = PREISE_OPENING_OFFER.active && applyOpeningOffer;
 
   const de = parseDePriceFrom(priceFrom);
   if (de) {
-    const net = PREISE_OPENING_OFFER.active ? discountedAmount(de.amount) : de.amount;
+    const net = discountActive ? discountedAmount(de.amount) : de.amount;
     return `inkl. ${vatPct} % USt: ab ${formatDeInteger(grossAmount(net))}${de.afterNumber}`;
   }
 
   const en = parseEnPriceFrom(priceFrom);
   if (en) {
-    const net = PREISE_OPENING_OFFER.active ? discountedAmount(en.amount) : en.amount;
+    const net = discountActive ? discountedAmount(en.amount) : en.amount;
     return `incl. ${vatPct}% VAT: from €${formatEnInteger(grossAmount(net))}${en.rest}`;
   }
 
@@ -119,18 +125,18 @@ export function appendOpeningOfferMetaNote(description: string, lang: "de" | "en
   return `${description}${note}`;
 }
 
-/** Text für das Startseiten-Popup (verweist auf /preise, nicht „auf dieser Seite“). */
+/** Text für das Startseiten-Popup (verweist auf /it, nicht „auf dieser Seite“). */
 export function getOpeningOfferHomePopupCopy(lang: PreiseOpeningOfferLang): { title: string; body: string } {
   const pct = PREISE_OPENING_OFFER.rabattProzent;
   if (lang === "en") {
     return {
       title: "Opening offer",
-      body: `${pct}% off all package guide prices — for a limited time. Details are on our guide prices page.`,
+      body: `${pct}% off all package guide prices — for a limited time. Details are with the website prices on our IT page.`,
     };
   }
   return {
     title: "Eröffnungsangebot",
-    body: `${pct} % Rabatt auf alle Paket-Richtpreise — nur für kurze Zeit. Details auf der Seite „Richtpreise“.`,
+    body: `${pct} % Rabatt auf alle Paket-Richtpreise — nur für kurze Zeit. Details bei den Website-Preisen auf der IT-Seite.`,
   };
 }
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Check, Cpu, Gamepad2, Monitor } from "lucide-react";
+import { getGrossPriceLabel } from "@/lib/preise-opening-offer";
 import { getPcBauCopy, getPcTierData, type PcCategoryId } from "@/lib/pc-bau";
 import { SectionBackground } from "@/app/components/site/SectionBackground";
 import { MicroKicker, SectionKicker } from "@/app/components/site/SectionKicker";
@@ -18,6 +19,8 @@ export function PcBauSection() {
 
   const tiers = category === "gaming" ? c.gaming : c.buero;
   const tierData = getPcTierData(category);
+  /** PC-Preise sind nicht Teil des Eröffnungsangebots – Brutto direkt aus dem Netto-Richtwert. */
+  const grossLabel = (priceFrom: string) => getGrossPriceLabel(priceFrom, lang, { applyOpeningOffer: false });
 
   return (
     <section
@@ -153,6 +156,11 @@ export function PcBauSection() {
                         <p className="text-2xl md:text-[1.65rem] font-black tabular-nums tracking-tight bg-gradient-to-r from-[#ff7a5c] via-[#ff4428] to-[#ff9a7a] bg-clip-text text-transparent">
                           {tier.priceFrom}
                         </p>
+                        {grossLabel(tier.priceFrom) && (
+                          <p className="text-[11px] font-medium tabular-nums text-white/40 leading-snug mt-1">
+                            {grossLabel(tier.priceFrom)}
+                          </p>
+                        )}
                         <p className="text-[11px] text-white/35 mt-1.5 leading-snug">{tier.priceDisclaimer}</p>
                       </div>
 
